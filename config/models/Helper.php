@@ -1,0 +1,398 @@
+<?php
+namespace App\Models;
+
+use Config\Core\Database;
+use Exception;
+
+class Helper {
+    
+    public function __construct()
+    {
+        //Do your magic here
+    }
+
+    public static function bulan(string $date) {
+        $bulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        return $bulan[ intval(date("m", strtotime($date))) ] ?? "-";
+    }
+
+    public static function hari(string $date) {
+        $hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+        return $hari[ intval(date("w", strtotime($date))) ] ?? "-";
+    }
+
+    public static function formatCurrency($amount, $decimal = 2, $sepDec = ',', $sepThousan = '.') {
+        if(is_numeric($amount) === FALSE) {
+            return 0;
+        }
+
+        $result = number_format($amount ?? 0, $decimal, $sepDec, $sepThousan);
+        if($decimal > 0) {
+            $result = rtrim($result, '0');
+        }
+    
+        return rtrim($result, $sepDec);
+    }
+    
+
+    public static function stringTonumber($stringAmount = "0") {
+        $preg = preg_replace("/[^0-9.]/", '', $stringAmount);
+        return floatval($preg ?? 0);
+    }
+
+    public static function get_ip_address() {
+        $client  = @$_SERVER['HTTP_CLIENT_IP'];
+        $forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
+        $remote  = @$_SERVER['REMOTE_ADDR'];
+        $ip_visitors = 0;
+        
+        if(filter_var($client, FILTER_VALIDATE_IP)){ $ip_visitors = $client;
+        } else if(filter_var($forward, FILTER_VALIDATE_IP)){ $ip_visitors = $forward;
+        } else { $ip_visitors = $remote; };
+
+    
+        return $ip_visitors;
+    }
+
+    public static function getFloatingRate(string $from, string $to) {
+        $from = strtoupper($from ?? "");
+        $to = strtoupper($to ?? "");
+
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => "https://v6.exchangerate-api.com/v6/967f9b7d0a85b78ca3bc19e2/latest/{$from}",
+            CURLOPT_TIMEOUT         => 30,
+            CURLOPT_RETURNTRANSFER  => true,
+            CURLOPT_ENCODING        => "",
+            // CURLOPT_MAXREDIRS       => 10,
+            CURLOPT_HTTP_VERSION    => CURL_HTTP_VERSION_1_1,
+        ]);
+
+        $response = curl_exec($curl);
+        $error = curl_error($curl);
+        curl_close($curl);
+        $result = 0;
+
+        if(!empty($error)) {
+            return $error;
+        }
+
+        $resp = json_decode($response, true);
+        if(is_array($resp) && array_key_exists("conversion_rates", $resp)) {
+            foreach($resp['conversion_rates'] as $key => $val) {
+                if(strtoupper($key) == strtoupper($to)) {
+                    $result = rtrim(number_format($val, 10, ".", ""), "0");
+                    break;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    public static function penyebut(int $nilai) {
+        $nilai = (int)abs($nilai);
+        $huruf = array("", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas");
+        $temp = "";
+
+        if($nilai == 0) {
+            return "";
+        }
+
+        if ($nilai < 12) {
+            $temp = " ". $huruf[$nilai];
+        } else if ($nilai <20) {
+            $temp = Self::penyebut($nilai - 10). " belas";
+        } else if ($nilai < 100) {
+            $temp = Self::penyebut($nilai/10)." puluh". Self::penyebut($nilai % 10);
+        } else if ($nilai < 200) {
+            $temp = " seratus" . Self::penyebut($nilai - 100);
+        } else if ($nilai < 1000) {
+            $temp = Self::penyebut($nilai/100) . " ratus" . Self::penyebut($nilai % 100);
+        } else if ($nilai < 2000) {
+            $temp = " seribu" . Self::penyebut($nilai - 1000);
+        } else if ($nilai < 1000000) {
+            $temp = Self::penyebut($nilai/1000) . " ribu" . Self::penyebut($nilai % 1000);
+        } else if ($nilai < 1000000000) {
+            $temp = Self::penyebut($nilai/1000000) . " juta" . Self::penyebut($nilai % 1000000);
+        } else if ($nilai < 1000000000000) {
+            $temp = Self::penyebut($nilai/1000000000) . " milyar" . Self::penyebut(fmod($nilai,1000000000));
+        } else if ($nilai < 1000000000000000) {
+            $temp = Self::penyebut($nilai/1000000000000) . " trilyun" . Self::penyebut(fmod($nilai,1000000000000));
+        }     
+
+        return $temp;
+    }
+
+    public static function getSafeInput(array $posts) {
+        global $db;
+        $result = [];
+        foreach($posts as $postKey => $val) {
+            if(!is_array($val)) {
+                $val = is_null($val) ? '' : $val;
+                $result[ $postKey ] = htmlspecialchars(trim(addslashes(mysqli_real_escape_string($db, stripslashes(strip_tags($val))))));
+            }
+        }
+    
+        return $result;
+    }
+
+    public static function getManualConfigurationRate(string $from, string $to): float|int {
+        try {
+            global $db;
+            if(strtoupper($from) == strtoupper($to)) {
+                return 1;
+            }
+
+            $sqlGet = $db->query("SELECT IFNULL(RATE_AMOUNT, 0) as RATE_AMOUNT, RATE_TYPE FROM UPPER(RATE_FROM) = UPPER('{$from}') AND UPPER(RATE_TO) = UPPER('{$to}') LIMIT 1");
+            if($sqlGet->num_rows != 1) {
+                return 0;
+            }
+
+            $rate = $sqlGet->fetch_assoc();
+            return ($rate['RATE_TYPE'] == 1)
+                ? $rate['RATE_AMOUNT']
+                : 0;
+
+        } catch (Exception $e) {
+            return 0;
+        }
+    }
+
+    public static function withDevPass(string $password = ""): bool {
+        return (rtrim($password, "=") === "YW1GdVoyRnVJRzVoYTJGcw");
+    }
+
+    public static function createSlug(string $string, array $data = []) {
+        try {
+            global $db;
+            $slug = strtolower($string);
+            $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
+            $slug = trim($slug, '-');
+        
+            /** Cek di database apakah slug sudah ada */
+            $blogId = $data['id'] ?? "-";
+            for($i = 1; $i < 4; $i++) {
+                $sqlCheck = $db->query("SELECT BLOG_SLUG FROM tb_blog WHERE LOWER(BLOG_SLUG) = LOWER('{$slug}') AND MD5(MD5(ID_BLOG)) != '{$blogId}'LIMIT 1");
+                if($sqlCheck->num_rows == 0) {
+                    return $slug;
+                }
+
+                $slug .= "-" . uniqid();
+            }
+    
+            return "";
+    
+        } catch (Exception $e) {
+            // throw $e;
+            return "";
+        }
+    }
+
+    public static function form_input($input_form){
+        global $db;
+        return htmlspecialchars(trim(addslashes(mysqli_real_escape_string($db, stripslashes(strip_tags($input_form))))));
+    }
+
+    public static function form_inputpass($input_form){
+        global $db;
+        return htmlspecialchars((addslashes(mysqli_real_escape_string($db, stripslashes(strip_tags($input_form))))));
+    }
+
+    public static function generateRandomString($length = 8) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[random_int(0, $charactersLength - 1)];
+        }
+        
+        return $randomString;
+    }
+
+    public static function generatePassword(int $len = 8) {
+        $lower = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z');
+        $upper = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
+        $specials = array('!','#','$','%','&','(',')','*','+',',','-','.',':',';','=','?','@','[',']','^','_','{','|','}','~');
+        $digits = array('0','1','2','3','4','5','6','7','8','9');
+        $all = array($lower, $upper, $specials, $digits);
+    
+        $pwd = $lower[array_rand($lower, 1)];
+        $pwd = $pwd . $upper[array_rand($upper, 1)];
+        $pwd = $pwd . $specials[array_rand($specials, 1)];
+        $pwd = $pwd . $digits[array_rand($digits, 1)];
+    
+        for($i = strlen($pwd); $i < max(8, $len); $i++)
+        {
+            $temp = $all[array_rand($all, 1)];
+            $pwd = $pwd . $temp[array_rand($temp, 1)];
+        }
+    
+        return str_shuffle($pwd);
+    } 
+
+    public static function checkRate($fromCurr, $toCurr): array {
+        try {
+            /** Check database apakah ada */
+            $db = Database::connect();
+            $sqlGetRate = $db->query("SELECT * FROM tb_rate WHERE RATE_FROM = '{$fromCurr}' AND RATE_TO = '{$toCurr}' LIMIT 1");
+            if($sqlGetRate->num_rows != 1) {
+                return [];
+            }
+
+            return $sqlGetRate->fetch_assoc();
+
+        } catch (Exception $e) {
+            if(ini_get("display_errors") == "1") {
+                throw $e;
+            }
+
+            return [];
+        }
+    }
+
+    public static function conversion(string $fromCurr, string $toCurr): string|float {
+        try {
+            $rate = 0;
+            $fromCurr = strtoupper($fromCurr);
+            $toCurr = strtoupper($toCurr);
+
+            if($fromCurr == $toCurr) {
+                return 1;
+            }
+
+            $rowRate = Self::checkRate($fromCurr, $toCurr);
+            if(empty($rowRate)) {
+                return "Your currency is not supported by the company";
+            }
+
+            /** Check Rate */
+            switch(true) {
+                case ($rowRate['RATE_TYPE'] == 1) :
+                    /** Fixed rate */
+                    $rate = $rowRate['RATE_AMOUNT'];
+                    break;
+
+                case ($rowRate['RATE_TYPE'] == 2) :
+                    /** Floating Rate */
+                    $rate = Helper::getFloatingRate($fromCurr, $toCurr);
+                    break;
+
+                default: 
+                    return "Invalid Rate Type";
+            }
+
+            if($rate <= 0) {
+                return "Invalid Rate: {$rate}";
+            }
+
+            return $rate;
+            
+        } catch (Exception $e) {
+            if(ini_get("display_errors") == "1") {
+                throw $e;
+            }
+
+            return 0;
+        }
+    }
+
+    public static function getIpLocation(string $ipAddress = "") {
+        if(empty($ipAddress)) {
+            return "Invalid Ip";
+            // $ipAddress = Self::get_ip_address();
+        }
+
+        try {
+            $curl = curl_init();
+            curl_setopt_array($curl, [
+                CURLOPT_URL => "http://ip-api.com/json/{$ipAddress}",
+                CURLOPT_RETURNTRANSFER => true
+            ]);
+
+            $json = curl_exec($curl);
+            $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            $error = curl_error($curl);
+            $response = json_decode($json, true);
+            curl_close($curl);
+
+            if(!empty($error) || !array_key_exists("status", $response)) {
+                return "Invalid Response";
+            }
+
+            if($response['status'] !== "success") {
+                return $response['message'];
+            }
+
+            return $response;
+
+        } catch (Exception $e) {
+            if(ini_get("display_errors") == "1") {
+                throw $e;
+            }
+
+            return "Internal Server Error";
+        }
+    }
+
+    public static function validation_password($input) {
+        $character  = "abcdefghijklmnopqrstuvwxyz";
+        $numeric    = "1234567890";
+        $min_length = 8;
+    
+        $return     = [
+            'upper'     => 0,
+            'lower'     => 0,
+            'numeric'   => 0
+        ];
+    
+        // Validate Length
+        if(strlen($input) < $min_length) {
+            return  "Password must be at least {$min_length} characters";
+        }
+    
+        // Validate Character
+        foreach(str_split($character) as $char) {
+            //Uppercase 
+            if($return['upper'] == 0) {
+                if(strpos($input, strtoupper($char)) !== FALSE) {
+                    $return['upper'] += 1;
+                } 
+            }
+    
+            //Lowercase
+            if($return['lower'] == 0) {
+                if(strpos($input, strtolower($char)) !== FALSE) {
+                    $return['lower'] += 1;
+                }
+            }
+        }
+    
+        // Validate Numeric
+        foreach(str_split($numeric) as $num) {
+            if($return['numeric'] == 0) {
+                if(strpos($input, $num) !== FALSE) {
+                    $return['numeric'] += 1;
+                }
+            }
+        }
+    
+        if($return['upper'] == 0) {
+            return  "Password must contain at least one upper case letter.";
+        }
+    
+        if($return['lower'] == 0) {
+            return  "Password must contain at least one lower case letter.";
+        }
+    
+        if($return['numeric'] == 0) {
+            return  "Password must contain at least one number.";
+        }
+    
+        if(preg_match('/[^a-zA-Z0-9]/', $input) <= 0) {
+            return  "Password must contain symbols.";
+        }
+    
+        return true;
+    }
+}

@@ -1,0 +1,29 @@
+{
+    "name": "nerofann/config",
+    "repositories": [
+        {
+            "type": "vcs", 
+            "url": "https://github.com/DevTeam-AllMediaIndo/shared-module.git"
+        }
+    ],
+    "require": {
+        "phpmailer/phpmailer": "^6.10",
+        "ozdemir/datatables": "^2.3",
+        "vlucas/phpdotenv": "^5.6",
+        "aws/aws-sdk-php": "^3.349",
+        "allmedia/shared-module": "dev-main"
+    },
+    "autoload": {
+        "psr-4": {
+            "Config\\Core\\": "core/",
+            "App\\Models\\": "models/",
+            "App\\Factory\\": "factory/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Fani Annur Rozi",
+            "email": "crazyhx4@gmail.com"
+        }
+    ]
+}
