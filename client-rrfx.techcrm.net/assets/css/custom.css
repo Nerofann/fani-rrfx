@@ -1,0 +1,29 @@
+.input-group-a {
+    position: relative;
+    display: contents;
+    /* flex-wrap: wrap; */
+    /* align-items: stretch; */
+    width: 100%;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.dataTables_length select {
+    color: white !important;
+    background-color: #242526 !important;
+}
+
+.img_logo{
+    width: 100%; /* or max-width: 100%; */
+    height: auto;
+}
