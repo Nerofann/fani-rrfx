@@ -24,6 +24,11 @@ input[type=number] {
 }
 
 .img_logo{
-    width: 100%; /* or max-width: 100%; */
+    width: 110px; /* or max-width: 100%; */
+    height: auto;
+}
+
+.logo img {
+    width: 110px; /* or max-width: 100%; */
     height: auto;
 }
