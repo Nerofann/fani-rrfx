@@ -29,7 +29,7 @@ $updateData = [
     'MBR_CITY' => $data['city'],
     'MBR_ZIP' => $data['zip'],
     'MBR_TMPTLAHIR' => $data['tempat_lahir'],
-    'MBR_TGLLAHIR' => date("Y-m-d H:i:s", strtotime($data['tanggal_lahir'])),
+    'MBR_TGLLAHIR' => date("Y-m-d", strtotime($data['tanggal_lahir'])),
     'MBR_ADDRESS' => $data['address']
 ];
 
