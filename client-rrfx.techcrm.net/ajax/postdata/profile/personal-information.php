@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\FileUpload;
 use App\Models\Helper;
 use Config\Core\Database;
 
@@ -32,6 +33,20 @@ $updateData = [
     'MBR_TGLLAHIR' => date("Y-m-d", strtotime($data['tanggal_lahir'])),
     'MBR_ADDRESS' => $data['address']
 ];
+
+/** check Avatar */
+if(!empty($_FILES['avatar']) && $_FILES['avatar']['error'] == 0) {
+    $uploadFile = FileUpload::upload_myfile($_FILES['avatar'], "avatar");
+    if(!is_array($uploadFile) || !array_key_exists("filename", $uploadFile)) {
+        JsonResponse([
+            'success' => false,
+            'message' => $uploadFile ?? "Upload avatar gagal",
+            'data' => []
+        ]);
+    }
+
+    $updateData['MBR_AVATAR'] = $uploadFile['filename'];
+}
 
 $update = Database::update("tb_member", $updateData, ['MBR_ID' => $user['MBR_ID']]);
 if(!$update) {
