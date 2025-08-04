@@ -58,6 +58,7 @@ class Database implements DatabaseInterface {
             case "bigint": return "i";
             case "double": return "d";
             case "datetime": return "s";
+            case "date": return "s";
             case "text": return "s";
             case "longtext": return "s";
             case "enum": return "s";
