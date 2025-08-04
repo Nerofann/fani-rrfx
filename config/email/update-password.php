@@ -28,7 +28,7 @@
                         <tr>
                             <td style="text-align:center;width:100%">
                             <h1 style="margin:0;color:#0b0b16;direction:ltr;font-family:Roboto,Tahoma,Verdana,Segoe,sans-serif;font-size:32px;font-weight:700;letter-spacing:normal;line-height:120%;text-align:center;margin-top:0;margin-bottom:0">
-                                <strong>Email Verification</strong>
+                                <strong>Security Alert</strong>
                             </h1>
                             </td>
                         </tr>
@@ -40,7 +40,7 @@
                         <tr>
                             <td>
                                 <div style="color:#0b0b16;direction:ltr;font-family:Roboto,Tahoma,Verdana,Segoe,sans-serif;font-size:16px;font-weight:400;letter-spacing:0;line-height:150%;text-align:center">
-                                    <p style="margin:0">To continue registration and create your trading account, please confirm your email address.</p>
+                                    <p style="margin:0">Password telah diperbarui</p>
                                 </div>
                             </td>
                         </tr>
@@ -69,21 +69,6 @@
                                                             <tr>
                                                                 <td width="100%" style="font-weight:400;text-align:left;vertical-align:top;border-top:0;border-right:0;border-bottom:0;border-left:0">
                                                                     <div style="height:5px;line-height:5px;font-size:1px"></div>
-                                                                    <table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation">
-                                                                        <tbody>
-                                                                            <tr>
-                                                                            <td style="text-align:center">
-                                                                                <div align="center">
-                                                                                    <a href="http://client-tridentpro.test/verification/<?= $code ?>" style="text-decoration:none;display:inline-block;color:#ffffff;background-color:#ACB95D;border-radius:30px;width:auto;border-top:0px solid transparent;font-weight:400;border-right:0px solid transparent;border-bottom:0px solid transparent;border-left:0px solid transparent;padding-top:16px;padding-bottom:16px;font-family:Arial,Helvetica Neue,Helvetica,sans-serif;text-align:center;word-break:keep-all" target="_blank">
-                                                                                        <span style="padding-left:48px;padding-right:48px;font-size:16px;display:inline-block;letter-spacing:normal">
-                                                                                        <span dir="ltr" style="word-break:break-word;line-height:19.2px">Confirm</span>
-                                                                                        </span>
-                                                                                    </a>
-                                                                                </div>
-                                                                            </td>
-                                                                            </tr>
-                                                                        </tbody>
-                                                                    </table>
                                                                     <div style="height:5px;line-height:5px;font-size:1px"></div>
                                                                 </td>
                                                             </tr>
