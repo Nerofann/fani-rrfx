@@ -8,6 +8,8 @@ use Exception;
 
 class User extends UserAuth {
 
+    public static $identityType = ['KTP'];
+
     public static function createMbrId(): int {
         try {
             global $db;
@@ -50,7 +52,7 @@ class User extends UserAuth {
 
      public static function avatar(string $filename): string {
         if(empty($filename) || $filename == "-") {
-            return "/assets/images/avatar-14.png";
+            return "/assets/images/admin.png";
         }
 
         return FileUpload::awsFile($filename);
