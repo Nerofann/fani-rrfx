@@ -1,3 +1,7 @@
+<?php
+
+use App\Models\FileUpload;
+?>
 <!-- preloader start -->
 <div class="preloader d-none">
     <div class="loader">
@@ -94,7 +98,7 @@
                 <button class="header-btn theme-settings-btn d-lg-none"><i class="fa-light fa-gear"></i></button>
                 <div class="header-btn-box profile-btn-box">
                     <button class="profile-btn" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="<?php echo $mbr_avatar; ?>" alt="image">
+                        <img src="<?= FileUpload::awsFile($user['MBR_AVATAR']); ?>" alt="image">
                     </button>
                     <ul class="dropdown-menu profile-dropdown-menu">
                         <li>
