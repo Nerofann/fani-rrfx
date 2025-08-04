@@ -35,7 +35,7 @@ if($isLoggedIn) {
 							Remember Me
 						</label>
 					</div>
-					<a href="forget" class="text-white fs-14">Forgot Password?</a>
+					<a href="/forgot" class="text-white fs-14">Forgot Password?</a>
 				</div>
 				<button type="submit" name="sumit_login" class="btn btn-primary w-100 login-btn">Login</button>
 			</form>
