@@ -43,8 +43,8 @@ input {
 
 .select2-container--default.select2-container--focus .select2-selection--multiple {
   border-color: #0C1892;
-  -webkit-box-shadow: 0 0 0 0.25rem rgba(172, 185, 93, 0.385);
-          box-shadow: 0 0 0 0.25rem rgba(172, 185, 93, 0.385);
+  -webkit-box-shadow: 0 0 0 0.25rem rgb(93 119 185 / 39%);
+          box-shadow: 0 0 0 0.25rem rgb(93 119 185 / 39%);
 }
 
 .select2-container--default .select2-search--dropdown .select2-search__field:focus {
@@ -180,14 +180,14 @@ input {
 .form-select:focus,
 .form-control:focus {
   border-color: #0C1892;
-  -webkit-box-shadow: 0 0 0 0.25rem rgba(172, 185, 93, 0.385);
-          box-shadow: 0 0 0 0.25rem rgba(172, 185, 93, 0.385);
+  -webkit-box-shadow: 0 0 0 0.25rem rgb(93 119 185 / 39%);
+          box-shadow: 0 0 0 0.25rem rgb(93 119 185 / 39%);
 }
 
 .form-check .form-check-input:focus {
   border-color: #0C1892;
-  -webkit-box-shadow: 0 0 0 0.25rem rgba(172, 185, 93, 0.385);
-          box-shadow: 0 0 0 0.25rem rgba(172, 185, 93, 0.385);
+  -webkit-box-shadow: 0 0 0 0.25rem rgb(93 119 185 / 39%);
+          box-shadow: 0 0 0 0.25rem rgb(93 119 185 / 39%);
 }
 .form-check.form-switch .form-check-input:checked {
   background-color: #0C1892;
@@ -203,14 +203,14 @@ input {
 }
 
 .panel .panel-header form:focus-within {
-  -webkit-box-shadow: 0 0 0 0.15rem rgba(172, 185, 93, 0.385);
-          box-shadow: 0 0 0 0.15rem rgba(172, 185, 93, 0.385);
+  -webkit-box-shadow: 0 0 0 0.15rem rgb(93 119 185 / 39%);
+          box-shadow: 0 0 0 0.15rem rgb(93 119 185 / 39%);
 }
 
 .input-group-with-icon:focus-within {
   border-color: #0C1892;
-  -webkit-box-shadow: 0 0 0 0.25rem rgba(172, 185, 93, 0.385);
-          box-shadow: 0 0 0 0.25rem rgba(172, 185, 93, 0.385);
+  -webkit-box-shadow: 0 0 0 0.25rem rgb(93 119 185 / 39%);
+          box-shadow: 0 0 0 0.25rem rgb(93 119 185 / 39%);
 }
 
 input[type=radio]:checked,
