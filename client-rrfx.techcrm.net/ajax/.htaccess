@@ -9,6 +9,8 @@ Options -Indexes
 	RewriteCond %{REQUEST_FILENAME} -f [OR]
 	RewriteCond %{REQUEST_FILENAME} -l
 	RewriteRule ^ - [L]
+	
+    RewriteRule ^regol/([^./]+)/?$ appRegol.php?method=$1 [L,QSA]
     
     #Akses ke /ajax/auth/
     RewriteRule ^auth/([^./]+)/([^./]+)/([^./]+)/?$ appAuth.php?a=$1&b=$2&c=$3 [L,QSA]
