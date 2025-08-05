@@ -1,3 +1,4 @@
+<a href="/ticket" class="btn btn-primary"><i class="fas fa-plus"></i> Buka Tiket</a>
 <div class="row mt-3">
     <div class="col-md-6">
         <div class="card h-100">
