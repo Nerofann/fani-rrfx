@@ -231,4 +231,38 @@ class User extends UserAuth {
             return false;
         }
     }
+
+    public static function myBank(int $mbrid, string $md5_id_bank = "-") {
+        try {
+            $db = Database::connect();
+            $sqlGet = $db->query("SELECT * FROM tb_member_bank WHERE MBANK_MBR = $mbrid");
+
+            $result = [];
+            switch(true) {
+                case ($md5_id_bank == "-"):
+                    $result = $sqlGet->fetch_all(MYSQLI_ASSOC);
+                    break;
+
+
+                case ($md5_id_bank != "-"):
+                    $arr = $sqlGet->fetch_all(MYSQLI_ASSOC);
+                    foreach($arr as $a) {
+                        if(md5(md5($a['ID_MBANK'])) == $md5_id_bank) {
+                            $result = $a;
+                        }
+                    }
+                    break;
+
+            }
+            
+            return $result;
+
+        } catch (Exception $e) {
+            if(SystemInfo::isDevelopment()) {
+                throw $e;
+            }
+
+            return [];
+        }
+    }
 }
