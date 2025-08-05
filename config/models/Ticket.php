@@ -7,6 +7,17 @@ use Exception;
 
 class Ticket {
 
+    public static array $status = [
+        "-1" => [
+            'html' => '<span class="badge bg-success">Open</span>',
+            'text' => "Open"
+        ],
+        "1" => [
+            'html' => '<span class="badge bg-danger">Closed</span>',
+            'text' => "Closed"
+        ]
+    ];
+
     public static function findByCode(string $code): array|bool {
         try {
             $db = Database::connect();
