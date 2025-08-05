@@ -154,9 +154,11 @@ if(!$ticket) {
                         <small class="text-success">Online</small>
                     </div>
                 </div>
-                <div>
-                    <a href="javascript:void(0)" class="btn btn-sm btn-danger" id="close">Tutup Tiket</a>
-                </div>
+                <?php if($ticket['TICKET_STS'] == -1) : ?>
+                    <div>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger" id="close">Tutup Tiket</a>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
 
