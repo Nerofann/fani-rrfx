@@ -90,6 +90,42 @@ class Helper {
         return $result;
     }
 
+    public static function getFloatingRate_jisdor(string $from, string $to) {
+        $from = strtoupper($from ?? "");
+        $to = strtoupper($to ?? "");
+
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => "https://api-crm.techcrm.net/rate/?provider=jisdor",
+            CURLOPT_TIMEOUT         => 30,
+            CURLOPT_RETURNTRANSFER  => true,
+            CURLOPT_ENCODING        => "",
+            CURLOPT_HTTP_VERSION    => CURL_HTTP_VERSION_1_1,
+        ]);
+
+        $response = curl_exec($curl);
+        $error = curl_error($curl);
+        curl_close($curl);
+        $result = 0;
+
+        if(!empty($error)) {
+            return $error;
+        }
+
+        $resp = json_decode($response, true);
+        if(is_array($resp) && array_key_exists("data", $resp)) {
+            foreach($resp['data'] as $val) {
+                $key = strtolower($to.$from);
+                if(array_key_exists($key, $val)) {
+                    $result = $val[ $key ];
+                    break;
+                }
+            }
+        }
+
+        return $result;
+    }
+
     public static function penyebut(int $nilai) {
         $nilai = (int)abs($nilai);
         $huruf = array("", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas");
