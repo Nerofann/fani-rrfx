@@ -5,9 +5,11 @@ use App\Models\Helper;
 use Config\Core\Database;
 use App\Models\Logger;
 use App\Models\User;
-use App\Shared\Verihubs;
+use Allmedia\Shared\Verihubs\Verihubs;
+use App\Factory\VerihubFactory;
 use Config\Core\EmailSender;
 
+$verihub = VerihubFactory::init();
 $data = Helper::getSafeInput($_POST);
 $defaultIdspn = 1000000000;
 
@@ -87,7 +89,7 @@ if($defaultIdspn == 0) {
 }
 
 /** Validasi OTP database */
-$phone = Verihubs::phoneValidation($data['phone_code'], $data['phone']);
+$phone = $verihub->phoneValidation($data['phone_code'], $data['phone']);
 if(!$phone) {
     JsonResponse([
         'success'   => false,
@@ -96,7 +98,7 @@ if(!$phone) {
     ]);
 }
 
-$isValidOTP = Verihubs::validate_otp_sms($phone, $data['otp']);
+$isValidOTP = $verihub->validate_otp_sms($phone, $data['otp']);
 if($isValidOTP !== TRUE) {
     JsonResponse([
         'success'   => false,
@@ -136,7 +138,7 @@ if(!$insert) {
 }
 
 /** Validasi OTP dengan Verihubs */
-$otpVerification = Verihubs::sendOtp_sms_verification(['otp' => $data['otp'], 'phone' => $phone]);
+$otpVerification = $verihub->sendOtp_sms_verification(['otp' => $data['otp'], 'phone' => $phone]);
 if(!$otpVerification['success']) {
     $db->rollback();
     JsonResponse([

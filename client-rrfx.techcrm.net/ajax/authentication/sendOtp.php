@@ -1,10 +1,8 @@
 <?php
 use App\Models\Helper;
-use App\Models\User;
-use App\Models\Zenziva;
-use App\Models\Database;
-use App\Shared\Verihubs;
+use App\Factory\VerihubFactory;
 
+$verihub = VerihubFactory::init();
 $data = Helper::getSafeInput($_POST);
 $required = [
     'phone_code' => "Phone Code",
@@ -41,7 +39,7 @@ switch($type) {
         break;
 
     case "sms":
-        $phone = Verihubs::phoneValidation($data['phone_code'], $data['phone']);
+        $phone = $verihub->phoneValidation($data['phone_code'], $data['phone']);
         if(!$phone){
             JsonResponse([
                 'success' => false,
@@ -71,7 +69,7 @@ switch($type) {
             }
         }
 
-        $sendOtp = Verihubs::sendOtp_sms(['phone' => $phone, 'otp' => $otp]);
+        $sendOtp = $verihub->sendOtp_sms(['phone' => $phone, 'otp' => $otp]);
         break;
 }
 
