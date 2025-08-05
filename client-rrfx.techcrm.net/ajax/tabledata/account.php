@@ -31,16 +31,16 @@ $dt->edit("ACC_WPCHECK", function($data) {
         return "-";
     
     }elseif($data['ACC_WPCHECK'] == 0 && $data['ACC_STS'] == 0) {
-        return '<a href="/create-acc/'.$data['ACC_LAST_STEP'].'"><span class="badge bg-warning small">Lanjutkan</span></a>';
+        return '<a href="/account/create?page='.$data['ACC_LAST_STEP'].'"><span class="badge bg-warning small">Lanjutkan</span></a>';
     
     }elseif($data['ACC_WPCHECK'] == 0 && $data['ACC_STS'] == 1) {
-        return '<a href="/create-acc/'.$data['ACC_LAST_STEP'].'"><span class="badge bg-primary small">Menunggu Konfirmasi WPB</span></a>';
+        return '<a href="/account/create?page='.$data['ACC_LAST_STEP'].'"><span class="badge bg-primary small">Menunggu Konfirmasi WPB</span></a>';
     
     }elseif($data['ACC_WPCHECK'] == 0 && $data['ACC_STS'] == 2) {
-        return '<a href="/create-acc/'.$data['ACC_LAST_STEP'].'"><span class="badge bg-danger small">Ditolak</span></a>';
+        return '<a href="/account/create?page='.$data['ACC_LAST_STEP'].'"><span class="badge bg-danger small">Ditolak</span></a>';
     
     }elseif(in_array($data['ACC_WPCHECK'], [1, 2]) && $data['ACC_STS'] == 1) {
-        return '<a href="/create-acc/'.$data['ACC_LAST_STEP'].'"><span class="badge bg-info small">Deposit New Account</span></a>';
+        return '<a href="/account/create?page='.$data['ACC_LAST_STEP'].'"><span class="badge bg-info small">Deposit New Account</span></a>';
 
     }elseif($data['ACC_WPCHECK'] == 6 && $data['ACC_STS'] == -1 && $data['ACC_LOGIN'] != 0) {
         return '<a href="javascript:void(0)"><span class="badge bg-success small">Aktif</span></a>';
