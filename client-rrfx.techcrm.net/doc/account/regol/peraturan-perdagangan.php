@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-9 mx-auto">
         <form method="post" id="form-peraturan-perdagangan">
-            <input type="hidden" name="csrf_token" value="<?= getCSRFToken(); ?>">
+            <input type="hidden" name="csrf_token" value="<?= uniqid(); ?>">
             <div class="card">
                 <div class="card-body">
                     <div class="row">
@@ -10,11 +10,11 @@
                                 <h5>PERATURAN PERDAGANGAN<br><i>(TRADING RULES)</i></h5>
                             </div>
 
-                            <object data="<?= Account::product_link_pdf[ strtolower($realAccount['RTYPE_TYPE']) ] ?>" width="100%" height="100vh" style="min-height: 500px; max-height: 720px;" type="application/pdf">
-                                <embed src="<?= Account::product_link_pdf[ strtolower($realAccount['RTYPE_TYPE']) ] ?>" type="application/pdf" />
+                            <object data="<?= App\Models\Regol::urlTradingRule($realAccount['RTYPE_FILE']); ?>" width="100%" height="100vh" style="min-height: 500px; max-height: 720px;" type="application/pdf">
+                                <embed src="<?= App\Models\Regol::urlTradingRule($realAccount['RTYPE_FILE']); ?>" type="application/pdf" />
                             </object>
                            
-                            <p class="mt-4 mb-0">Biaya yang dikenakan setiap pelaksanaan transaksi: $<?= $realAccount['RTYPE_KOMISI'] ?></p>
+                            <p class="mt-4 mb-0">Biaya yang dikenakan setiap pelaksanaan transaksi: <b>$<?= $realAccount['RTYPE_KOMISI'] ?></b></p>
                             <p>Dengan mengisi kolom “YA” di bawah ini, saya menyatakan bahwa saya telah membaca tentang PERATURAN PERDAGANGAN (TRADING  RULES), mengerti dan menerima ketentuan dalam bertransaksi.</p>
                             <div class="row mt-3">
                                 <div class="col-6 mt-3">
