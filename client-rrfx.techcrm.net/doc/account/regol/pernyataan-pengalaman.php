@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-8 mx-auto mb-3">
         <form method="post" id="form-pernyataan-pengalaman">
-            <input type="hidden" name="csrf_token" value="<?= getCSRFToken(); ?>">
+            <input type="hidden" name="csrf_token" value="<?= uniqid(); ?>">
             <div class="card">
                 <div class="card-body">
                     <div class="text-center"><h5>FORMULIR PERNYATAAN TELAH BERPENGALAMAN MELAKSANAKAN TRANSAKSI  PERDAGANGAN BERJANGKA KOMODITI</h5></div>
@@ -86,12 +86,12 @@
                                         <td width="3%" class="top-align"> : </td>
                                         <td class="top-align text-start">
                                             <select name="pengalaman" id="pengalaman" class="form-control w-50">
-                                                <option value="Ya" <?= (strtolower($realAccount['ACC_F_PENGLAMAN_PERYT_YA']) == "ya")? "selected" : ""; ?>>Ya</option>
-                                                <option value="Tidak" <?= (strtolower($realAccount['ACC_F_PENGLAMAN_PERYT_YA']) == "tidak")? "selected" : ""; ?>>Tidak</option>
+                                                <option value="Ya" <?= (strtolower($realAccount['ACC_F_PENGLAMAN_PERYT_YA'] ?? "") == "ya")? "selected" : ""; ?>>Ya</option>
+                                                <option value="Tidak" <?= (strtolower($realAccount['ACC_F_PENGLAMAN_PERYT_YA'] ?? "") == "tidak")? "selected" : ""; ?>>Tidak</option>
                                             </select>
                                         </td>
                                     </tr>
-                                    <?php if(strtolower($realAccount['ACC_F_PENGLAMAN_PERYT_YA']) == "ya") : ?>
+                                    <?php if(strtolower($realAccount['ACC_F_PENGLAMAN_PERYT_YA'] ?? "") == "ya") : ?>
                                         <tr>
                                             <td width="30%" class="top-align fw-bold">Nama Perusahaan Pialang Berjangka</td>
                                             <td width="3%" class="top-align"> : </td>
@@ -144,8 +144,9 @@
                     title: "Pernyataan Pengalaman",
                     input: "text",
                     inputLabel: "Perusahaan pialang berjangka",
-                    inputValue: "<?= $web_name_full ?>",
+                    inputValue: "<?= App\Models\ProfilePerusahaan::get()['PROF_COMPANY_NAME']; ?>",
                     showCancelButton: true,
+                    reverseButtons: true,
                     inputValidator: (value) => {
                         if (!value) {
                             return "You need to write something!";
