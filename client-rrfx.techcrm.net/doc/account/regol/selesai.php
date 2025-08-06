@@ -18,12 +18,20 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach(Account::getAccountHistoryNote($realAccount['ID_ACC']) as $history) : ?>
+                            <?php $noteHistory = App\Models\Account::getAccountHistoryNote($realAccount['ID_ACC']); ?>
+                            <?php if(empty($noteHistory)) : ?>
                                 <tr>
-                                    <td width="25%" class="top-align"><?= date("Y-m-d H:i:s", strtotime($history['NOTE_DATETIME'])); ?></td>
-                                    <td class="top-align text-start"><?= $history['NOTE_NOTE'] ?></td>
+                                    <td colspan="2" class="top-align text-start">Belum ada</td>
                                 </tr>
-                            <?php endforeach; ?>
+
+                            <?php else : ?>
+                                <?php foreach($noteHistory as $history) : ?>
+                                    <tr>
+                                        <td width="25%" class="top-align"><?= date("Y-m-d H:i:s", strtotime($history['NOTE_DATETIME'])); ?></td>
+                                        <td class="top-align text-start"><?= $history['NOTE_NOTE'] ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
