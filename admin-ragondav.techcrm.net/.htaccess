@@ -14,6 +14,8 @@ Options +SymLinksifOwnerMatch
 	RewriteCond %{REQUEST_FILENAME} -l
 	RewriteRule ^ - [L]
 
+	RewriteRule ^export/([^./]+)/?$ /documents/export.php?filename=$1 [L,QSA]
+
 	# Auth Page
 	RewriteRule ^(index|signin)/?$ index.php?a=signin [L,QSA]
 	RewriteRule ^signup/?$ /index.php?a=signup [L,QSA]
