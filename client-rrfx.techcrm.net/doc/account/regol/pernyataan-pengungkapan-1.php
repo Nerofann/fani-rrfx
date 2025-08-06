@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-8 mx-auto">
         <form method="post" id="form-disclosure-1">
-            <input type="hidden" name="csrf_token" value="<?= getCSRFToken() ?>">
+            <input type="hidden" name="csrf_token" value="<?= uniqid() ?>">
             <div class="card">
                 <div class="card-body">
                     <div class="row">
