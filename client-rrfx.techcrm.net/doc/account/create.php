@@ -9,7 +9,7 @@ try {
     $currentPage = Helper::form_input($_GET['page'] ?? "create-demo");
 
     /** Tidak bisa akses create account saat masih ada progress real account yang seteleh deposit new account */
-    if($realAccount['ACC_WPCHECK'] >= 3) {
+    if($realAccount && $realAccount['ACC_WPCHECK'] >= 3) {
         die("<script>alert('Akun anda sedang diprosess'); location.href = '/account'; </script>");
     }
     
@@ -140,7 +140,7 @@ try {
             'title' => "Deposit New Account",
             'success' => !empty($realAccount['ACC_F_CMPLT']),
             'page' => "deposit-new-account",
-            'show' => ($realAccount['ACC_STS'] == 1 && $realAccount['ACC_WPCHECK'] >= 1)
+            'show' => ($realAccount && $realAccount['ACC_STS'] == 1 && $realAccount['ACC_WPCHECK'] >= 1)
         ],
     ];
 
