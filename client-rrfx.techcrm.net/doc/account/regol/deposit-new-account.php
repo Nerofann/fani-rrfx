@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Account;
+use App\Models\FileUpload;
 use App\Models\Helper;
 use App\Models\User;
 
@@ -48,7 +49,7 @@ $depositHistory = Account::getDepositNewAccount_History($realAccount['ID_ACC']);
                                     <td width="20%" class="top-align fw-bold">Bukti Transfer</td>
                                     <td width="3%" class="top-align"> : </td>
                                     <td class="top-align text-start">
-                                        <input type="file" class="dropify" data-default-file="<?= $aws_folder . $depositData['DPWD_PIC'] ?>" disabled>
+                                        <input type="file" class="dropify" data-default-file="<?= FileUpload::awsFile($depositData['DPWD_PIC'] ?? "") ?>" disabled>
                                     </td>
                                 </tr>
                             </tbody>
@@ -80,12 +81,7 @@ $depositHistory = Account::getDepositNewAccount_History($realAccount['ID_ACC']);
                                                 <select name="dpnewacc_bankusr" id="dpnewacc_bankusr" class="form-control form-control-sm text-center" required>
                                                     <option disabled selected value>Pilih bank yang anda miliki</option>
                                                     <?php foreach($myBanks as $bank) : ?>
-                                                        <option 
-                                                            value="<?= md5(md5($bank['ID_MBANK'])) ?>" 
-                                                            data-pemilik="<?= $bank['MBANK_HOLDER'] ?>"
-                                                            data-cabang="<?= $bank['MBANK_BRANCH'] ?>"
-                                                            data-rekening="<?= $bank['MBANK_ACCOUNT'] ?>"
-                                                            data-jenis="<?= $bank['MBANK_TYPE'] ?>">
+                                                        <option value="<?= md5(md5($bank['ID_MBANK'])) ?>" data-pemilik="<?= $bank['MBANK_HOLDER'] ?>" data-rekening="<?= $bank['MBANK_ACCOUNT'] ?>">
                                                             <?= $bank['MBANK_NAME'] ?>
                                                         </option>
                                                     <?php endforeach; ?>
@@ -96,16 +92,8 @@ $depositHistory = Account::getDepositNewAccount_History($realAccount['ID_ACC']);
                                                 <input type="text" class="form-control" id="bank_pemilik" readonly>
                                             </div>
                                             <div class="col-12 mb-2">
-                                                <label class="form-label">Cabang Bank</label>
-                                                <input type="text" class="form-control" id="bank_cabang" readonly>
-                                            </div>
-                                            <div class="col-12 mb-2">
                                                 <label class="form-label">Nomor Rekening</label>
                                                 <input type="text" class="form-control" id="bank_rekening" readonly>
-                                            </div>
-                                            <div class="col-12 mb-2">
-                                                <label class="form-label">Jenis Tabungan</label>
-                                                <input type="text" class="form-control" id="bank_jenis" readonly>
                                             </div>
                                         </div>
                                     </div>
