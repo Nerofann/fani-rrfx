@@ -672,4 +672,20 @@ class Account {
         // $apiMeta        = ApiMetatrader();
         // $tokenManager   = $apiMeta->token_manager_demo;
     }
+
+    public static function myAccount(int $mbrid) {
+        try {
+            $db = Database::connect();
+            $sqlGet = $db->query("SELECT * FROM tb_racc  JOIN tb_racctype ON (ID_RTYPE = ACC_TYPE) WHERE ACC_MBR = $mbrid AND ACC_DERE = 1 AND ACC_STS = -1");
+            return $sqlGet->fetch_all(MYSQLI_ASSOC) ?? [];
+
+        } catch (Exception $e) {
+            if(SystemInfo::isDevelopment()) {
+                throw $e;
+            }
+
+            return [];
+        }
+    }
+
 }
