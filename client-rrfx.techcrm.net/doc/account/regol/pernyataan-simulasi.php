@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-9 mx-auto mb-3">
         <form method="post" enctype="multipart/form-data" id="form-pernyataan-simulasi">
-            <input type="hidden" name="csrf_token" value="<?= getCSRFToken(); ?>">
+            <input type="hidden" name="csrf_token" value="<?= uniqid(); ?>">
             <div class="card">
                 <div class="card-body">
                     <div class="text-center"><h5>FORMULIR PERNYATAAN TELAH MELAKUKAN SIMULASI PERDAGANGAN BERJANGKA KOMODITI</h5></div>
@@ -119,7 +119,7 @@
                                             <td class="top-align text-start">
                                                 <select name="smls_tipeidt" class="form-control form-control-sm" required>
                                                     <option disabled selected value>Pilih Jenis Identitas</option>
-                                                    <?php foreach(Account::tipeIdentitas as $type) : ?>
+                                                    <?php foreach(App\Models\Account::$tipeIdentitas as $type) : ?>
                                                         <option value="<?= $type ?>" <?= ($realAccount['ACC_TYPE_IDT'] == $type ) ? 'selected' : NULL ; ?> ><?= $type ?></option>
                                                     <?php endforeach; ?>
                                                 </select>
@@ -143,7 +143,7 @@
                                             <td width="20%" class="top-align fw-bold">Demo Account File Upload</td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="file" class="dropify" id="smls_demofile" name="smls_demofile" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= $aws_folder . $realAccount['ACC_F_SIMULASI_IMG'] ?? ""; ?>">
+                                                <input type="file" class="dropify" id="smls_demofile" name="smls_demofile" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_SIMULASI_IMG'] ?? "") ?>">
                                             </td>
                                         </tr>
                                     </tbody>
@@ -156,7 +156,7 @@
                             <p>
                                 Dengan mengisi kolom "YA" di bawah ini, saya menyatakan bahwa 
                                 saya telah melakukan simulasi bertransaksi di bidang Perdagangan 
-                                Berjangka Komoditi pada <strong><?php echo $web_name ?></strong>, 
+                                Berjangka Komoditi pada <strong><?= App\Models\ProfilePerusahaan::get()['PROF_COMPANY_NAME']; ?></strong>, 
                                 dan telah memahami tentang tata cara bertransaksi di bidang Perdagangan 
                                 Berjangka Komoditi.
                             </p>
