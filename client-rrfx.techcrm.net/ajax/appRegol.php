@@ -518,9 +518,13 @@ class AppPost {
 
         /** Update Type */
         if($progressAccount['ACC_TYPE'] != $raccType['ID_RTYPE']) {
-            $sqlUpdate = $this->db->prepare("UPDATE tb_racc SET ACC_TYPE = ? WHERE ID_ACC = ?");
-            $sqlUpdate->bind_param("ii", $raccType['ID_RTYPE'], $progressAccount['ID_ACC']);
-            if(!$sqlUpdate->execute()) {
+            $updateData = [
+                'ACC_TYPE' => $raccType['ID_RTYPE'],
+                'ACC_LAST_STEP' => "profile-perusahaan",
+            ];
+
+            $update = Database::update("tb_racc", $updateData, ['ID_ACC' => $progressAccount['ID_ACC']]);
+            if(!$update) {
                 exit(json_encode([
                     'success'   => false,
                     'alert'     => [
@@ -572,11 +576,27 @@ class AppPost {
         $this->isAllowToEdit(status: $progressAccount['ACC_STS']);
 
         /** Update */
+        $updateData = [
+            'ACC_F_PROFILE' => 1,
+            'ACC_F_PROFILE_IP' => Helper::get_ip_address(),
+            'ACC_F_PROFILE_PERYT' => "Yes",
+            'ACC_F_PROFILE_DATE' => date("Y-m-d H:i:s"),
+            'ACC_LAST_STEP' => "pernyataan-simulasi",
+        ];
+
+        $update = Database::update("tb_racc", $updateData, ['ID_ACC' => $progressAccount['ID_ACC']]);
+        if(!$update) {
+            exit(json_encode([
+                'success'   => false,
+                'alert'     => [
+                    'title' => "Gagal",
+                    'text'  => "Perbarui Jenis Akun Gagal",
+                    'icon'  => "error"
+                ]
+            ]));
+        }
         
-        
-        $datetime = date("Y-m-d H:i:s");
-        $ipAddress = Helper::get_ip_address();
-        $sqlUpdate = $this->db->prepare("UPDATE tb_racc SET ACC_F_PROFILE = 1, ACC_F_PROFILE_IP = ?, ACC_F_PROFILE_PERYT = 'Yes', ACC_F_PROFILE_DATE = ? WHERE ID_ACC = ?");
+        $sqlUpdate = $this->db->prepare("UPDATE tb_racc SET  = 1,  = ?,  = 'Yes',  = ? WHERE ID_ACC = ?");
         $sqlUpdate->bind_param("ssi", $ipAddress, $datetime, $progressAccount['ID_ACC']);
         if(!$sqlUpdate->execute()) {
             exit(json_encode([
@@ -1896,7 +1916,7 @@ class AppPost {
             ])); 
         }
 
-        $office = ProfilePerusahaan::get()['OFFICE'];
+        $office = ProfilePerusahaan::office();
         $listOffice = array_values(array_column($office, "OFC_CITY"));
         $listOffice = array_map(fn($ar): string => strtoupper($ar), $listOffice);
         $wpbVerifikator = ProfilePerusahaan::wpb_verifikator();
@@ -2162,9 +2182,6 @@ class AppPost {
     }
 
     private function uploadSelfiePhoto($data, $user) {
-        global $region, $IAM_KEY, $IAM_SECRET, $bucketName, $folder, $aws_folder;
-        
-        
         $verihub = VerihubFactory::init();
         $progressAccount = $this->checkProgressAccount(md5(md5($user['MBR_ID'])));
 
@@ -2234,20 +2251,21 @@ class AppPost {
         }
 
 
+        $credential = FileUpload::credential();
         $s3 = new Aws\S3\S3Client([
-            'region'  => $region,
+            'region'  => $credential['region'],
             'version' => 'latest',
             'credentials' => [
-                'key'    => $IAM_KEY,
-                'secret' => $IAM_SECRET,
+                'key'    => $credential['key'],
+                'secret' => $credential['secretKey'],
             ]
         ]);
 
         try {
             /** Upload to AWS */
             $result = $s3->putObject([
-                'Bucket' => $bucketName,
-                'Key'    => $folder ."/".$newFileName,
+                'Bucket' => $credential['bucketName'],
+                'Key'    => $credential['folder'] ."/".$newFileName,
                 'Body'   => fopen($target_dir, 'r'),
                 'ACL'    => 'public-read', // make file 'public'
             ]);
@@ -2312,9 +2330,6 @@ class AppPost {
     }
 
     private function uploadKtpPhoto($data, $user) {
-        global $region, $IAM_KEY, $IAM_SECRET, $bucketName, $folder;
-        
-        
         $verihub = VerihubFactory::init();
         $progressAccount = $this->checkProgressAccount(md5(md5($user['MBR_ID'])));
         
@@ -2386,20 +2401,21 @@ class AppPost {
         }
 
 
+        $credential = FileUpload::credential();
         $s3 = new Aws\S3\S3Client([
-            'region'  => $region,
+            'region'  => $credential['region'],
             'version' => 'latest',
             'credentials' => [
-                'key'    => $IAM_KEY,
-                'secret' => $IAM_SECRET,
+                'key'    => $credential['key'],
+                'secret' => $credential['secretKey'],
             ]
         ]);
 
         try {
             /** Upload to AWS */
             $result = $s3->putObject([
-                'Bucket' => $bucketName,
-                'Key'    => $folder ."/".$newFileName,
+                'Bucket' => $credential['bucketName'],
+                'Key'    => $credential['folder'] ."/".$newFileName,
                 'Body'   => fopen($target_dir, 'r'),
                 'ACL'    => 'public-read', // make file 'public'
             ]);
@@ -2448,12 +2464,11 @@ class AppPost {
     }
 
     public function verifikasiIdentitas($data, $user) {
-        global $aws_folder;
         $this->checkCsrfToken($data);
         $progressAccount = $this->checkProgressAccount(md5(md5($user['MBR_ID'])));
 
         /** Check Status */
-        $this->isAllowToEdit(status: $progressAccount['ACC_STS']);
+        $this->isAllowToEdit($progressAccount['ACC_STS']);
         
         /** Upload Selfie Photo */
         $this->uploadSelfiePhoto($data, $user);
@@ -2472,8 +2487,6 @@ class AppPost {
 
         /** Update Status Verifikasi (Jika berbeda dari sebelumnya) */
         if($statusVerifikasiVerihub != $progressAccount['ACC_DOC_VERIF']) {
-            
-            
             $update = Database::update("tb_racc", ['ACC_DOC_VERIF' => $statusVerifikasiVerihub], ['ID_ACC' => $progressAccount['ID_ACC']]);
             if($update !== TRUE) {
                 exit(json_encode([
