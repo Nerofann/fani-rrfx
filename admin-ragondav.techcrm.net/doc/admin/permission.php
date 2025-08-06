@@ -3,7 +3,7 @@ use App\Models\Helper;
 use App\Models\Admin;
 
 try {
-    $idAdmin = Helper::form_input($_GET['d'] ?? "me");
+    $idAdmin = Helper::form_input($_GET['c'] ?? "me");
     if(empty($idAdmin)) {
         die("<script>alert('Invalid Admin ID'); location.href = '/admins'; </script>");
     }
