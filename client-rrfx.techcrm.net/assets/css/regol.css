@@ -152,3 +152,10 @@
 .dropify-message > span > p {
     font-size: medium;
 }
+
+.table-fixed {
+    table-layout: fixed !important;
+    word-break: break-word !important;
+    border-collapse: separate !important;
+    width: 100% !important; 
+}
