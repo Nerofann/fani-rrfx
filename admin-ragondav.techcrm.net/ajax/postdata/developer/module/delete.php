@@ -2,7 +2,7 @@
 
 use App\Factory\PermissionModuleFactory;
 use App\Models\Helper;
-use App\Models\DBHelper;
+use App\Models\Database;
 use App\Models\Logger;
 
 $listGrup = $adminPermissionCore->availableGroup();
@@ -56,7 +56,7 @@ if(!$modul) {
 }
 
 /** Delete admin_module */
-$deleteModule = DBHelper::delete("admin_module", ['id' => $modul['id']]);
+$deleteModule = Database::delete("admin_module", ['id' => $modul['id']]);
 if(!$deleteModule) {
     JsonResponse([
         'code'      => 200,
