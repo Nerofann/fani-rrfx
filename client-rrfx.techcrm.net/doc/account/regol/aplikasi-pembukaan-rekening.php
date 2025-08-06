@@ -231,18 +231,16 @@
                                 <?php else : ?>
                                     <?php foreach($myBanks as $mbank) : ?>
                                         <div class="col-md-6">
-                                            <div class="card h-100">
+                                            <div class="card h-100 border-primary">
                                                 <div class="card-body">
                                                     <div class="d-flex flex-column justify-content-between gap-3">
                                                         <div class="bank-info">
                                                             <p class="mb-0 lh-1"><?php echo $mbank['MBANK_HOLDER'] ?></p>
                                                             <small style="font-size: 11px;" class="d-flex flex-column mt-0 font-15 text-upper">
                                                                 <i><?php echo $mbank['MBANK_NAME'] ?></i>
-                                                                <i>( <?php echo $mbank['MBANK_BRANCH'] ?> )</i>
                                                             </small>
                                                         </div>
                                                         <div class="mt-auto">
-                                                            <small><?php echo $mbank['MBANK_TYPE'] ?></small>
                                                             <div class="float-end font-weight-bold"><?php echo $mbank['MBANK_ACCOUNT'] ?></div>
                                                         </div>
                                                     </div>
