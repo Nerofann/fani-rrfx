@@ -1,5 +1,7 @@
 <?php 
 require_once(__DIR__ . "/../../config/setting.php");
+
+use App\Models\Account;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use App\Models\Helper;
@@ -36,8 +38,7 @@ try {
     $profile_perusahaan = App\Models\ProfilePerusahaan::get();
     $profile_perusahaan['setting_telp_pmbr'] = $setting_telp_pmbr ?? 0;
 
-    // $_GET['logo_pdf'] = (true) ? $logo_pdf :"https://cabinet-tridentprofutures.techcrm.net/assets/images/logo-email.png";
-    $_GET['logo_pdf'] = "https://cabinet-tridentprofutures.techcrm.net/assets/images/logo-email.png";
+    $_GET['logo_pdf'] = "https://client-rrfx.techcrm.net/assets/images/logo-white-new.png";
     $_GET['profile_perusahaan'] = $profile_perusahaan;
     $_GET['company_name'] = $web_name ?? "PT Delapan Belas Berjangka";
     $_GET['company_address'] = $address_company ?? "-";
