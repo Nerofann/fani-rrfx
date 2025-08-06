@@ -164,13 +164,15 @@ try {
         $prevIndex  = max(1, $currIndex - 1);
         if($steps[ $prevIndex ]['success'] === FALSE) {
             foreach($steps as $key2 => $s) {
+                if(empty($s)) {
+                    continue;
+                }
+
                 if($currentPage == "create-demo") {
                     break;
                 }
 
                 if($steps[ $key2 ]['success'] === FALSE) {
-                    // print_r($steps[ $key2 ]);
-                    // break;
                     die("<script>location.href = '/account/create?page=".($steps[ $key2 ]['page'] ?? "create-demo")."'; </script>");
                 }
             }
