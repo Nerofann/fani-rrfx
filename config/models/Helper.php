@@ -13,12 +13,12 @@ class Helper {
 
     public static function bulan(string $date) {
         $bulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-        return $bulan[ intval(date("m", strtotime($date))) ] ?? "-";
+        return $bulan[ intval($date) ] ?? "-";
     }
 
     public static function hari(string $date) {
         $hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-        return $hari[ intval(date("w", strtotime($date))) ] ?? "-";
+        return $hari[ intval($date) ] ?? "-";
     }
 
     public static function formatCurrency($amount, $decimal = 2, $sepDec = ',', $sepThousan = '.') {
