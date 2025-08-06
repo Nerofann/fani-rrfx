@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-9 mx-auto">
         <form method="post" id="form-pernyataan-pengungkapan-4">
-            <input type="hidden" name="csrf_token" value="<?= getCSRFToken(); ?>">
+            <input type="hidden" name="csrf_token" value="<?= uniqid(); ?>">
             <div class="card">
                 <div class="card-body">
                     <div class="row">
@@ -31,8 +31,8 @@
                             </div>
                             <div class="mb-3">
                                 Dengan ini menerangkan dan menyatakan dengan sebenar-benarnya bahwa saya telah mendapat
-                                penjelasan dari : <strong><?= $web_name; ?></strong> yang berkedudukan di Jakarta, melalui Wakil Pialang
-                                Berjangka yang bernama <strong><?= list_wpb(2)[0][0]['WPB_NAMA'] ?? "-" ?></strong> mengenai mekanisme transaksi perdagangan
+                                penjelasan dari : <strong><?= App\Models\ProfilePerusahaan::get()['PROF_COMPANY_NAME']; ?></strong> yang berkedudukan di Jakarta, melalui Wakil Pialang
+                                Berjangka yang bernama <strong><?= App\Models\ProfilePerusahaan::wpb_verifikator()['WPB_NAMA'] ?? "-" ?></strong> mengenai mekanisme transaksi perdagangan
                                 berjangka yang akan saya lakukan sendiri. Saya juga :
                             </div>
                             <ol>
@@ -54,7 +54,7 @@
                                 transaksi sepenuhnya akan menjadi tanggung jawab saya.
                             </div>
                             <div class="mb-3">
-                                Bersama ini saya menyatakan bahwa dana yang saya gunakan untuk bertransaksi di <strong><?= $web_name; ?></strong> 
+                                Bersama ini saya menyatakan bahwa dana yang saya gunakan untuk bertransaksi di <strong><?= App\Models\ProfilePerusahaan::get()['PROF_COMPANY_NAME']; ?></strong> 
                                 adalah milik saya pribadi dan bukan dana pihak lain, serta tidak d iperoleh dari
                                 hasil kejahatan, penipuan, penggelapan, tindak pidana korupsi, tindak pidana narkotika , tindak pidana di
                                 bidang kehutanan, hasil pencucian uang, dan perbuatan melawan hukum lainnya serta tidak dimaksudkan
