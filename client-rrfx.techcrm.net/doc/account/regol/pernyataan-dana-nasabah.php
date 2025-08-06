@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-9 mx-auto mb-3">
         <form method="post" id="form-pernyataan-dana-nasabah">
-            <input type="hidden" name="csrf_token" value="<?= getCSRFToken(); ?>">
+            <input type="hidden" name="csrf_token" value="<?= uniqid(); ?>">
             <div class="card">
                 <div class="card-body">
                     <div class="text-center"><h5>PERNYATAAN BAHWA DANA YANG DIGUNAKAN SEBAGAI MARGIN MERUPAKAN DANA MILIK NASABAH SENDIRI</h5></div>
@@ -88,7 +88,7 @@
                         <div class="col-12 text-center">
                             <p>
                             Dengan mengisi kolom “YA” di bawah ini, Bersama ini saya menyatakan bahwa dana yang saya gunakan
-                            untuk bertransaksi di <?= $web_name_full ?> adalah milik saya pribadi dan bukan dana pihak lain,
+                            untuk bertransaksi di <?= App\Models\ProfilePerusahaan::get()['PROF_COMPANY_NAME'] ?> adalah milik saya pribadi dan bukan dana pihak lain,
                             serta tidak diperoleh dari hasil kejahatan, penipuan, penggelapan, tindak pidana korupsi, tindak pidan
                             narkotika, tindak pidana di bidang kehutanan, hasil pencucian uang, dan perbuatan melawan hukum lainnya
                             serta tidak dimaksudkan untuk melakukan pencucian uang dan/atau pendanaan terorisme.
