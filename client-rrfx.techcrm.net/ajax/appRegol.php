@@ -345,13 +345,9 @@ class AppPost {
             "metaPassPhone" => $meta_phone,
         ];
 
-        $emailSender = EmailSender::init(['email' => $data['email'], 'name' => $data['fullname']]);
+        $emailSender = EmailSender::init(['email' => $user['MBR_EMAIL'], 'name' => $user['MBR_NAME']]);
         $emailSender->useFile("create-demo", $emailData);
         $send = $emailSender->send();
-
-
-        $sendEmail = new SendEmail();
-        $sendEmail->useDefault()->useFile("create-demo", $data)->destination($user['MBR_EMAIL'], $user['MBR_NAME'])->send();
 
         Logger::client_log([
             'mbrid' => $mbrid,
