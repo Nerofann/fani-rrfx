@@ -1,6 +1,6 @@
-<?php $myBanks = myBank($userid); ?>
+<?php $myBanks = App\Models\User::myBank($user['MBR_ID']); ?>
 <form method="post" enctype="multipart/form-data" id="form-aplikasi-pembukaan-rekening">
-    <input type="hidden" name="csrf_token" value="<?= getCSRFToken(); ?>">
+    <input type="hidden" name="csrf_token" value="<?= uniqid(); ?>">
     <div class="card">
         <div class="card-body">
             <div class="text-center"><h5>APLIKASI PEMBUKAAN REKENING TRANSAKSI SECARA ELEKTRONIK ONLINE</h5></div>
@@ -13,7 +13,7 @@
                         </div>
                         <div class="card-body mb-3">
                             <div class="table-responsive">
-                                <table class="table table-hover" style="table-layout:fixed;word-break:break;" width="100%">
+                                <table class="table table-fixed table-hover">
                                     <tbody>
                                         <tr>
                                             <td width="30%" class="top-align fw-bold">Nama Lengkap</td>
@@ -43,7 +43,7 @@
                                             <td class="top-align text-start">
                                                 <select name="app_gender" id="app_gender" class="form-control">
                                                     <?php foreach(['Laki-laki', 'Perempuan'] as $gender) : ?>
-                                                        <option value="<?= $gender ?>" <?= (strtolower($realAccount['ACC_F_APP_PRIBADI_KELAMIN']) == strtolower($gender))? "selected" : ""; ?>><?= $gender ?></option>
+                                                        <option value="<?= $gender ?>" <?= (strtolower($realAccount['ACC_F_APP_PRIBADI_KELAMIN'] ?? "") == strtolower($gender))? "selected" : ""; ?>><?= $gender ?></option>
                                                     <?php endforeach; ?>
                                                 </select>
                                             </td>
@@ -61,7 +61,7 @@
                                             <td class="top-align text-start">
                                                 <select name="app_status_perkawinan" id="app_status_perkawinan" class="form-control">
                                                     <?php foreach(["Tidak Kawin", "Kawin", "Janda", "Duda"] as $status_perkawinan) : ?>
-                                                        <option value="<?= $status_perkawinan ?>" <?= (strtolower($realAccount['ACC_F_APP_PRIBADI_STSKAWIN']) == strtolower($status_perkawinan))? "selected" : ""; ?>><?= $status_perkawinan ?></option>
+                                                        <option value="<?= $status_perkawinan ?>" <?= (strtolower($realAccount['ACC_F_APP_PRIBADI_STSKAWIN'] ?? "") == strtolower($status_perkawinan))? "selected" : ""; ?>><?= $status_perkawinan ?></option>
                                                     <?php endforeach; ?>
                                                 </select>
                                             </td>
@@ -141,7 +141,7 @@
                                                 <div>
                                                     <select id="app_status_rumah" class="form-control" required>
                                                         <?php foreach(["Pribadi", "Keluarga", "Sewa/Kontrak", "Lainnya"] as $status_rumah) : ?>
-                                                            <option value="<?= $status_rumah ?>" <?= (strtolower($realAccount['ACC_F_APP_PRIBADI_STSRMH']) == strtolower($status_rumah))? "selected" : ""; ?>><?= $status_rumah ?></option>
+                                                            <option value="<?= $status_rumah ?>" <?= (strtolower($realAccount['ACC_F_APP_PRIBADI_STSRMH'] ?? "") == strtolower($status_rumah))? "selected" : ""; ?>><?= $status_rumah ?></option>
                                                         <?php endforeach; ?>
                                                     </select>
                                                 </div>
@@ -157,7 +157,7 @@
                                                 <div>
                                                     <select id="app_tujuan_pembukaan_rek" class="form-control" required>
                                                         <?php foreach(["Lindungi Nilai", "Gain", "Spekulasi", "Lainnya"] as $tujuan_pembukaan) : ?>
-                                                            <option value="<?= $tujuan_pembukaan ?>" <?= (strtolower($realAccount['ACC_F_APP_TUJUANBUKA']) == strtolower($tujuan_pembukaan))? "selected" : ""; ?>><?= $tujuan_pembukaan ?></option>
+                                                            <option value="<?= $tujuan_pembukaan ?>" <?= (strtolower($realAccount['ACC_F_APP_TUJUANBUKA'] ?? "") == strtolower($tujuan_pembukaan))? "selected" : ""; ?>><?= $tujuan_pembukaan ?></option>
                                                         <?php endforeach; ?>
                                                     </select>
                                                 </div>
@@ -172,7 +172,7 @@
                                             <td class="top-align text-start">
                                                 <select name="app_pengalaman_investasi" id="app_pengalaman_investasi" class="form-control" required>
                                                     <?php foreach(["Ya", "Tidak"] as $pengalaman_investasi) : ?>
-                                                        <option value="<?= $pengalaman_investasi ?>" <?= (strtolower($realAccount['ACC_F_APP_PENGINVT']) == strtolower($pengalaman_investasi))? "selected" : ""; ?>><?= $pengalaman_investasi ?></option>
+                                                        <option value="<?= $pengalaman_investasi ?>" <?= (strtolower($realAccount['ACC_F_APP_PENGINVT'] ?? "") == strtolower($pengalaman_investasi))? "selected" : ""; ?>><?= $pengalaman_investasi ?></option>
                                                     <?php endforeach; ?>
                                                 </select>
                                             </td>
@@ -311,16 +311,16 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-hover" style="text-align: left; table-layout: fixed;" width="100%">
+                                <table class="table table-fixed table-hover" width="100%">
                                     <tbody>
                                         <tr>
-                                            <td width="30%" class="top-align fw-bold">Pekerjaan<span class="text-danger">*</span></td>
-                                            <td width="3%" class="top-align"> : </td>
+                                            <td width="8%" class="top-align fw-bold">Pekerjaan<span class="text-danger">*</span></td>
+                                            <td width="1%" class="top-align">:</td>
                                             <td class="top-align text-start">
                                                 <div>
                                                     <select id="app_pekerjaan" class="form-control">
                                                         <?php foreach(['Swasta', 'Wiraswasta', 'Ibu RT', 'Profesional', 'ASN', 'Mahasiswa', 'Pegawai BUMN', 'Lainnya'] as $pekerjaan) : ?>
-                                                            <option value="<?= $pekerjaan ?>" <?= (strtolower($realAccount['ACC_F_APP_KRJ_TYPE']) == strtolower($pekerjaan))? "selected" : ""; ?>><?= $pekerjaan ?></option>
+                                                            <option value="<?= $pekerjaan ?>" <?= (strtolower($realAccount['ACC_F_APP_KRJ_TYPE'] ?? "") == strtolower($pekerjaan))? "selected" : ""; ?>><?= $pekerjaan ?></option>
                                                         <?php endforeach; ?>
                                                     </select>
                                                 </div>
@@ -330,64 +330,64 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td width="30%" class="top-align fw-bold">Nama Perusahaan<span class="text-danger">*</span></td>
-                                            <td width="3%" class="top-align"> : </td>
+                                            <td width="8%" class="top-align fw-bold">Nama Perusahaan<span class="text-danger">*</span></td>
+                                            <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
                                                 <input type="text" autocomplete="off" placeholder="Nama Perusahaan" name="app_nama_perusahaan" value="<?= $realAccount['ACC_F_APP_KRJ_NAMA'] ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td width="30%" class="top-align fw-bold">Bidang Usaha<span class="text-danger">*</span></td>
-                                            <td width="3%" class="top-align"> : </td>
+                                            <td width="8%" class="top-align fw-bold">Bidang Usaha<span class="text-danger">*</span></td>
+                                            <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
                                                 <input type="text" autocomplete="off" placeholder="Bidang Usaha" name="app_bidang_usaha" value="<?= $realAccount['ACC_F_APP_KRJ_BDNG'] ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td width="30%" class="top-align fw-bold">Jabatan<span class="text-danger">*</span></td>
-                                            <td width="3%" class="top-align"> : </td>
+                                            <td width="8%" class="top-align fw-bold">Jabatan<span class="text-danger">*</span></td>
+                                            <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
                                                 <input type="text" autocomplete="off" placeholder="Nama Jabatan" name="app_jabatan_pekerjaan" value="<?= $realAccount['ACC_F_APP_KRJ_JBTN'] ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td width="30%" class="top-align fw-bold">Lama Bekerja<span class="text-danger">*</span></td>
-                                            <td width="3%" class="top-align"> : </td>
+                                            <td width="8%" class="top-align fw-bold">Lama Bekerja<span class="text-danger">*</span></td>
+                                            <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
                                                 <input type="text" autocomplete="off" placeholder="Contoh: 3 Tahun" name="app_lama_bekerja" value="<?= $realAccount['ACC_F_APP_KRJ_LAMA'] ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td width="30%" class="top-align fw-bold">Lama Bekerja (Kantor Sebelumnya)<span class="text-danger">*</span></td>
-                                            <td width="3%" class="top-align"> : </td>
+                                            <td width="8%" class="top-align fw-bold">Lama Bekerja (Kantor Sebelumnya)<span class="text-danger">*</span></td>
+                                            <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
                                                 <input type="text" autocomplete="off" placeholder="Contoh: 3 Tahun" name="app_lama_bekerja_sebelumnya" value="<?= $realAccount['ACC_F_APP_KRJ_LAMASBLM'] ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td width="30%" class="top-align fw-bold">Alamat Kantor<span class="text-danger">*</span></td>
-                                            <td width="3%" class="top-align"> : </td>
+                                            <td width="8%" class="top-align fw-bold">Alamat Kantor<span class="text-danger">*</span></td>
+                                            <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
                                                 <input type="text" autocomplete="off" placeholder="Alamat Kantor" name="app_alamat_kantor" value="<?= $realAccount['ACC_F_APP_KRJ_ALAMAT'] ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td width="30%" class="top-align fw-bold">Kode Pos</td>
-                                            <td width="3%" class="top-align"> : </td>
+                                            <td width="8%" class="top-align fw-bold">Kode Pos</td>
+                                            <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
                                                 <input type="number" autocomplete="off" placeholder="Kode Pos" name="app_kodepos_kantor" value="<?= $realAccount['ACC_F_APP_KRJ_ZIP'] ?>" class="form-control">
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td width="30%" class="top-align fw-bold">No. Telp Kantor</td>
-                                            <td width="3%" class="top-align"> : </td>
+                                            <td width="8%" class="top-align fw-bold">No. Telp Kantor</td>
+                                            <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
                                                 <input type="number" autocomplete="off" placeholder="No. Telp Kantor" name="app_nomor_kantor" value="<?= $realAccount['ACC_F_APP_KRJ_TLP'] ?>" class="form-control">
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td width="30%" class="top-align fw-bold">No. Faksimili</td>
-                                            <td width="3%" class="top-align"> : </td>
+                                            <td width="8%" class="top-align fw-bold">No. Faksimili</td>
+                                            <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
                                                 <input type="number" autocomplete="off" placeholder="No. Faksimili" name="app_nomor_fax_kantor" value="<?= $realAccount['ACC_F_APP_KRJ_FAX'] ?>" class="form-control">
                                             </td>
@@ -406,47 +406,47 @@
                                 <table class="table table-hover" style="text-align: left; table-layout: fixed;" width="100%">
                                     <tbody>
                                         <tr>
-                                            <td width="30%" class="top-align fw-bold">Penghasilan Per tahun<span class="text-danger">*</span></td>
-                                            <td width="3%" class="top-align"> : </td>
+                                            <td width="8%" class="top-align fw-bold">Penghasilan Per tahun<span class="text-danger">*</span></td>
+                                            <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
                                                 <select name="app_penghasilan" id="app_penghasilan" class="form-control">
                                                     <?php foreach(['Antara 100-250 juta', 'Antara 250-500 juta', '> 500 juta'] as $penghasilan) : ?>
-                                                        <option value="<?= $penghasilan ?>" <?= (strtolower($realAccount['ACC_F_APP_KEKYAN']) == strtolower($penghasilan))? "selected" : ""; ?>><?= $penghasilan ?></option>
+                                                        <option value="<?= $penghasilan ?>" <?= (strtolower($realAccount['ACC_F_APP_KEKYAN'] ?? "") == strtolower($penghasilan))? "selected" : ""; ?>><?= $penghasilan ?></option>
                                                     <?php endforeach; ?>
                                                 </select>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td width="30%" class="top-align fw-bold">Lokasi Rumah<span class="text-danger">*</span></td>
-                                            <td width="3%" class="top-align"> : </td>
+                                            <td width="8%" class="top-align fw-bold">Lokasi Rumah<span class="text-danger">*</span></td>
+                                            <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
                                                 <input type="text" autocomplete="off" placeholder="Lokasi Rumah" name="app_lokasi_rumah" value="<?= $realAccount['ACC_F_APP_KEKYAN_RMHLKS'] ?? 0 ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td width="30%" class="top-align fw-bold">Nilai NJOP<span class="text-danger">*</span></td>
-                                            <td width="3%" class="top-align"> : </td>
+                                            <td width="8%" class="top-align fw-bold">Nilai NJOP<span class="text-danger">*</span></td>
+                                            <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
                                                 <input type="number" autocomplete="off" placeholder="Nilai NJOP" name="app_nilai_njop" id="app_nilai_njop" value="<?= $realAccount['ACC_F_APP_KEKYAN_NJOP'] ?? 0 ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td width="30%" class="top-align fw-bold">Deposit Bank<span class="text-danger">*</span></td>
-                                            <td width="3%" class="top-align"> : </td>
+                                            <td width="8%" class="top-align fw-bold">Deposit Bank<span class="text-danger">*</span></td>
+                                            <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
                                                 <input type="number" autocomplete="off" placeholder="Deposit Bank" name="app_deposit_bank" id="app_deposit_bank" value="<?= $realAccount['ACC_F_APP_KEKYAN_DPST'] ?? 0 ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td width="30%" class="top-align fw-bold">Lainnya<span class="text-danger">*</span></td>
-                                            <td width="3%" class="top-align"> : </td>
+                                            <td width="8%" class="top-align fw-bold">Lainnya<span class="text-danger">*</span></td>
+                                            <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
                                                 <input type="number" autocomplete="off" placeholder="Lainnya" name="app_kekayaan_lainnya" value="<?= $realAccount['ACC_F_APP_KEKYAN_LAIN'] ?? 0 ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td width="30%" class="top-align fw-bold">Jumlah<span class="text-danger">*</span></td>
-                                            <td width="3%" class="top-align"> : </td>
+                                            <td width="8%" class="top-align fw-bold">Jumlah<span class="text-danger">*</span></td>
+                                            <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
                                                 <input type="text" autocomplete="off" placeholder="Jumlah" name="app_jumlah" readonly value="<?= $realAccount['ACC_F_APP_KEKYAN_NILAI'] ?? 0 ?>" class="form-control" required>
                                             </td>
@@ -482,7 +482,7 @@
                                             ];
                                             ?>
                                             <?php foreach($dokumenPendukung as $pendukung) : ?>
-                                                <option value="<?= $pendukung ?>" <?= (strtolower($realAccount['ACC_F_APP_FILE_TYPE']) == strtolower($pendukung))? "selected" : ""; ?>><?= $pendukung ?></option>
+                                                <option value="<?= $pendukung ?>" <?= (strtolower($realAccount['ACC_F_APP_FILE_TYPE'] ?? "") == strtolower($pendukung))? "selected" : ""; ?>><?= $pendukung ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
@@ -492,11 +492,11 @@
                                 </div>
                                 <div class="col-md-3 mb-3">
                                     <label for="" class="form-label">Dokumen Pendukung <span class="text-danger">*</span></label>
-                                    <input type="file" class="dropify" id="app_pendukung" name="app_pendukung" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= $aws_folder . $realAccount['ACC_F_APP_FILE_IMG'] ?? ""; ?>">
+                                    <input type="file" class="dropify" id="app_pendukung" name="app_pendukung" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_IMG'] ?? "") ?>">
                                 </div>
                                 <div class="col-md-3 mb-3">
                                     <label for="" class="form-label">Dokumen Pendukung Lainnya <span class="text-danger">*</span></label>
-                                    <input type="file" class="dropify" id="app_pendukung_lainnya" name="app_pendukung_lainnya" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= $aws_folder . $realAccount['ACC_F_APP_FILE_IMG2'] ?? ""; ?>">
+                                    <input type="file" class="dropify" id="app_pendukung_lainnya" name="app_pendukung_lainnya" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_IMG2'] ?? "") ?>">
                                 </div>
                                 <!-- <div class="col-md-3 mb-3">
                                     <label for="" class="form-label">Foto Terbaru (Selfie) <span class="text-danger">*</span></label>
