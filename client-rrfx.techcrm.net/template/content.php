@@ -46,8 +46,8 @@
         // create modal file at doc/modal/
         if(!empty($_SESSION['modal']) && is_array($_SESSION['modal'])) {
             foreach($_SESSION['modal'] as $modal) {
-                if(file_exists(__DIR__ . "/doc/modal/{$modal}.php")) {
-                    require_once __DIR__ . "/doc/modal/{$modal}.php";
+                if(file_exists(__DIR__ . "/modal/{$modal}.php")) {
+                    require_once __DIR__ . "/modal/{$modal}.php";
                 }
             }
         }  

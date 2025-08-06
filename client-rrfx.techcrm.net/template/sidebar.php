@@ -63,6 +63,9 @@ $isIB = false;
                         <li class="sidebar-dropdown-item">
                             <a href="/security" class="sidebar-link"><span class="nav-icon"><i class="fa-light fa-shield"></i></span> <span class="sidebar-txt">Security</span></a>
                         </li>
+                        <li class="sidebar-dropdown-item">
+                            <a href="/bank" class="sidebar-link"><span class="nav-icon"><i class="fa-light fa-bank"></i></span> <span class="sidebar-txt">Bank</span></a>
+                        </li>
                     </ul>
                 </li>
                 
