@@ -119,6 +119,22 @@ $filePermission = $adminPermissionCore->hasPermission($getAuthrorizedPermissions
         <script src="/assets/js/themeColors.js"></script>
         <script src="/assets/js/custom.js"></script>
         <script src="/assets/switcher/js/switcher.js"></script>
+		<script src="/assets/plugins/fileuploads/js/fileupload.js"></script>
+		<script src="/assets/plugins/fileuploads/js/file-upload.js"></script>
+		<script src="/assets/plugins/fancyuploder/jquery.ui.widget.js"></script>
+		<script src="/assets/plugins/fancyuploder/jquery.fileupload.js"></script>
+		<script src="/assets/plugins/fancyuploder/jquery.iframe-transport.js"></script>
+		<script src="/assets/plugins/fancyuploder/jquery.fancy-fileupload.js"></script>
+		<script src="/assets/plugins/fancyuploder/fancy-uploader.js"></script>
+		<script src="/assets/plugins/gallery/picturefill.js"></script>
+		<script src="/assets/plugins/gallery/lightgallery.js"></script>
+		<script src="/assets/plugins/gallery/lightgallery-1.js"></script>
+        <script src="/assets/plugins/gallery/lg-pager.js"></script>
+        <script src="/assets/plugins/gallery/lg-autoplay.js"></script>
+        <script src="/assets/plugins/gallery/lg-fullscreen.js"></script>
+        <script src="/assets/plugins/gallery/lg-zoom.js"></script>
+        <script src="/assets/plugins/gallery/lg-hash.js"></script>
+        <script src="/assets/plugins/gallery/lg-share.js"></script>
 		<script type="text/javascript">
             $(document).ready(function() {
                 $('.nav-item').removeClass('active show')

@@ -55,8 +55,8 @@
                                     <h6 class="main-notification-title"><?= $user['ADM_NAME'] ?></h6>
                                     <p class="main-notification-text"><?= $user['ADMROLE_NAME'] ?></p>
                                 </div>
-                                <a class="dropdown-item border-top" href="/profile">
-                                    <i class="fe fe-user"></i> My Profile
+                                <a class="dropdown-item border-top" href="/password/view">
+                                    <i class="fe fe-settings"></i> Password
                                 </a>
                                 <a class="dropdown-item" href="/logout">
                                     <i class="fe fe-power"></i> Sign Out
