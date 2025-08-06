@@ -2,6 +2,8 @@
 namespace App\Models;
 
 use Config\Core\Database;
+use Config\Core\SystemInfo;
+use Exception;
 
 class ProfilePerusahaan {
 
@@ -16,14 +18,14 @@ class ProfilePerusahaan {
         }
 
         /** List Office */
-        $sql_get_office  = mysqli_query($db, "SELECT * FROM tb_office"); 
+        $sql_get_office  = mysqli_query($db, "SELECT * FROM tb_office LIMIT 1"); 
         $office = [];
         if($sql_get_office) {
-            $office = mysqli_fetch_all($sql_get_office, MYSQLI_ASSOC);
+            $office = mysqli_fetch_assoc($sql_get_office);
         }
 
         return [
-            'PROF_COMPANY_NAME'             => $profile['PROF_COMPANY_NAME'],
+            'PROF_COMPANY_NAME'             => $profile['COMPANY_NAME'],
             'PROF_NO_KEANGGOTAAN_LEMBAGA'   => $profile['PROF_NO_KEANGGOTAAN_LEMBAGA'] ?? "",
             'PROF_TGL_KEANGGOTAAN_LEMBAGA'  => $profile['PROF_TGL_KEANGGOTAAN_LEMBAGA'] ?? "",
             'PROF_NO_PERSETUJUAN_PESERTA'   => $profile['PROF_NO_PERSETUJUAN_PESERTA'] ?? "",
@@ -41,11 +43,36 @@ class ProfilePerusahaan {
             'PROF_HOMEPAGE'                 => $profile['PROF_HOMEPAGE'] ?? "",
             'PROF_EML_PENGADUAN'            => $profile['PROF_EML_PENGADUAN'] ?? "",
             'PROF_FAX'                      => $profile['PROF_FAX'] ?? "",
-            'OFFICE'                        => $office,
             'FOREX_SYS'                     => 'PT. Capital Megah Mandiri ',
             'TRANS_REPRTR'                  => 'PT. Bursa Komoditi dan Derivatif Indonesia',
-            'TRANS_CLRNGS'                  => 'Indonesia Clearing House(ICH)'
+            'TRANS_CLRNGS'                  => 'Indonesia Clearing House(ICH)',
+            'OFFICE'                        => [
+                'ID_OFC'        => $office['ID_OFC'],
+                'OFC_CITY'      => $office['OFC_CITY'],
+                'OFC_ADDRESS'   => $office['OFC_ADDRESS'],
+                'OFC_PHONE'     => $office['OFC_PHONE'],
+                'OFC_EMAIL'     => $office['OFC_EMAIL'],
+                'OFC_IFRAME'    => $office['OFC_IFRAME'],
+                'OFC_FAX'       => $office['OFC_FAX'],
+                'OFC_STS'       => $office['OFC_STS'],
+                'OFC_DATETIME'  => $office['OFC_DATETIME'],
+            ],
         ];
+    }
+
+    public static function office(): array {
+        try {
+            $db = Database::connect();
+            $sqlGet = $db->query("SELECT * FROM tb_office");
+            return $sqlGet->fetch_all(MYSQLI_ASSOC) ?? [];
+
+        } catch (Exception $e) {
+            if(SystemInfo::isDevelopment()) {
+                throw $e;
+            }
+
+            return [];
+        }
     }
 
     public static function wpb_verifikator() {
