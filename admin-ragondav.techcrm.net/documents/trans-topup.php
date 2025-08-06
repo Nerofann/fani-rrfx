@@ -1,27 +1,36 @@
 <?php
-$realAccount = $classAcc->realAccountDetail(($acc ?? ""));
-$depositData = $classAcc->getDepositNewAccount_data($realAccount['ID_ACC']);
+    use App\Models\Dpwd;
+    use App\Models\Account;
+    use App\Models\Helper;
+    $data = Helper::getSafeInput($_GET);
+    
+    echo '<pre>';
+    var_dump($data);
+    echo '</pre>';die;
 
-$amountIDR = $depositData['DPWD_AMOUNT'];
-$amountUSD = $depositData['DPWD_AMOUNT_SOURCE'];
-$rate = $depositData['DPWD_RATE'];
+    $depositData = $classAcc->getDepositNewAccount_data($realAccount['ID_ACC']);
+    $realAccount = $classAcc->realAccountDetail(($acc ?? ""));
 
-/** if IDR to IDR */
-if($depositData['DPWD_CURR_FROM'] == "IDR") {
-    $amountUSD = 0;
-    $rate = 0;
-    $convert = $classAcc->accountConvertation([
-        'account_id' => $realAccount['ID_ACC'],
-        'amount' => $amountIDR,
-        'from' => "IDR",
-        'to' => "USD"
-    ]);
+    $amountIDR = $depositData['DPWD_AMOUNT'];
+    $amountUSD = $depositData['DPWD_AMOUNT_SOURCE'];
+    $rate = $depositData['DPWD_RATE'];
 
-    if(is_array($convert)) {
-        $amountUSD = ($amountIDR / $convert['rate']);
-        $rate = $convert['rate'];
+    /** if IDR to IDR */
+    if($depositData['DPWD_CURR_FROM'] == "IDR") {
+        $amountUSD = 0;
+        $rate = 0;
+        $convert = $classAcc->accountConvertation([
+            'account_id' => $realAccount['ID_ACC'],
+            'amount' => $amountIDR,
+            'from' => "IDR",
+            'to' => "USD"
+        ]);
+
+        if(is_array($convert)) {
+            $amountUSD = ($amountIDR / $convert['rate']);
+            $rate = $convert['rate'];
+        }
     }
-}
 ?>
 
 <!DOCTYPE html>

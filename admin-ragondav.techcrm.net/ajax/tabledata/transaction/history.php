@@ -132,6 +132,6 @@
         }
     });
     $dt->edit('ID_DPWD_HASH', function($data){
-        return "<div class='text-center'><a target='_blank' href='/documents/trans-topup.php?acc=".$data['ID_DPWD_HASH']."'>Print</a></div>";
+        return "<div class='text-center'><a target='_blank' href='/export/trans-topup?acc=".$data['ID_DPWD_HASH']."'>Print</a></div>";
     });
     echo $dt->generate()->toJson();
