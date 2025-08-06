@@ -109,7 +109,7 @@ class Regol {
         return true;
     }
 
-    public static function createDemo() {
-        
+    public static function urlTradingRule($filename) {
+        return "/assets/trading-rules/" . $filename;
     }
 }
