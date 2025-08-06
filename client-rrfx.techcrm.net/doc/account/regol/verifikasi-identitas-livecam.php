@@ -4,7 +4,7 @@
 <div class="row">
     <div class="col-md-9 mx-auto">
         <form method="post" id="form-verifikasi-identitas">
-            <input type="hidden" name="csrf_token" value="<?= getCSRFToken(); ?>">
+            <input type="hidden" name="csrf_token" value="<?= uniqid(); ?>">
             <div class="card">
                 <div class="card-body">
                     <div class="text-center"><h5>VERIFIKASI IDENTITAS</h5></div>
