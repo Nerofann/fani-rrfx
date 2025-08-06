@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-9 mx-auto">
         <form method="post" id="form-pernyataan-bertanggung-jawab">
-            <input type="hidden" name="csrf_token" value="<?= getCSRFToken(); ?>">
+            <input type="hidden" name="csrf_token" value="<?= uniqid(); ?>">
             <div class="card">
                 <div class="card-body">
                     <div class="text-center"><h5>PERNYATAAN BERTANGGUNG JAWAB ATAS KODE AKSES TRANSAKSI NASABAH (Personal Access Password)</h5></div>
