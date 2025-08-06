@@ -12,6 +12,7 @@ use App\Models\ProfilePerusahaan;
 use App\Models\SendEmail;
 use App\Models\User;
 use Config\Core\Database;
+use Config\Core\EmailSender;
 
 class AppPost {
     private $db;
@@ -335,15 +336,20 @@ class AppPost {
         ]);
 
         /** Send Notification Email */
-        $data   = [
+        $emailData = [
+            "subject"       => "Demo Account Information {$web_name_full} ".date('Y-m-d H:i:s'),
             "name"          => $user["MBR_NAME"],
             "login"         => $createDemo->Login,
             "metaPassword"  => $meta_pass,
             "metaInvestor"  => $meta_investor,
             "metaPassPhone" => $meta_phone,
-            "subject"       => "Demo Account Information {$web_name_full} ".date('Y-m-d H:i:s')
         ];
-        
+
+        $emailSender = EmailSender::init(['email' => $data['email'], 'name' => $data['fullname']]);
+        $emailSender->useFile("create-demo", $emailData);
+        $send = $emailSender->send();
+
+
         $sendEmail = new SendEmail();
         $sendEmail->useDefault()->useFile("create-demo", $data)->destination($user['MBR_EMAIL'], $user['MBR_NAME'])->send();
 
