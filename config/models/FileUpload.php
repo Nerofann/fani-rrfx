@@ -25,11 +25,11 @@ class FileUpload {
 
     /** Aws Credential */
     public static $awsCredential = [
-        'region'    => "ap-southeast-1",
-        'bucketName' => "allmediaindo-2",
-        'folder' => "trident",
-        'key' => "AKIASPLPQWHJMMXY2KPR",
-        'secretKey' => "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"
+        'region'    => "",
+        'bucketName' => "",
+        'folder' => "",
+        'key' => "",
+        'secretKey' => ""
     ];
 
     public function __construct()
@@ -37,7 +37,20 @@ class FileUpload {
         //Do your magic here
     }
 
+    public static function credential() {
+        Self::$awsCredential = [
+            'region'    => $_ENV['AWS_REGION'] ?? "",
+            'bucketName' => $_ENV['AWS_BUCKET'] ?? "",
+            'folder' => $_ENV['AWS_FOLDER'] ?? "",
+            'key' => $_ENV['AWS_KEY'] ?? "",
+            'secretKey' => $_ENV['AWS_SECRET'] ?? ""
+        ]; 
+
+        return Self::$awsCredential;
+    }
+
     public static function awsUrl(): string {
+        Self::credential();
         $awsUrl = "https://";
         $awsUrl .= Self::$awsCredential['bucketName'];
         $awsUrl .= ".s3";
@@ -53,6 +66,7 @@ class FileUpload {
 
     public static function upload_myfile($files, $dir = "uploads", bool $compress = false, int $quality = 25): string|array {
         try {
+             Self::credential();
             if(empty($files) || $files['error'] != 0) {
                 return $error_messages[ $files['error'] ] ?? "[ERROR] Upload file gagal";
             }
