@@ -1,7 +1,9 @@
-<?php 
-$hari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-$bulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-$profile = profile_perusahaan();
+<?php
+
+use App\Models\Helper;
+use App\Models\ProfilePerusahaan;
+
+$profile = ProfilePerusahaan::get();
 ?>
 <div class="row">
 
@@ -9,7 +11,7 @@ $profile = profile_perusahaan();
 <div class="row">
     <div class="col-sm-9 mx-auto">
         <form method="post" id="form-perjanjian-amanat">
-            <input type="hidden" name="csrf_token" value="<?= getCSRFToken(); ?>">
+            <input type="hidden" name="csrf_token" value="<?= uniqid(); ?>">
             <div class="panel">
                 <div class="card">
                     <div class="card-body">
@@ -24,7 +26,7 @@ $profile = profile_perusahaan();
                             <p>PERJANJIAN INI MERUPAKAN KONTRAK HUKUM. HARAP DIBACA DENGAN SEKSAMA</p>
                         </div>
     
-                        <p class="mt-3">Pada hari ini <b><?= $hari[ date("w") ] ?? "-" ?></b>, tanggal <b><?= date("d") ?></b>, bulan <b><?= $bulan[ date("n") ] ?? "-" ?></b>, tahun <b><?= date("Y") ?></b>, kami yang mengisi perjanjian di bawah ini:</p>
+                        <p class="mt-3">Pada hari ini <b><?= Helper::hari( date("w") ) ?? "-" ?></b>, tanggal <b><?= date("d") ?></b>, bulan <b><?= Helper::bulan(date("n")) ?? "-" ?></b>, tahun <b><?= date("Y") ?></b>, kami yang mengisi perjanjian di bawah ini:</p>
                         <div class="table-responsive">
                             <table class="table table-hover" style="text-align: left; table-layout: fixed; word-break: break;" width="100%">
                                 <tbody>
@@ -56,7 +58,7 @@ $profile = profile_perusahaan();
                                         <td width="2%" rowspan="3" class="top-align fw-bold">2.</td>
                                         <td width="15%" class="top-align fw-bold text-start">Nama</td>
                                         <td width="3%" class="top-align"> : </td>
-                                        <td class="top-align text-start"><?= wpb_verifikator()['WPB_NAMA'] ?? "-" ?></td>
+                                        <td class="top-align text-start"><?= ProfilePerusahaan::wpb_verifikator()['WPB_NAMA'] ?? "-" ?></td>
                                     </tr>
                                     <tr>
                                         <td width="15%" class="top-align fw-bold text-start">Pekerjaan / Jabatan</td>
@@ -66,13 +68,13 @@ $profile = profile_perusahaan();
                                     <tr>
                                         <td width="15%" class="top-align fw-bold text-start">Alamat</td>
                                         <td width="3%" class="top-align"> : </td>
-                                        <td class="top-align text-start"><?= $profile['OFFICE'][0]["OFC_ADDRESS"] ?? "" ?></td>
+                                        <td class="top-align text-start"><?= $profile['OFFICE']["OFC_ADDRESS"] ?? "" ?></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
     
-                        <p class="mt-3 text-justify">dalam hal ini bertindak untuk dan atas nama <strong><?php echo $web_name ?></strong> yang selanjutnya disebut <strong>Pialang Berjangka</strong>,</p>
+                        <p class="mt-3 text-justify">dalam hal ini bertindak untuk dan atas nama <strong><?= $profile['PROF_COMPANY_NAME'] ?></strong> yang selanjutnya disebut <strong>Pialang Berjangka</strong>,</p>
                         <p class="text-justify">Nasabah dan Pialang Berjangka secara bersama - sama selanjutnya disebut <strong>Para Pihak</strong>.</p>
                         <p class="text-justify">Para pihak sepakat untuk mengadakan Perjanjian Pemberian Amanat untuk melakukan
                             transaksi penjualan maupun pembelian Kontrak Derivatif Dalam Sistem Perdagangan Alternatif dengan ketentuan sebagai berikut:</p>
@@ -257,18 +259,16 @@ $profile = profile_perusahaan();
                                                 <tr>
                                                     <td width="36%">Nama</td>
                                                     <td width="2%">&nbsp;:&nbsp;</td>
-                                                    <td><?php echo $web_name;  ?></td>
+                                                    <td><?= $profile['PROF_COMPANY_NAME'];  ?></td>
                                                 </tr>
                                                 <tr>
                                                     <td valign="top">Alamat</td>
                                                     <td valign="top">&nbsp;:&nbsp;</td>
-                                                    <td>
-                                                    <?php echo $address_company;  ?>
-                                                    </td>
+                                                    <td><?= $profile['OFFICE']['OFC_ADDRESS']; ?></td>
                                                 </tr>
                                             </tbody>
                                         </table>
-                                        <div class="table-responsive">
+                                        <div class="table-responsive mt-2">
                                             <table class="table table-bordered">
                                                 <thead>
                                                     <tr>
@@ -300,29 +300,29 @@ $profile = profile_perusahaan();
                                             <table class="table table-hover" style="text-align: left; table-layout: fixed; word-break: break;" width="100%">
                                                 <tbody>
                                                     <tr>
-                                                        <td width="10%" class="top-align fw-bold text-start">Nama</td>
+                                                        <td width="15%" class="top-align fw-bold text-start">Nama</td>
                                                         <td width="3%" class="top-align"> : </td>
-                                                        <td class="top-align text-start"><?= $web_name_full; ?></td>
+                                                        <td class="top-align text-start"><?= $profile['PROF_COMPANY_NAME']; ?></td>
                                                     </tr>
                                                     <tr>
-                                                        <td width="10%" class="top-align fw-bold text-start">Alamat</td>
+                                                        <td width="15%" class="top-align fw-bold text-start">Alamat</td>
                                                         <td width="3%" class="top-align"> : </td>
-                                                        <td class="top-align text-start"><?= $profile_perusahaan['OFFICE'][0]['OFC_ADDRESS'] ?></td>
+                                                        <td class="top-align text-start"><?= $profile['OFFICE']['OFC_ADDRESS'] ?></td>
                                                     </tr>
                                                     <tr>
-                                                        <td width="10%" class="top-align fw-bold text-start">Telepon</td>
+                                                        <td width="15%" class="top-align fw-bold text-start">Telepon</td>
                                                         <td width="3%" class="top-align"> : </td>
-                                                        <td class="top-align text-start"><?= $profile_perusahaan['OFFICE'][0]['OFC_PHONE'] ?></td>
+                                                        <td class="top-align text-start"><?= $profile['OFFICE']['OFC_PHONE'] ?></td>
                                                     </tr>
                                                     <tr>
-                                                        <td width="10%" class="top-align fw-bold text-start">Facsimile</td>
+                                                        <td width="15%" class="top-align fw-bold text-start">Faksimili</td>
                                                         <td width="3%" class="top-align"> : </td>
-                                                        <td class="top-align text-start"><?= $profile_perusahaan['OFFICE'][0]['OFC_FAX'] ?></td>
+                                                        <td class="top-align text-start"><?= $profile['OFFICE']['OFC_FAX'] ?></td>
                                                     </tr>
                                                     <tr>
-                                                        <td width="10%" class="top-align fw-bold text-start">E-mail</td>
+                                                        <td width="15%" class="top-align fw-bold text-start">E-mail</td>
                                                         <td width="3%" class="top-align"> : </td>
-                                                        <td class="top-align text-start"><?= $profile_perusahaan['OFFICE'][0]['OFC_EMAIL'] ?></td>
+                                                        <td class="top-align text-start"><?= $profile['OFFICE']['OFC_EMAIL'] ?></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -460,7 +460,7 @@ $profile = profile_perusahaan();
                                                 Kantor yang dipilih (salah satu)<br>
                                                 Daftar Kantor: 
                                                 <ol type="a">
-                                                    <?php foreach($profile['OFFICE'] as $key => $ofc) : ?>
+                                                    <?php foreach(ProfilePerusahaan::office() as $key => $ofc) : ?>
                                                         <li>
                                                             <input type="radio" class="form-check-input radio_css" name="step07_kantorpenyelesaian" <?php echo (strtoupper(retnull("ACC_F_PERJ_KANTOR")) == strtoupper($ofc['OFC_CITY']) || $key == 0) ? 'checked' : NULL; ?> value="<?= strtoupper($ofc['OFC_CITY']); ?>" required="">
                                                             <?= strtoupper($ofc['OFC_CITY']) ?>
