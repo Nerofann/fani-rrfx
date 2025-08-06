@@ -46,13 +46,13 @@ $accountTypes = [
                         <label class="form-label">Account Type</label>
                         <select id="acc-type" class="form-select mb-3">
                             <?php foreach($accountCategories as $accType) : ?>
-                                <option data-type="<?= strtolower($accType) ?>" value="<?= strtoupper($accType) ?>" <?= strtoupper($realAccount['RTYPE_TYPE_AS']) == strtoupper($accType)? "selected" : ""; ?>><?= $accType; ?></option>
+                                <option data-type="<?= strtolower($accType) ?>" value="<?= strtoupper($accType) ?>" <?= strtoupper($realAccount['RTYPE_TYPE_AS'] ?? "") == strtoupper($accType)? "selected" : ""; ?>><?= $accType; ?></option>
                             <?php endforeach; ?>
                         </select>
                         
                         <?php foreach($accountCategories as $type) : ?>
                             <?php $lowerType = strtolower($type) ?>
-                            <div class="tab-categories" id="nav-<?= $lowerType ?>" <?= $lowerType != strtolower($realAccount['RTYPE_TYPE_AS'])? "style='display: none;'" : ""; ?>>
+                            <div class="tab-categories" id="nav-<?= $lowerType ?>" <?= $lowerType != strtolower($realAccount['RTYPE_TYPE_AS'] ?? "")? "style='display: none;'" : ""; ?>>
                                 <nav class="mb-3">
                                     <?php if($lowerType == "multilateral") : ?>
                                         <div class="alert alert-warning">
@@ -74,7 +74,7 @@ $accountTypes = [
                                                 <?php foreach($category['products'] as $accType) : ?>
                                                     <?php if(strtoupper($accType['RTYPE_TYPE_AS']) == strtoupper($type)) : ?>
                                                         <div class="col-md-4">
-                                                            <input type="radio" name="account-type" id="<?= $accType['RTYPE_SUFFIX'] ?>" value="<?= $accType['RTYPE_SUFFIX'] ?>" data-category="<?= $category['type'] ?>" <?= ($realAccount['ACC_TYPE'] == $accType['ID_RTYPE'])? "checked" : ""; ?>>
+                                                            <input type="radio" name="account-type" id="<?= $accType['RTYPE_SUFFIX'] ?>" value="<?= $accType['RTYPE_SUFFIX'] ?>" data-category="<?= $category['type'] ?>" <?= (($realAccount['ID_RTYPE'] ?? "") == $accType['ID_RTYPE'])? "checked" : ""; ?>>
                                                             <label for="<?= $accType['RTYPE_SUFFIX'] ?>" class="w-100 h-100 select-type">
                                                                 <div class="file-manager-card">
                                                                     <div class="top">
@@ -129,7 +129,7 @@ $accountTypes = [
             $('input[name="account-type"]').prop('checked', false)
             $('.tab-categories').hide();
             $(`#nav-${type}`).show();
-        });
+        }).change();
 
         $('#form-account-type').on('submit', function(event){
             event.preventDefault();

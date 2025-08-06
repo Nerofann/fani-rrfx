@@ -1267,6 +1267,19 @@ class AppPost {
         $this->aplikasiPembukaanRekening_DokumenPendukung($data, $user, $progressAccount);
 
 
+        /** Validasi Bank */
+        $userBanks = User::myBank($progressAccount['ACC_MBR']);
+        if(count($userBanks) <= 0) {
+            exit(json_encode([
+                'success' => false,
+                'alert' => [
+                    'title' => "Gagal",
+                    'text'  => "Mohon menambahkan setidaknya 1 bank",
+                    'icon'  => "error"
+                ] 
+            ]));
+        }
+
         
         
         Database::update("tb_racc", [

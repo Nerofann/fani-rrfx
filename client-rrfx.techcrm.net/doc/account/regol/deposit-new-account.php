@@ -1,5 +1,10 @@
-<?php 
-$myBanks = myBank($userid); 
+<?php
+
+use App\Models\Account;
+use App\Models\Helper;
+use App\Models\User;
+
+$myBanks = User::myBank($user['MBR_ID']); 
 $depositData = Account::getDepositNewAccount_data($realAccount['ID_ACC']);
 $depositHistory = Account::getDepositNewAccount_History($realAccount['ID_ACC']);
 ?>
@@ -26,7 +31,7 @@ $depositHistory = Account::getDepositNewAccount_History($realAccount['ID_ACC']);
                                 <tr>
                                     <td width="20%" class="top-align fw-bold">Jumlah Deposit</td>
                                     <td width="3%" class="top-align"> : </td>
-                                    <td class="top-align text-start"><?= $depositData['DPWD_CURR_FROM'] ?> <?= formatCurrency($depositData['DPWD_AMOUNT_SOURCE']); ?></td>
+                                    <td class="top-align text-start"><?= $depositData['DPWD_CURR_FROM'] ?> <?= Helper::formatCurrency($depositData['DPWD_AMOUNT_SOURCE']); ?></td>
                                 </tr>
                                 <tr>
                                     <td width="20%" class="top-align fw-bold">Status</td>
@@ -118,7 +123,9 @@ $depositHistory = Account::getDepositNewAccount_History($realAccount['ID_ACC']);
                                                 <select name="dpnewacc_bankcmpy" id="dpnewacc_bankcmpy" class="form-control form-control-sm text-center" required>
                                                     <?php $sqlGetBankAdm = $db->query("SELECT * FROM tb_bankadm WHERE BKADM_CURR = '".($realAccount['RTYPE_CURR'] ?? "")."'"); ?>
                                                     <?php foreach($sqlGetBankAdm->fetch_all(MYSQLI_ASSOC) as $bank_admin) : ?>
-                                                        <option data-curr="<?= $bank_admin['BKADM_CURR'] ?>" value="<?= md5(md5($bank_admin['ID_BKADM'])); ?>"><?= implode(" / ", [$bank_admin['BKADM_HOLDER'], $bank_admin['BKADM_CURR'], $bank_admin['BKADM_ACCOUNT']]) ?></option>
+                                                        <option data-curr="<?= $bank_admin['BKADM_CURR'] ?>" value="<?= md5(md5($bank_admin['ID_BKADM'])); ?>">
+                                                            <?= implode(" / ", [$bank_admin['BKADM_HOLDER'], $bank_admin['BKADM_ACCOUNT']]) ?>
+                                                        </option>
                                                     <?php endforeach; ?>
                                                 </select>
                                             </div>
@@ -224,7 +231,7 @@ $depositHistory = Account::getDepositNewAccount_History($realAccount['ID_ACC']);
                                     <td width="15%" class="top-align"><?= date("Y-m-d H:i:s", strtotime($history['NOTE_DATETIME'])); ?></td>
                                     <td class="top-align text-start"><?= $history['DPWD_BANKSRC'] ?></td>
                                     <td class="top-align text-start"><?= $history['DPWD_BANK'] ?></td>
-                                    <td class="top-align text-start"><?= $history['DPWD_CURR_FROM'] ?> <?= formatCurrency($history['DPWD_AMOUNT_SOURCE']) ?></td>
+                                    <td class="top-align text-start"><?= $history['DPWD_CURR_FROM'] ?> <?= Helper::formatCurrency($history['DPWD_AMOUNT_SOURCE']) ?></td>
                                     <td width="20%" class="top-align text-start"><a target="_blank" href="<?= $aws_folder . $history['DPWD_PIC'] ?>"><i>Lihat disini</i></a></td>
                                     <td width="10%" class="top-align text-start">
                                         <?php if($history['DPWD_STS'] == 0) : ?>
