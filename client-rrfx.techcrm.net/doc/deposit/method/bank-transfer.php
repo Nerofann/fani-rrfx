@@ -1,4 +1,4 @@
-<form action="" method="post" id="form-deposit-bank-transfer">
+<form action="" method="post" enctype="multipart/form-data" id="form-deposit-bank-transfer">
     <div class="row">
         <div class="col-md-12 mb-2">
             <label for="account" class="form-label required">Pilih Akun</label>
