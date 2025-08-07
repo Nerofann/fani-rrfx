@@ -74,7 +74,7 @@ class Admin extends AdminAuth {
         try {
             $db = Database::connect();
             $sqlGet = $db->query("SELECT * FROM tb_bankadm WHERE MD5(MD5(ID_BKADM)) = '{$id}' LIMIT 1");
-            return $sqlGet->fetch_all(MYSQLI_ASSOC);
+            return $sqlGet->fetch_assoc();
 
         } catch (Exception $e) {
             if(SystemInfo::isDevelopment()) {
