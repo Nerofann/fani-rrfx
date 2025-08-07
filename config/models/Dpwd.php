@@ -9,12 +9,16 @@ class Dpwd {
 
     public static array $status = [
         "-1" => [
-            'html' => '<span class="badge bg-success">Open</span>',
-            'text' => "Open"
+            'html' => '<span class="badge bg-success">Berhasil</span>',
+            'text' => "Berhasil"
+        ],
+        "0" => [
+            'html' => '<span class="badge bg-warning">Pending</span>',
+            'text' => "Pending"
         ],
         "1" => [
-            'html' => '<span class="badge bg-danger">Closed</span>',
-            'text' => "Closed"
+            'html' => '<span class="badge bg-danger">Ditolak</span>',
+            'text' => "Ditolak"
         ]
     ];
 
