@@ -198,8 +198,6 @@ class Account {
             if(is_numeric($rate) === FALSE || $rate <= 0) {
                 return "Failed to get floating rate";
             }
-
-            $amount /= $rate;
            
             return [
                 'amount' => $amount,
