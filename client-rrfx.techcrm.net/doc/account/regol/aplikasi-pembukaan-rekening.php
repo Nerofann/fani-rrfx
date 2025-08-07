@@ -464,46 +464,22 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    <div>
-                                        <label for="app_dokumen_pendukung" class="form-label">Pilih Dokumen Pendukung <span class="text-danger">*</span></label>
-                                        <select id="app_dokumen_pendukung" class="form-control">
-                                            <?php 
-                                            $dokumenPendukung = [
-                                                'Cover Buku Tabungan (Recommended)',
-                                                'Tagihan Kartu Kredit',
-                                                'Tagihan Listrik / Air',
-                                                'Scan Kartu NPWP',
-                                                'Rekening Koran Bank',
-                                                'PBB / BPJS',
-                                                'Lainnya'
-                                            ];
-                                            ?>
-                                            <?php foreach($dokumenPendukung as $pendukung) : ?>
-                                                <option value="<?= $pendukung ?>" <?= (strtolower($realAccount['ACC_F_APP_FILE_TYPE'] ?? "") == strtolower($pendukung))? "selected" : ""; ?>><?= $pendukung ?></option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
-                                    <div id="div_app_dokumen_pendukung" class="mt-2">
-                                        <input type="text" class="form-control" name="app_dokumen_pendukung" placeholder="Lainnya..." value="<?= $realAccount['ACC_F_APP_FILE_TYPE']; ?>">
-                                    </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="" class="form-label required">Rekening Koran Bank / Tagihan Kartu Kredit</label>
+                                    <input type="file" class="dropify" id="app_image_1" name="app_image_1" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_IMG'] ?? "") ?>">
                                 </div>
                                 <div class="col-md-3 mb-3">
-                                    <label for="" class="form-label">Dokumen Pendukung <span class="text-danger">*</span></label>
-                                    <input type="file" class="dropify" id="app_pendukung" name="app_pendukung" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_IMG'] ?? "") ?>">
+                                    <label for="" class="form-label required">Rekening Listrik / Telepon</label>
+                                    <input type="file" class="dropify" id="app_image_2" name="app_image_2" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_IMG2'] ?? "") ?>">
                                 </div>
                                 <div class="col-md-3 mb-3">
-                                    <label for="" class="form-label">Dokumen Pendukung Lainnya <span class="text-danger">*</span></label>
-                                    <input type="file" class="dropify" id="app_pendukung_lainnya" name="app_pendukung_lainnya" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_IMG2'] ?? "") ?>">
-                                </div>
-                                <!-- <div class="col-md-3 mb-3">
-                                    <label for="" class="form-label">Foto Terbaru (Selfie) <span class="text-danger">*</span></label>
-                                    <input type="file" class="dropify" id="app_foto_terbaru" name="app_foto_terbaru" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?//= $aws_folder . $realAccount['ACC_F_APP_FILE_FOTO'] ?? ""; ?>" <?//= ($realAccount['ACC_DOC_VERIF'] == -1)? "disabled" : ""; ?>>
+                                    <label for="" class="form-label">Dokumen Lainnya</label>
+                                    <input type="file" class="dropify" id="app_image_3" name="app_image_3" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_IMG3'] ?? "") ?>">
                                 </div>
                                 <div class="col-md-3 mb-3">
-                                    <label for="" class="form-label">Foto KTP <span class="text-danger">*</span></label>
-                                    <input type="file" class="dropify" id="app_foto_identitas" name="app_foto_identitas" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?//= $aws_folder . $realAccount['ACC_F_APP_FILE_ID'] ?? ""; ?>" <?//= ($realAccount['ACC_DOC_VERIF'] == -1)? "disabled" : ""; ?>>
-                                </div> -->
+                                    <label for="" class="form-label">Dokumen Lainnya</label>
+                                    <input type="file" class="dropify" id="app_image_4" name="app_image_4" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_IMG4'] ?? "") ?>">
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -1210,40 +1210,6 @@ class AppPost {
             ]));  
         }
 
-        /** Check Jenis Dokumen */
-        if(empty($data['app_dokumen_pendukung'])) {
-            exit(json_encode([
-                'success' => false,
-                'alert' => [
-                    'title' => "Gagal",
-                    'text'  => "Mohon Pilih Jenis Dokumen Pendukung",
-                    'icon'  => "error"
-                ] 
-            ]));
-        }
-
-        $dokumenPendukung = [
-            'Cover Buku Tabungan (Recommended)',
-            'Tagihan Kartu Kredit',
-            'Tagihan Listrik / Air',
-            'Scan Kartu NPWP',
-            'Rekening Koran Bank',
-            'PBB / BPJS',
-            'Lainnya'
-        ];
-
-        $dokumenPendukung = array_map(fn($ar): string => strtoupper($ar), $dokumenPendukung);
-        if(!in_array(strtoupper($data['app_dokumen_pendukung']), $dokumenPendukung)) {
-            exit(json_encode([
-                'success' => false,
-                'alert' => [
-                    'title' => "Gagal",
-                    'text'  => "Dokumen Pendukung (".$data['app_dokumen_pendukung'].") tidak valid/tersedia",
-                    'icon'  => "error"
-                ] 
-            ]));
-        }
-
         /** Validasi APP Data Pribadi */
         $this->aplikasiPembukaanRekening_DataPribadi($data, $user, $progressAccount);
 
@@ -1272,13 +1238,10 @@ class AppPost {
                 ] 
             ]));
         }
-
-        
         
         Database::update("tb_racc", [
             'ACC_F_APP' => 1,
             'ACC_F_APP_IP' => Helper::get_ip_address(),
-            'ACC_F_APP_FILE_TYPE' => $data['app_dokumen_pendukung'],
             'ACC_F_APPPEMBUKAAN_IP' => Helper::get_ip_address(),
             'ACC_F_APP_PERYT' => "Ya",
             'ACC_F_APPPEMBUKAAN_PERYT' => "Ya",
@@ -1728,8 +1691,8 @@ class AppPost {
     private function aplikasiPembukaanRekening_DokumenPendukung($data, $user, $progressAccount) {
         $verihub = VerihubFactory::init();
 
-        /** Upload Dokumen Pendukung */
-        if(empty($_FILES['app_pendukung']) || $_FILES['app_pendukung']['error'] != 0) {
+        /** Upload Dokumen 1 */
+        if(empty($_FILES['app_image_1']) || $_FILES['app_image_1']['error'] != 0) {
             if(empty($progressAccount['ACC_F_APP_FILE_IMG'])) {
                 exit(json_encode([
                     'success' => false,
@@ -1742,7 +1705,7 @@ class AppPost {
             }
         
         }else {
-            $uploadDokumenPendukung = FileUpload::upload_myfile($_FILES['app_pendukung'], "regol");
+            $uploadDokumenPendukung = FileUpload::upload_myfile($_FILES['app_image_1'], "regol");
             if(!is_array($uploadDokumenPendukung) || !array_key_exists("filename", $uploadDokumenPendukung)) {
                 exit(json_encode([
                     'success' => false,
@@ -1767,45 +1730,99 @@ class AppPost {
             }
         }
 
-        /** Upload Dokumen Pendukung Lainnya */
-        if(empty($_FILES['app_pendukung_lainnya']) || $_FILES['app_pendukung_lainnya']['error'] != 0) {
+        /** Upload Dokumen 2 */
+        if(empty($_FILES['app_image_2']) || $_FILES['app_image_2']['error'] != 0) {
             if(empty($progressAccount['ACC_F_APP_FILE_IMG2'])) {
                 exit(json_encode([
                     'success' => false,
                     'alert' => [
                         'title' => "Gagal",
-                        'text'  => "Mohon upload dokumen pendukung lainnya",
+                        'text'  => "Mohon upload dokumen pendukung",
                         'icon'  => "error"
                     ] 
                 ]));
             }
         
         }else {
-            $uploadDokumenPendukung2 = FileUpload::upload_myfile($_FILES['app_pendukung_lainnya'], "regol");
-            if(!is_array($uploadDokumenPendukung2) || !array_key_exists("filename", $uploadDokumenPendukung2)) {
+            $uploadDokumenPendukung = FileUpload::upload_myfile($_FILES['app_image_2'], "regol");
+            if(!is_array($uploadDokumenPendukung) || !array_key_exists("filename", $uploadDokumenPendukung)) {
                 exit(json_encode([
                     'success' => false,
                     'alert' => [
                         'title' => "Gagal",
-                        'text'  => $uploadDokumenPendukung2 ?? "Gagal mengunggah file dokumen pendukung lainnya",
+                        'text'  => $uploadDokumenPendukung ?? "Gagal mengunggah file dokumen pendukung",
                         'icon'  => "error"
                     ] 
                 ]));
             }
-
-            $updateImage = Database::update("tb_racc", ['ACC_F_APP_FILE_IMG2' => $uploadDokumenPendukung2['filename']], ['ID_ACC' => $progressAccount['ID_ACC']]);
+    
+            $updateImage = Database::update("tb_racc", ['ACC_F_APP_FILE_IMG2' => $uploadDokumenPendukung['filename']], ['ID_ACC' => $progressAccount['ID_ACC']]);
             if($updateImage !== TRUE) {
                 exit(json_encode([
                     'success' => false,
                     'alert' => [
                         'title' => "Gagal",
-                        'text'  => $updateImage ?? "Gagal memperbarui dokumen pendukung lainnya, mohon coba lagi",
+                        'text'  => $updateImage ?? "Gagal memperbarui dokumen pendukung, mohon coba lagi",
                         'icon'  => "error"
                     ] 
                 ]));
             }
         }
-      
+
+        /** Upload Dokumen 3 (Optional) */
+        if(!empty($_FILES['app_image_3']) && $_FILES['app_image_3']['error'] == 0) {
+            $uploadDokumenPendukung = FileUpload::upload_myfile($_FILES['app_image_3'], "regol");
+            if(!is_array($uploadDokumenPendukung) || !array_key_exists("filename", $uploadDokumenPendukung)) {
+                exit(json_encode([
+                    'success' => false,
+                    'alert' => [
+                        'title' => "Gagal",
+                        'text'  => $uploadDokumenPendukung ?? "Gagal mengunggah file dokumen pendukung 3",
+                        'icon'  => "error"
+                    ] 
+                ]));
+            }
+    
+            $updateImage = Database::update("tb_racc", ['ACC_F_APP_FILE_IMG3' => $uploadDokumenPendukung['filename']], ['ID_ACC' => $progressAccount['ID_ACC']]);
+            if($updateImage !== TRUE) {
+                exit(json_encode([
+                    'success' => false,
+                    'alert' => [
+                        'title' => "Gagal",
+                        'text'  => $updateImage ?? "Gagal memperbarui dokumen pendukung, mohon coba lagi",
+                        'icon'  => "error"
+                    ] 
+                ]));
+            }
+        }
+
+        /** Upload Dokumen 4 (Optional) */
+        if(!empty($_FILES['app_image_4']) && $_FILES['app_image_4']['error'] == 0) {
+            $uploadDokumenPendukung = FileUpload::upload_myfile($_FILES['app_image_4'], "regol");
+            if(!is_array($uploadDokumenPendukung) || !array_key_exists("filename", $uploadDokumenPendukung)) {
+                exit(json_encode([
+                    'success' => false,
+                    'alert' => [
+                        'title' => "Gagal",
+                        'text'  => $uploadDokumenPendukung ?? "Gagal mengunggah file dokumen pendukung 4",
+                        'icon'  => "error"
+                    ] 
+                ]));
+            }
+    
+            $updateImage = Database::update("tb_racc", ['ACC_F_APP_FILE_IMG4' => $uploadDokumenPendukung['filename']], ['ID_ACC' => $progressAccount['ID_ACC']]);
+            if($updateImage !== TRUE) {
+                exit(json_encode([
+                    'success' => false,
+                    'alert' => [
+                        'title' => "Gagal",
+                        'text'  => $updateImage ?? "Gagal memperbarui dokumen pendukung, mohon coba lagi",
+                        'icon'  => "error"
+                    ] 
+                ]));
+            }
+        }
+
         return true;
     }
 
