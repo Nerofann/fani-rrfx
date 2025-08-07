@@ -616,7 +616,11 @@ class Account {
             return ($sqlGet->num_rows != 0);
 
         } catch (Exception $e) {
-            return "Exception";
+            if(SystemInfo::isDevelopment()) {
+                throw $e;
+            }
+
+            return false;
         }
     }
 
