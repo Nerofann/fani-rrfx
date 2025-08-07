@@ -65,6 +65,33 @@ class Account {
         }
     }
 
+    public static function realAccountDetail_byLogin(string $login) {
+        try {
+            global $db;
+            $sqlGet = $db->query("
+                SELECT 
+                    tr.*,
+                    tra.*,
+                    tm.*
+                FROM tb_racc tr 
+                JOIN tb_member tm ON (tm.MBR_ID = tr.ACC_MBR)
+                JOIN tb_racctype tra ON (tra.ID_RTYPE = tr.ACC_TYPE)
+                WHERE UPPER(tra.RTYPE_TYPE) != 'DEMO'
+                AND tr.ACC_LOGIN = '{$login}'
+                LIMIT 1
+            ");
+
+            return $sqlGet->fetch_assoc() ?? [];
+
+        } catch (Exception $e) {
+            if(SystemInfo::isDevelopment()) {
+                throw $e;
+            }
+
+            return [];
+        }
+    }
+
     public static function accoundCondition(int $idAcc) {
         try {
             global $db;
@@ -93,23 +120,24 @@ class Account {
     }
 
     public static function marginBalance(int $accLogin) {
-        try {
-            global $db;
-            $sqlGetAccount = $db->query("SELECT (MARGIN_FREE-CREDIT) AS BALANCE, CREDIT FROM MT4_USERS WHERE `LOGIN` = {$accLogin} LIMIT 1");
-            if($sqlGetAccount->num_rows != 1) {
-                return "Invalid Account";
-            }
+        // try {
+        //     global $db;
+        //     $sqlGetAccount = $db->query("SELECT (MARGIN_FREE-CREDIT) AS BALANCE, CREDIT FROM MT4_USERS WHERE `LOGIN` = {$accLogin} LIMIT 1");
+        //     if($sqlGetAccount->num_rows != 1) {
+        //         return "Invalid Account";
+        //     }
 
-            $assoc = $sqlGetAccount->fetch_assoc();
-            return floatval($assoc['BALANCE'] ?? 0) ;
+        //     $assoc = $sqlGetAccount->fetch_assoc();
+        //     return floatval($assoc['BALANCE'] ?? 0) ;
 
-        } catch (Exception $e) {
-            if(SystemInfo::isDevelopment()) {
-                return $e->getMessage();
-            }
+        // } catch (Exception $e) {
+        //     if(SystemInfo::isDevelopment()) {
+        //         return $e->getMessage();
+        //     }
 
-            return "Invalid";
-        }
+        //     return "Invalid";
+        // }
+        return 1000000;
     }
 
     public static function creditBalance(int $accLogin) {
