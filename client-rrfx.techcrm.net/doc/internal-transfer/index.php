@@ -11,20 +11,17 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-dashed table-hover table-bordered digi-dataTable table-striped" id="withdrawal-table">
+                            <table class="table table-dashed table-hover table-bordered digi-dataTable table-striped" id="it-table">
                                 <thead>
                                     <tr>
-                                        <th rowspan="2" class="text-center">Date</th>
-                                        <th rowspan="2" class="text-center">Account</th>
-                                        <th colspan="2" class="text-center">Amount</th>
-                                        <th rowspan="2" class="text-center">Rate</th>
-                                        <th rowspan="2" class="text-center">Img</th>
-                                        <th rowspan="2" class="text-center">Status</th>
-                                        <th rowspan="2" class="text-center">Note</th>
+                                        <th width="15%" rowspan="2" class="text-center">Date</th>
+                                        <th colspan="2" class="text-center">Account</th>
+                                        <th rowspan="2" class="text-center">Amount</th>
+                                        <th rowspan="2" class="text-center">Code</th>
                                     </tr>
                                     <tr>
-                                        <th class="text-center">Request</th>
-                                        <th class="text-center">Received</th>
+                                        <th class="text-center">From</th>
+                                        <th class="text-center">To</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -36,15 +33,17 @@
     </div>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#withdrawal-table').DataTable({
+            $('#it-table').DataTable({
                 processing: true,
                 serverSide: true,
                 order: [[0, 'desc']],
                 ajax: {
-                    url: "/ajax/datatable/withdrawal",
+                    url: "/ajax/datatable/internal-transfer",
                 },
                 columnDefs: [
-                    { targets: 6, className: "text-center" }
+                    { targets: 0, className: "text-center" },
+                    { targets: 3, className: "text-end" },
+                    { targets: 4, className: "text-center" }
                 ]
             })
         })
