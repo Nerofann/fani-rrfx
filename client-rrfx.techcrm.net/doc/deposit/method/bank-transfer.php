@@ -100,7 +100,7 @@
                         button.removeClass('loading')
                         Swal.fire(resp.alert).then(() => {
                             if(resp.success) {
-                                location.reload();
+                                location.href = '/deposit';
                             }
                         })
                     })
