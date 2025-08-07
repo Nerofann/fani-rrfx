@@ -55,6 +55,16 @@ if(!$adminBank) {
     ]);
 }
 
+/** check apakah ada deposit pending */
+$isHavePending = Account::havePendingTransaction($user['MBR_ID']);
+if($isHavePending) {
+    JsonResponse([
+        'success' => false,
+        'message' => "Masih ada transaksi yang belum selesai",
+        'data' => []
+    ]);
+}
+
 /** Check Jumlah */
 $jumlah = Helper::stringTonumber($data['amount']);
 if($jumlah <= 0) {
