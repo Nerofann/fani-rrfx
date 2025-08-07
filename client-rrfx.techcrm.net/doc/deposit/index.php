@@ -23,6 +23,7 @@
                                         <th rowspan="2" class="text-center">Rate</th>
                                         <th rowspan="2" class="text-center">Img</th>
                                         <th rowspan="2" class="text-center">Status</th>
+                                        <th rowspan="2" class="text-center">Note</th>
                                     </tr>
                                     <tr>
                                         <th class="text-center">Request</th>
@@ -44,7 +45,10 @@
                 order: [[0, 'desc']],
                 ajax: {
                     url: "/ajax/datatable/deposit",
-                }
+                },
+                columnDefs: [
+                    { targets: 6, className: "text-center" }
+                ]
             })
         })
     </script>
