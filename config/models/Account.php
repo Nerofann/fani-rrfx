@@ -52,6 +52,33 @@ class Account {
         }
     }
 
+    public static function realAccountDetail_byLogin(string $login) {
+        try {
+            global $db;
+            $sqlGet = $db->query("
+                SELECT 
+                    tr.*,
+                    tra.*,
+                    tm.*
+                FROM tb_racc tr 
+                JOIN tb_member tm ON (tm.MBR_ID = tr.ACC_MBR)
+                JOIN tb_racctype tra ON (tra.ID_RTYPE = tr.ACC_TYPE)
+                WHERE UPPER(tra.RTYPE_TYPE) != 'DEMO'
+                AND tr.ACC_LOGIN = '{$login}'
+                LIMIT 1
+            ");
+
+            return $sqlGet->fetch_assoc() ?? [];
+
+        } catch (Exception $e) {
+            if(SystemInfo::isDevelopment()) {
+                throw $e;
+            }
+
+            return [];
+        }
+    }
+
     public static function accoundCondition(int $idAcc) {
         try {
             global $db;
