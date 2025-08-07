@@ -22,7 +22,6 @@
                                         <th colspan="2" class="text-center">Amount</th>
                                         <th rowspan="2" class="text-center">Rate</th>
                                         <th rowspan="2" class="text-center">Img</th>
-                                        <th rowspan="2" class="text-center">Note</th>
                                         <th rowspan="2" class="text-center">Status</th>
                                     </tr>
                                     <tr>
@@ -61,4 +60,3 @@
         </div>
     </div>
 <?php endif; ?>
-
