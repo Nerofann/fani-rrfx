@@ -10,7 +10,7 @@ $dt->query("
         td.DPWD_RATE,
         td.DPWD_PIC,
         td.DPWD_STS,
-        td.DPWD_NOTE
+        td.DPWD_NOTE1
     FROM tb_dpwd td
     JOIN tb_racc tr ON (tr.ID_ACC = td.DPWD_RACC) 
     WHERE td.DPWD_TYPE = 1
