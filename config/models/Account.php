@@ -32,7 +32,20 @@ class Account {
                 SELECT 
                     tr.*,
                     tra.*,
-                    tm.*
+                    tm.*,
+                    (
+                        SELECT
+                            JSON_ARRAYAGG(
+                                JSON_OBJECT(
+                                    'MBANK_NAME', tb_member_bank.MBANK_NAME,
+                                    'MBANK_HOLDER', tb_member_bank.MBANK_HOLDER,
+                                    'MBANK_ACCOUNT', tb_member_bank.MBANK_ACCOUNT
+                                )
+                            )
+                        FROM tb_member_bank
+                        WHERE tb_member_bank.MBANK_MBR = tm.MBR_ID
+                        LIMIT 1
+                    ) AS MBR_BKJSN
                 FROM tb_racc tr 
                 JOIN tb_member tm ON (tm.MBR_ID = tr.ACC_MBR)
                 JOIN tb_racctype tra ON (tra.ID_RTYPE = tr.ACC_TYPE)
