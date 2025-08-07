@@ -1,3 +1,8 @@
+<?php
+
+use Config\Core\EmailSender;
+
+ $profile = App\Models\ProfilePerusahaan::get(); ?>
 <a href="/ticket" class="btn btn-primary"><i class="fas fa-plus"></i> Buka Tiket</a>
 <div class="row mt-3">
     <div class="col-md-6">
@@ -8,7 +13,7 @@
                 </div>
 
                 <div class="row mb-4">
-                    <div class="col-md-12">
+                    <div classweb="col-md-12">
                         <a href="javascript:void(0)" data-bs-toggle="collapse" data-bs-target="#collapse-memulai-trading" class="w-100 text-dark">
                             <div class="card bg-primary">
                                 <div class="card-header">
@@ -87,11 +92,11 @@
                             <div class="panel">
                                 <div class="panel-body">
                                     <ol>
-                                        <li class="small">Menu tiket di aplikasi <?php echo $web_name_full ?></li>
-                                        <li class="small">Nasabah bisa datang langsung ke kantor <?php echo $web_name_full ?></li>
+                                        <li class="small">Menu tiket di aplikasi <?= $profile['PROF_COMPANY_NAME'] ?></li>
+                                        <li class="small">Nasabah bisa datang langsung ke kantor <?= $profile['PROF_COMPANY_NAME'] ?></li>
                                         <li class="small">Melalui surat tercatat</li>
-                                        <li class="small">Surat elektronik <?php echo $setting_email_support ?></li>
-                                        <li class="small">Nomor Telepon <?php echo $setting_office_number ?></li>
+                                        <li class="small">Surat elektronik <?= $profile['OFFICE']['OFC_EMAIL'] ?></li>
+                                        <li class="small">Nomor Telepon <?= $profile['OFFICE']['OFC_PHONE'] ?></li>
                                     </ol>
                                 </div>
                             </div>
