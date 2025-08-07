@@ -819,7 +819,8 @@ class AppPost {
             'ACC_TANGGAL_LAHIR'     => $data['smls_tgllhr'],
             'ACC_TYPE_IDT'          => $data['smls_tipeidt'],
             'ACC_NO_IDT'            => $data['smls_nomidt'],
-            'ACC_DEMO'              => $demoAccount['ACC_LOGIN']
+            'ACC_DEMO'              => $demoAccount['ACC_LOGIN'],
+            'ACC_LAST_STEP'         => "pernyataan-pengalaman",
         ], [
             'ID_ACC' => $progressAccount['ID_ACC']
         ]);
@@ -905,7 +906,8 @@ class AppPost {
             'ACC_F_PENGLAMAN_PERYT' => "Ya",
             'ACC_F_PENGLAMAN_PERYT_YA' => $data['pengalaman'],
             'ACC_F_PENGLAMAN_PERSH' => $data['perusahaan'] ?? NULL,
-            'ACC_F_PENGLAMAN_DATE'  => date("Y-m-d H:i:s")
+            'ACC_F_PENGLAMAN_DATE'  => date("Y-m-d H:i:s"),
+            'ACC_LAST_STEP'         => "pernyataan-pengalaman",
         ], [
             'ID_ACC' => $progressAccount['ID_ACC']
         ]);
@@ -966,7 +968,8 @@ class AppPost {
             'ACC_F_DISC'        => 1,
             'ACC_F_DISC_IP'     => Helper::get_ip_address(),
             'ACC_F_DISC_PERYT'  => "Ya",
-            'ACC_F_DISC_DATE'   => date("Y-m-d H:i:s")
+            'ACC_F_DISC_DATE'   => date("Y-m-d H:i:s"),
+            'ACC_LAST_STEP'     => "pernyataan-pengungkapan-1",
         ], [
             'ID_ACC' => $progressAccount['ID_ACC']
         ]);
@@ -1027,7 +1030,8 @@ class AppPost {
             'ACC_F_DISC2'        => 1,
             'ACC_F_DISC_IP2'     => Helper::get_ip_address(),
             'ACC_F_DISC_PERYT2'  => "Ya",
-            'ACC_F_DISC_DATE2'   => date("Y-m-d H:i:s")
+            'ACC_F_DISC_DATE2'   => date("Y-m-d H:i:s"),
+            'ACC_LAST_STEP'     => "pernyataan-pengungkapan-2",
         ], [
             'ID_ACC' => $progressAccount['ID_ACC']
         ]);
@@ -1088,7 +1092,8 @@ class AppPost {
             'ACC_F_DISC3'        => 1,
             'ACC_F_DISC_IP3'     => Helper::get_ip_address(),
             'ACC_F_DISC_PERYT3'  => "Ya",
-            'ACC_F_DISC_DATE3'   => date("Y-m-d H:i:s")
+            'ACC_F_DISC_DATE3'   => date("Y-m-d H:i:s"),
+            'ACC_LAST_STEP'     => "pernyataan-pengungkapan-3",
         ], [
             'ID_ACC' => $progressAccount['ID_ACC']
         ]);
@@ -1149,7 +1154,8 @@ class AppPost {
             'ACC_F_DISC4'        => 1,
             'ACC_F_DISC_IP4'     => Helper::get_ip_address(),
             'ACC_F_DISC_PERYT4'  => "Ya",
-            'ACC_F_DISC_DATE4'   => date("Y-m-d H:i:s")
+            'ACC_F_DISC_DATE4'   => date("Y-m-d H:i:s"),
+            'ACC_LAST_STEP'     => "pernyataan-pengungkapan-4",
         ], [
             'ID_ACC' => $progressAccount['ID_ACC']
         ]);
@@ -1278,6 +1284,7 @@ class AppPost {
             'ACC_F_APPPEMBUKAAN_PERYT' => "Ya",
             'ACC_F_APP_DATE' => date("Y-m-d H:i:s"),
             'ACC_F_APPPEMBUKAAN_DATE' => date("Y-m-d H:i:s"),
+            'ACC_LAST_STEP' => "aplikasi-pembukaan-rekening",
         ], [
             'ID_ACC' => $progressAccount['ID_ACC']
         ]);
@@ -1840,7 +1847,8 @@ class AppPost {
             'ACC_F_RESK' => 1,
             'ACC_F_RESK_PERYT' => "Ya" ,
             'ACC_F_RESK_IP' => Helper::get_ip_address(),
-            'ACC_F_RESK_DATE' => date("Y-m-d H:i:s")
+            'ACC_F_RESK_DATE' => date("Y-m-d H:i:s"),
+            'ACC_LAST_STEP' => "formulir-dokumen-resiko",
         ], [
             'ID_ACC' => $progressAccount['ID_ACC']
         ]);
@@ -1965,7 +1973,8 @@ class AppPost {
             'ACC_F_PERJ_DATE' => date("Y-m-d H:i:s"),
             'ACC_F_PERJ_WPB' => $wpbVerifikator['WPB_NAMA'],
             'ACC_F_PERJ_KANTOR' => $data['step07_kantorpenyelesaian'],
-            'ACC_F_PERJ_PERSLISIHAN' => $data['step07_kotapenyelesaian']
+            'ACC_F_PERJ_PERSLISIHAN' => $data['step07_kotapenyelesaian'],
+            'ACC_LAST_STEP' => "perjanjian-pemberian-amanat",
         ], [
             'ID_ACC' => $progressAccount['ID_ACC']
         ]);
@@ -2026,7 +2035,8 @@ class AppPost {
             'ACC_F_TRDNGRULE' => 1,
             'ACC_F_TRDNGRULE_IP' => Helper::get_ip_address(),
             'ACC_F_TRDNGRULE_PERYT' => "Ya",
-            'ACC_F_TRDNGRULE_DATE' => date("Y-m-d H:i:s")
+            'ACC_F_TRDNGRULE_DATE' => date("Y-m-d H:i:s"),
+            'ACC_LAST_STEP' => "peraturan-perdagangan",
         ], [
             'ID_ACC' => $progressAccount['ID_ACC']
         ]);
@@ -2088,6 +2098,7 @@ class AppPost {
             'ACC_F_KODE_IP' => Helper::get_ip_address(),
             'ACC_F_KODE_PERYT' => "Ya",
             'ACC_F_KODE_DATE' => date("Y-m-d H:i:s"),
+            'ACC_LAST_STEP' => "pernyataan-bertanggung-jawab",
         ], [
             'ID_ACC' => $progressAccount['ID_ACC']
         ]);
@@ -2141,14 +2152,13 @@ class AppPost {
                 ]
             ]));  
         }
-
-        
         
         $update = Database::update("tb_racc", [
             'ACC_F_DANA' => 1,
             'ACC_F_DANA_IP' => Helper::get_ip_address(), 
             'ACC_F_DANA_PERYT' => "Ya",
-            'ACC_F_DANA_DATE' => date("Y-m-d H:i:s")
+            'ACC_F_DANA_DATE' => date("Y-m-d H:i:s"),
+            'ACC_LAST_STEP' => "pernyataan-dana-nasabah",
         ], [
             'ID_ACC' => $progressAccount['ID_ACC']
         ]);
@@ -2489,7 +2499,12 @@ class AppPost {
 
         /** Update Status Verifikasi (Jika berbeda dari sebelumnya) */
         if($statusVerifikasiVerihub != $progressAccount['ACC_DOC_VERIF']) {
-            $update = Database::update("tb_racc", ['ACC_DOC_VERIF' => $statusVerifikasiVerihub], ['ID_ACC' => $progressAccount['ID_ACC']]);
+            $updateData = [
+                'ACC_DOC_VERIF' => $statusVerifikasiVerihub,
+                'ACC_LAST_STEP' => "verifikasi-identitas",
+            ];
+
+            $update = Database::update("tb_racc", $updateData, ['ID_ACC' => $progressAccount['ID_ACC']]);
             if($update !== TRUE) {
                 exit(json_encode([
                     'success'   => false,
@@ -2576,22 +2591,17 @@ class AppPost {
             ]));  
         }
 
-        
-        
-        
-
-
         $dataUpdate = [
             'ACC_F_CMPLT' => 1,
             'ACC_F_CMPLT_IP' => Helper::get_ip_address(), 
             'ACC_F_CMPLT_PERYT' => "Ya",
             'ACC_F_CMPLT_DATE' => date("Y-m-d H:i:s"),
             'ACC_STS' => 1,
-            'ACC_KODE' => uniqid()
+            'ACC_KODE' => uniqid(),
+            'ACC_LAST_STEP' => "deposit-new-account",
         ];
 
         $update = Database::update("tb_racc", $dataUpdate, ['ID_ACC' => $progressAccount['ID_ACC']]);
-
         if($update !== TRUE) {
             exit(json_encode([
                 'success'   => false,
@@ -2673,10 +2683,6 @@ class AppPost {
                 ]
             ]));  
         }
-
-        
-        
-        
         
         $amountSource = Helper::stringTonumber($data['dpnewacc_dpstval']);
         $amountFinal = 0;
