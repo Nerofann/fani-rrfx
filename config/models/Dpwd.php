@@ -36,7 +36,7 @@ class Dpwd {
     public static function findById(string $id): array|bool {
         try {
             $db = Database::connect();
-            $sqlGet = $db->query("SELECT * FROM tb_dpwd JOIN tb_racc ON(tb_dpwd.DPWD_RACC = tb_racc.ID_ACC) WHERE MD5(MD5(tb_dpwd.ID_DPWD)) = '{$id}' LIMIT 1");
+            $sqlGet = $db->query("SELECT * FROM tb_dpwd WHERE MD5(MD5(tb_dpwd.ID_DPWD)) = '{$id}' LIMIT 1");
             return $sqlGet->fetch_assoc() ?? false;
 
         } catch (Exception $e) {
