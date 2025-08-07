@@ -84,5 +84,20 @@ class Admin extends AdminAuth {
             return false;
         }
     }
+
+    public static function findBankByCurrency(string $currency): array {
+        try {
+            $db = Database::connect();
+            $sqlGet = $db->query("SELECT * FROM tb_bankadm WHERE LOWER(BKADM_CURR) = LOWER('{$currency}') LIMIT 1");
+            return $sqlGet->fetch_all(MYSQLI_ASSOC);
+
+        } catch (Exception $e) {
+            if(SystemInfo::isDevelopment()) {
+                throw $e;
+            }
+            
+            return [];
+        }
+    }
     
 }

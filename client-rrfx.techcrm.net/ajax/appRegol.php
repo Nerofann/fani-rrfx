@@ -575,7 +575,7 @@ class AppPost {
         $progressAccount = $this->checkProgressAccount($user['userid']);
         
         /** Check Status */
-        $this->isAllowToEdit(status: $progressAccount['ACC_STS']);
+        $this->isAllowToEdit( $progressAccount['ACC_STS']);
 
         /** Update */
         $updateData = [
@@ -596,19 +596,6 @@ class AppPost {
                     'icon'  => "error"
                 ]
             ]));
-        }
-        
-        $sqlUpdate = $this->db->prepare("UPDATE tb_racc SET  = 1,  = ?,  = 'Yes',  = ? WHERE ID_ACC = ?");
-        $sqlUpdate->bind_param("ssi", $ipAddress, $datetime, $progressAccount['ID_ACC']);
-        if(!$sqlUpdate->execute()) {
-            exit(json_encode([
-                'success'   => false,
-                'alert'     => [
-                    'title' => "Gagal",
-                    'text'  => "Gagal menyimpan kemajuan saat ini",
-                    'icon'  => "error"
-                ]
-            ])); 
         }
 
         Logger::client_log([
