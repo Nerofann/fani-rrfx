@@ -75,11 +75,11 @@
                         </div>
                         <div class="col-6">
                             <label for="po-sl" class="form-label">SL</label>
-                            <input type="number" name="po-sl" id="po-sl" class="form-control" required>
+                            <input type="number" name="po-sl" id="po-sl" class="form-control" value="0" required>
                         </div>
                         <div class="col-6">
                             <label for="po-tp" class="form-label">TP</label>
-                            <input type="number" name="po-tp" id="po-tp" class="form-control" required>
+                            <input type="number" name="po-tp" id="po-tp" class="form-control" value="0" required>
                         </div>
                         <div class="col-12">
                             <label for="po-price" class="form-label">Price</label>
@@ -206,6 +206,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script type="text/javascript">
+    let table_opentrade, table_historytrade;
     $(document).ready(function() {
         const account = {
             element: $('#account'),
@@ -229,6 +230,7 @@
 
                     Swal.close();
                     symbol.refreshSymbol();
+                    table_opentrade.draw();
                 }, 'json');
             },
             init() {
@@ -352,8 +354,72 @@
             }
         }
 
+        const execution = {
+            buttonBuy: $('#exe-buy'),
+            buttonSell: $('#exe-sell'),
+            validate() {
+                let data = {
+                    account: $('#account').val(),
+                    symbol: $('#Symbol').val(),
+                    sl: $('#exe-sl').val(),
+                    tp: $('#exe-tp').val(),
+                    volume: $('#exe-volume').val(),
+                }
+
+                if(!data.account) {
+                    Swal.fire("Gagal", "Mohon pilih account", "error");
+                    return false;
+                }
+
+                if(!data.symbol) {
+                    Swal.fire("Gagal", "Mohon pilih symbol", "error");
+                    return false;
+                }
+
+                if(!data.volume || data.volume <= 0) {
+                    Swal.fire("Gagal", "Mohon isi jumlah volume", "error");
+                    return false;
+                }
+
+                return data;
+            },
+            redraw() {
+                table_opentrade.draw();
+                table_historytrade.draw();
+            },
+            async buy() {
+                let data = await this.validate();
+                data.type = "buy";
+                $.post("/ajax/post/market/execution", data, (resp) => {
+                    if(!resp.success) {
+                        Swal.fire(resp.alert);
+                        return;
+                    }
+
+                    this.redraw()
+                }, 'json')
+            },
+            async sell() {
+                let data = await this.validate();
+                data.type = "sell";
+                $.post("/ajax/post/market/execution", data, (resp) => {
+                    if(!resp.success) {
+                        Swal.fire(resp.alert);
+                        return;
+                    }
+
+                    this.redraw()
+                }, 'json')
+            },
+            init() {
+                this.buttonBuy.on('click', () => this.buy());
+                this.buttonSell.on('click', () => this.sell());
+            }
+        }
+
         account.init();
         symbol.init();
+        execution.init();
     })
 </script>
 <script type="text/javascript">
@@ -373,6 +439,77 @@
                 { targets: 1, className: "text-end" },
                 { targets: 3, className: "text-center" },
             ]
+        })
+
+        table_opentrade = $('#table-opened-order').DataTable({
+            processing: true,
+            serverSide: true,
+            order: [[0, 'desc']],
+            ajax: {
+                url: "/ajax/datatable/web-trade-opentrade",
+                data: function(d) {
+                    d.account = $('#account').val()
+                }
+            },
+            columnDefs: [
+                { targets: 0, className: "text-center" },
+                { targets: 1, className: "text-center" },
+                { targets: 2, className: "text-center" },
+                { targets: 3, className: "text-center" },
+                { targets: 4, className: "text-end" },
+                { targets: 5, className: "text-end" },
+                { targets: 6, className: "text-end" },
+                { targets: 7, className: "text-end" },
+                { targets: 8, className: "text-center" },
+            ],
+            drawCallback: function() {
+                $('.close').on('click', function(evt) {
+                    let target = $(evt.currentTarget);
+                    if(target && target.data('ticket')) {
+                        Swal.fire({
+                            title: "Close Order",
+                            text: "Konfirmasi untuk melanjutkan",
+                            icon: "question",
+                            showCancelButton: true,
+                            reverseButtons: true,
+                        }).then((result) => {
+                            if(result.isConfirmed) {
+                                $.post("/ajax/post/market/close-trade", {account: $('#account').val(), ticket: target.data('ticket')}, (resp) => {
+                                    Swal.fire(resp.alert).then(() => {
+                                        if(resp.success) {
+                                            table_opentrade.draw()
+                                            table_historytrade.draw()
+                                        }
+                                    })
+                                }, 'json')
+                            }
+                        })
+                    }
+                })
+            }
+        })
+
+        table_historytrade = $('#table-history').DataTable({
+            processing: true,
+            serverSide: true,
+            order: [[0, 'desc']],
+            ajax: {
+                url: "/ajax/datatable/web-trade-historytrade",
+                data: function(d) {
+                    d.account = $('#account').val()
+                }
+            },
+            columnDefs: [
+                { targets: 0, className: "text-center" },
+                { targets: 1, className: "text-center" },
+                { targets: 2, className: "text-center" },
+                { targets: 3, className: "text-center" },
+                { targets: 4, className: "text-end" },
+                { targets: 5, className: "text-end" },
+                { targets: 6, className: "text-end" },
+                { targets: 7, className: "text-end" },
+                { targets: 8, className: "text-center" },
+            ],
         })
     })
 </script>
