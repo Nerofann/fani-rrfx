@@ -170,7 +170,7 @@ Logger::client_log([
 $db->commit();
 JsonResponse([
     'success'   => true,
-    'message'   => "Registration Successfull",
+    'message'   => "Registrasi berhasil, Email verifikasi telah dikirimkan ke " . $data['email'],
     'data'      => [
         'redirect'  => "/"
     ]
