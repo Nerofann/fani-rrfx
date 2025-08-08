@@ -98,7 +98,7 @@ use App\Models\FileUpload;
                 <button class="header-btn theme-settings-btn d-lg-none"><i class="fa-light fa-gear"></i></button>
                 <div class="header-btn-box profile-btn-box">
                     <button class="profile-btn" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="<?= FileUpload::awsFile($user['MBR_AVATAR']); ?>" alt="image">
+                        <img src="<?= App\Models\User::avatar($user['MBR_AVATAR']); ?>" alt="image">
                     </button>
                     <ul class="dropdown-menu profile-dropdown-menu">
                         <li>
