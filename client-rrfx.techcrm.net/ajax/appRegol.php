@@ -885,17 +885,39 @@ class AppPost {
             ]));  
         }
 
-        if(strtolower($data['pengalaman']) == "Ya") {
-            if(empty($data['perusahaan'])) {
-                exit(json_encode([
-                    'success'   => false,
-                    'alert'     => [
-                        'title' => "Gagal",
-                        'text'  => "Nama Perusahaan Berjangka diperlukan",
-                        'icon'  => "error"
-                    ]
-                ])); 
-            }
+        // if(strtolower($data['pengalaman']) == "ya") {
+        //     if(empty($data['perusahaan'])) {
+        //         exit(json_encode([
+        //             'success'   => false,
+        //             'alert'     => [
+        //                 'title' => "Gagal",
+        //                 'text'  => "Nama Perusahaan Berjangka diperlukan",
+        //                 'icon'  => "error"
+        //             ]
+        //         ])); 
+        //     }
+        // }
+
+        if(strtolower($data['pengalaman']) != "ya") {
+            exit(json_encode([
+                'success'   => false,
+                'alert'     => [
+                    'title' => "Gagal",
+                    'text'  => "Anda harus berpengalaman dalam bidang investasi",
+                    'icon'  => "error"
+                ]
+            ])); 
+        }
+
+        if(empty($data['perusahaan'])) {
+            exit(json_encode([
+                'success'   => false,
+                'alert'     => [
+                    'title' => "Gagal",
+                    'text'  => "Nama Perusahaan Berjangka diperlukan",
+                    'icon'  => "error"
+                ]
+            ])); 
         }
 
         
