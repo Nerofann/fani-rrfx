@@ -1,12 +1,13 @@
 <?php
 
+use App\Factory\VerihubFactory;
 use Config\Core\Database;
 use App\Models\FileUpload;
 use App\Models\Helper;
 use App\Models\Logger;
 use App\Models\User;
-use App\Shared\Verihubs;
 
+$verihub = VerihubFactory::init();
 $data = Helper::getSafeInput($_POST);
 $arRequired = [
     'fullname'  => "Fullname",
@@ -81,7 +82,7 @@ if(empty($_FILES['ktp_photo']) || $_FILES['ktp_photo']['error'] != 0) {
     ]);
 }
 
-$fotoKtp = Verihubs::validate_photoKtp($_FILES['ktp_photo']);
+$fotoKtp = $verihub->validate_photoKtp($_FILES['ktp_photo']);
 if(!is_array($fotoKtp)) {
     JsonResponse([
         'success' => false,
@@ -99,7 +100,7 @@ if(empty($_FILES['selfie_photo']) || $_FILES['selfie_photo']['error'] != 0) {
     ]);
 }
 
-$fotoSelfie = Verihubs::validate_photoSelfie($_FILES['selfie_photo']);
+$fotoSelfie = $verihub->validate_photoSelfie($_FILES['selfie_photo']);
 if(!is_array($fotoSelfie)) {
     JsonResponse([
         'success' => false,
