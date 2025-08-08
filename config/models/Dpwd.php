@@ -55,7 +55,7 @@ class Dpwd {
     public static function findByRaccId(string $id): array|bool {
         try {
             $db = Database::connect();
-            $sqlGet = $db->query("SELECT * FROM tb_dpwd WHERE tb_dpwd.DPWD_RACC = '{$id}' LIMIT 1");
+            $sqlGet = $db->query("SELECT * FROM tb_dpwd WHERE tb_dpwd.DPWD_RACC = '{$id}' ORDER BY tb_dpwd.ID_DPWD DESC LIMIT 1");
             return $sqlGet->fetch_assoc() ?? false;
 
         } catch (Exception $e) {
