@@ -1408,7 +1408,7 @@ class AppPost {
                     'success' => false,
                     'alert' => [
                         'title' => "Gagal",
-                        'text'  => "Nomor NPWP harus 16 digit atau lebih",
+                        'text'  => "Nomor NPWP harus 16 digit",
                         'icon'  => "error"
                     ] 
                 ]));
