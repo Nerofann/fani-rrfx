@@ -1402,7 +1402,7 @@ class AppPost {
             }
         }
 
-        if(strlen($data['app_npwp']) < 16) {
+        if(strlen($data['app_npwp']) != 16) {
             if($this->unrequireNPWP($progressAccount["ACC_TYPE"])){
                 exit(json_encode([
                     'success' => false,
