@@ -19,7 +19,7 @@
                             <label for="from-account" class="form-label required">Pilih Akun Pengirim</label>
                             <select name="from-account" id="from-account" class="form-control" required>
                                 <?php foreach(App\Models\Account::myAccount($user['MBR_ID']) as $account) : ?>
-                                    <option value="<?= $account['ACC_LOGIN'] ?>"><?= $account['ACC_LOGIN'] ?></option>
+                                    <option value="<?= $account['ACC_LOGIN'] ?>"><?= $account['ACC_LOGIN'] ?> (<?= App\Models\Helper::formatCurrency($account['MARGIN_FREE']) ?> USD)</option>
                                 <?php endforeach; ?>
                             </select>
                         </div>

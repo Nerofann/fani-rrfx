@@ -5,7 +5,7 @@
             <select name="account" id="account" class="form-control" required>
                 <?php foreach(App\Models\Account::myAccount($user['MBR_ID']) as $account) : ?>
                     <option value="<?= md5(md5($account['ID_ACC'])) ?>" data-currency="<?= $account['RTYPE_CURR']; ?>">
-                        <?= $account['ACC_LOGIN'] ?>
+                        <?= $account['ACC_LOGIN'] ?> (<?= App\Models\Helper::formatCurrency($account['MARGIN_FREE']) ?> USD)
                     </option>
                 <?php endforeach; ?>
             </select>

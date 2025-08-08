@@ -17,12 +17,26 @@ if(!$from) {
 $result = [];
 $mbrid = $user['MBR_ID'];
 $rate = $from['RTYPE_RATE'];
-$sqlGet = $db->query("SELECT ACC_LOGIN FROM tb_racc JOIN tb_racctype ON (ID_RTYPE = ACC_TYPE) WHERE ACC_MBR = {$mbrid} AND RTYPE_RATE = {$rate} AND ACC_LOGIN != '$fromAccount' AND ACC_DERE = 1 AND ACC_STS = -1 AND ACC_LOGIN != 0");
+$sqlGet = $db->query("
+    SELECT 
+        tr.ACC_LOGIN,
+        mt5u.MARGIN_FREE
+    FROM tb_racc tr
+    JOIN tb_racctype trt ON (trt.ID_RTYPE = tr.ACC_TYPE) 
+    JOIN mt5_users mt5u ON (mt5u.LOGIN = tr.ACC_LOGIN)
+    WHERE tr.ACC_MBR = {$mbrid} 
+    AND trt.RTYPE_RATE = {$rate} 
+    AND tr.ACC_LOGIN != '$fromAccount' 
+    AND tr.ACC_DERE = 1 
+    AND tr.ACC_STS = -1 
+    AND tr.ACC_LOGIN != 0
+");
+
 if($sqlGet->num_rows != 0) {
     foreach($sqlGet->fetch_all(MYSQLI_ASSOC) as $asoc) {
         $result[] = [
             'login' => $asoc['ACC_LOGIN'],
-            'balance' => Helper::formatCurrency(0). " USD"
+            'balance' => Helper::formatCurrency($asoc['MARGIN_FREE']). " USD"
         ];
     }
 }

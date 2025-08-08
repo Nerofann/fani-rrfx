@@ -119,25 +119,24 @@ class Account {
         }
     }
 
-    public static function marginBalance(int $accLogin) {
-        // try {
-        //     global $db;
-        //     $sqlGetAccount = $db->query("SELECT (MARGIN_FREE-CREDIT) AS BALANCE, CREDIT FROM MT4_USERS WHERE `LOGIN` = {$accLogin} LIMIT 1");
-        //     if($sqlGetAccount->num_rows != 1) {
-        //         return "Invalid Account";
-        //     }
+    public static function marginBalance(int $accLogin): float|bool {
+        try {
+            global $db;
+            $sqlGetAccount = $db->query("SELECT MARGIN_FREE FROM mt5_users WHERE LOGIN = {$accLogin} LIMIT 1");
+            if($sqlGetAccount->num_rows != 1) {
+                return false;
+            }
 
-        //     $assoc = $sqlGetAccount->fetch_assoc();
-        //     return floatval($assoc['BALANCE'] ?? 0) ;
+            $assoc = $sqlGetAccount->fetch_assoc();
+            return floatval($assoc['MARGIN_FREE'] ?? 0) ;
 
-        // } catch (Exception $e) {
-        //     if(SystemInfo::isDevelopment()) {
-        //         return $e->getMessage();
-        //     }
+        } catch (Exception $e) {
+            if(SystemInfo::isDevelopment()) {
+                throw $e;
+            }
 
-        //     return "Invalid";
-        // }
-        return 1000000;
+            return false;
+        }
     }
 
     public static function creditBalance(int $accLogin) {
@@ -721,7 +720,19 @@ class Account {
     public static function myAccount(int $mbrid) {
         try {
             $db = Database::connect();
-            $sqlGet = $db->query("SELECT * FROM tb_racc  JOIN tb_racctype ON (ID_RTYPE = ACC_TYPE) WHERE ACC_MBR = $mbrid AND ACC_DERE = 1 AND ACC_STS = -1");
+            $sqlGet = $db->query("
+                SELECT 
+                    tr.*,
+                    trt.*,
+                    mt5u.MARGIN_FREE
+                FROM tb_racc tr
+                JOIN tb_racctype trt ON (trt.ID_RTYPE = tr.ACC_TYPE) 
+                JOIN mt5_users mt5u ON (mt5u.LOGIN = tr.ACC_LOGIN)
+                WHERE tr.ACC_MBR = $mbrid 
+                AND tr.ACC_DERE = 1 
+                AND tr.ACC_STS = -1
+            ");
+
             return $sqlGet->fetch_all(MYSQLI_ASSOC) ?? [];
 
         } catch (Exception $e) {
