@@ -465,7 +465,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-3 mb-3">
-                                    <label for="" class="form-label required">Rekening Koran Bank / Tagihan Kartu Kredit</label>
+                                    <label for="" class="form-control-label required text-sm" style="font-size: 14px;">Rekening Koran Bank / Tagihan Kartu Kredit</label>
                                     <input type="file" class="dropify" id="app_image_1" name="app_image_1" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_IMG'] ?? "") ?>">
                                 </div>
                                 <div class="col-md-3 mb-3">
