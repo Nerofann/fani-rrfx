@@ -24,7 +24,7 @@ if(strtotime($userData['MBR_OTP_EXPIRED']) < strtotime("now")) {
 }
 
 /** Update Sts */
-$update = Database::update("tb_member", ['MBR_STS' => -1], ['MBR_ID' => $userData['MBR_ID']]);
+$update = Database::update("tb_member", ['MBR_STS' => 2], ['MBR_ID' => $userData['MBR_ID']]);
 if(!$update) {
     die("<script>alert('Verification failed'); location.href = '/';</script>");
 }

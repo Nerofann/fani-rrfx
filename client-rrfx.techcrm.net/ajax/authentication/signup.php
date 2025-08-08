@@ -126,7 +126,7 @@ $insert = Database::insert("tb_member", [
     'MBR_COUNTRY' => $data['country'],
     'MBR_OTP' => $data['otp'],
     'MBR_OTP_EXPIRED' => $dateExpired,
-    'MBR_STS' => 2
+    'MBR_STS' => 0
 ]);
 
 if(!$insert) {
@@ -149,15 +149,15 @@ if(!$otpVerification['success']) {
     ]);
 }
 
-// /** Email Verifikasi */
-// $emailData = [
-//     'subject'   => "Email Verification",
-//     'code'  => md5(md5($newMbrId.$data['otp'])),
-// ];
+/** Email Verifikasi */
+$emailData = [
+    'subject'   => "Email Verification",
+    'code'  => md5(md5($newMbrId.$data['otp'])),
+];
 
-// $emailSender = EmailSender::init(['email' => $data['email'], 'name' => $data['fullname']]);
-// $emailSender->useFile("register", $emailData);
-// $send = $emailSender->send();
+$emailSender = EmailSender::init(['email' => $data['email'], 'name' => $data['fullname']]);
+$emailSender->useFile("register", $emailData);
+$send = $emailSender->send();
 
 /** Log */
 Logger::client_log([
