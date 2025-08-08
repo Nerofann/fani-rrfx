@@ -98,14 +98,14 @@ if(!$phone) {
     ]);
 }
 
-$isValidOTP = $verihub->validate_otp_sms($phone, $data['otp']);
-if($isValidOTP !== TRUE) {
-    JsonResponse([
-        'success'   => false,
-        'message'   => $isValidOTP ?? "Invalid otp",
-        'data'      => []
-    ]);
-}
+// $isValidOTP = $verihub->validate_otp_sms($phone, $data['otp']);
+// if($isValidOTP !== TRUE) {
+//     JsonResponse([
+//         'success'   => false,
+//         'message'   => $isValidOTP ?? "Invalid otp",
+//         'data'      => []
+//     ]);
+// }
 
 /** Insert */
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
