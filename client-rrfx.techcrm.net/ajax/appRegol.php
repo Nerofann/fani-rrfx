@@ -2615,7 +2615,7 @@ class AppPost {
             'ACC_F_CMPLT_DATE' => date("Y-m-d H:i:s"),
             'ACC_STS' => 1,
             'ACC_KODE' => uniqid(),
-            'ACC_LAST_STEP' => "deposit-new-account",
+            'ACC_LAST_STEP' => "kelengkapan-formulir",
         ];
 
         $update = Database::update("tb_racc", $dataUpdate, ['ID_ACC' => $progressAccount['ID_ACC']]);
