@@ -126,7 +126,7 @@ class Helper {
         return $result;
     }
 
-    public static function penyebut(int $nilai) {
+    public static function penyebut(float $nilai) {
         $nilai = (int)abs($nilai);
         $huruf = array("", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas");
         $temp = "";
