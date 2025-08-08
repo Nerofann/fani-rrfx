@@ -138,16 +138,16 @@ if(!$insert) {
     ]);
 }
 
-/** Validasi OTP dengan Verihubs */
-$otpVerification = $verihub->sendOtp_sms_verification(['otp' => $data['otp'], 'phone' => $phone]);
-if(!$otpVerification['success']) {
-    $db->rollback();
-    JsonResponse([
-        'success'   => false,
-        'message'   =>  $otpVerification['message'],
-        'data'      => []
-    ]);
-}
+// /** Validasi OTP dengan Verihubs */
+// $otpVerification = $verihub->sendOtp_sms_verification(['otp' => $data['otp'], 'phone' => $phone]);
+// if(!$otpVerification['success']) {
+//     $db->rollback();
+//     JsonResponse([
+//         'success'   => false,
+//         'message'   =>  $otpVerification['message'],
+//         'data'      => []
+//     ]);
+// }
 
 /** Email Verifikasi */
 $emailData = [
