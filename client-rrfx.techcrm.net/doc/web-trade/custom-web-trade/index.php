@@ -1,0 +1,378 @@
+<div class="dashboard-breadcrumb mb-25">
+    <h2>Web Trade</h2>
+</div>
+<div class="row g-4">
+    <div class="col-xxl-9 col-lg-8">
+        <div class="panel mb-25">
+            <div class="panel-body">
+                <div id="candlestickChartTest"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xxl-3 col-lg-4">
+        <div class="panel mb-25">
+            <div class="panel-body">
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <label for="account" class="form-label">Account</label>
+                        <select name="account" id="account" class="form-select">
+                            <option value="">Pilih</option>
+                            <?php foreach(App\Models\Account::myAccount($user['MBR_ID']) as $account) : ?>
+                                <option value="<?= $account['ACC_LOGIN'] ?>"><?= $account['ACC_LOGIN'] ?> (<?= App\Models\Helper::formatCurrency($account['MARGIN_FREE']) ?> USD)</option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label for="Symbol" class="form-label">Symbol</label>
+                        <select id="Symbol" class="form-select">
+                            <option selected>Pilih</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label for="type_order" class="form-label">Type</label>
+                        <select id="type_order" class="form-select">
+                            <option selected value="exchange_execution">Market Execution</option>
+                            <option value="pending_order">Pending Order</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="exchange_execution" style="display: block;">
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="exe-sl" class="form-label">SL</label>
+                            <input type="number" name="exe-sl" id="exe-sl" class="form-control" value="0" required>
+                        </div>
+                        <div class="col-6">
+                            <label for="exe-tp" class="form-label">TP</label>
+                            <input type="number" name="exe-tp" id="exe-tp" class="form-control" value="0" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="exe-volume" class="form-label">Volume</label>
+                            <input type="number" name="exe-volume" value="0.01" id="exe-volume" class="form-control" min="0.01" max="12" step="0.01" required>
+                        </div>
+                        <div class="col-6">
+                            <button type="button" id="exe-sell" name="exe-sell" data-type="sell" class="btn btn-block btn-danger w-100 mb-3">Sell</button>
+                        </div>
+                        <div class="col-6">
+                            <button type="button" id="exe-buy" name="exe-buy" data-type="buy" class="btn btn-block btn-success w-100 mb-3">Buy</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="pending_order" style="display : none;">
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="po-type" class="form-label">Type</label>
+                            <select id="po-type" class="form-select">
+                                <option value="buy-limit">Buy Limit</option>
+                                <option value="sell-limit">Sell Limit</option>
+                                <option value="buy-stop">Buy Stop</option>
+                                <option value="sell-stop">Sell Stop</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="po-volume" class="form-label">Volume</label>
+                            <input type="number" name="po-volume" id="po-volume" class="form-control" min="0.01" max="12" step="0.01" required>
+                        </div>
+                        <div class="col-6">
+                            <label for="po-sl" class="form-label">SL</label>
+                            <input type="number" name="po-sl" id="po-sl" class="form-control" required>
+                        </div>
+                        <div class="col-6">
+                            <label for="po-tp" class="form-label">TP</label>
+                            <input type="number" name="po-tp" id="po-tp" class="form-control" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="po-price" class="form-label">Price</label>
+                            <input type="number" name="po-price" id="po-price" class="form-control" required>
+                        </div>
+                        <div class="col-12">
+                            <button type="button" id="po-place" name="po-place" class="btn btn-block btn-primary w-100 mb-3">Place</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const type_order = document.getElementById('type_order');
+    const exchange_execution = document.getElementById('exchange_execution');
+    const pending_order = document.getElementById('pending_order');
+    type_order.addEventListener('change', function handleChange(event) {
+        if (event.target.value === 'exchange_execution') {
+            exchange_execution.style.display  = 'block';
+            pending_order.style.display  = 'none';
+        } else {
+            exchange_execution.style.display  = 'none';
+            pending_order.style.display  = 'block';
+        }
+    });
+</script>
+<div class="panel mb-25">
+    <div class="panel-header">
+        <nav>
+            <div class="btn-box d-flex flex-wrap gap-1" id="nav-tab" role="tablist">
+                <button class="btn btn-sm btn-outline-primary active" id="nav-account-tab" data-bs-toggle="tab" data-bs-target="#nav-account" type="button" role="tab" aria-controls="nav-trade" aria-selected="true">Account</button>
+                <button class="btn btn-sm btn-outline-primary" id="nav-trade-tab" data-bs-toggle="tab" data-bs-target="#nav-trade" type="button" role="tab" aria-controls="nav-trade" aria-selected="true">Trade</button>
+                <button class="btn btn-sm btn-outline-primary" id="nav-history-tab" data-bs-toggle="tab" data-bs-target="#nav-history" type="button" role="tab" aria-controls="nav-history" aria-selected="false">History</button>
+            </div>
+        </nav>
+    </div>
+    <div class="panel-body">
+        <div class="tab-content profile-edit-tab" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-account" role="tabpanel" aria-labelledby="nav-account-tab" tabindex="0">
+                <div class="table-responsive">
+                    <table id="table-account" class="table table-bordered table-dashed table-hover digi-dataTable dataTable-resize table-striped">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Login</th>
+                                <th class="text-center">Leverage</th>
+                                <th class="text-center">Balance</th>
+                                <th width="10%" class="text-center">#</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="nav-trade" role="tabpanel" aria-labelledby="nav-trade-tab" tabindex="0">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-dashed table-hover digi-dataTable dataTable-resize table-striped" id="table-opened-order">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Symbol</th>
+                                <th class="text-center">Ticket</th>
+                                <th class="text-center">Time</th>
+                                <th class="text-center">Type</th>
+                                <th class="text-center">Volume</th>
+                                <th class="text-center">Price</th>
+                                <th class="text-center">S/L</th>
+                                <th class="text-center">T/P</th>
+                                <th class="text-center">#</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           
+                        </tbody>
+                    </table>
+                </div>
+
+                <hr>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-dashed table-hover digi-dataTable dataTable-resize table-striped" id="table-placed-order">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Symbol</th>
+                                <th class="text-center">Ticket</th>
+                                <th class="text-center">Time</th>
+                                <th class="text-center">Type</th>
+                                <th class="text-center">Volume</th>
+                                <th class="text-center">Price</th>
+                                <th class="text-center">S/L</th>
+                                <th class="text-center">T/P</th>
+                                <th class="text-center">#</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="nav-history" role="tabpanel" aria-labelledby="nav-history-tab" tabindex="0">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-dashed table-hover digi-dataTable dataTable-resize table-striped" id="table-history">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Open Time</th>
+                                <th class="text-center">Ticket</th>
+                                <th class="text-center">Symbol</th>
+                                <th class="text-center">Type</th>
+                                <th class="text-center">Volume</th>
+                                <th class="text-center">Price</th>
+                                <th class="text-center">S/L</th>
+                                <th class="text-center">T/P</th>
+                                <th width="10%" class="text-center">Profit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        const account = {
+            element: $('#account'),
+            showLoading(message = "Waiting Connection...") {
+                Swal.fire({
+                    text: message,
+                    allowOutsideClick: false,
+                    didOpen: function() {
+                        Swal.showLoading()
+                    }
+                })
+            },
+            onChange() {
+                this.showLoading();
+                $.post("/ajax/post/market/connect", {account: this.element.val()}, (resp) => {
+                    if(!resp.success) {
+                        Swal.fire(resp.alert);
+                        this.element.val("")
+                        return;
+                    }
+
+                    Swal.close();
+                    symbol.refreshSymbol();
+                }, 'json');
+            },
+            init() {
+                this.element.on('change', () => this.onChange());
+            },
+        }
+
+        const symbol = {
+            element: $('#Symbol'),
+            prices: [],
+            refreshSymbol() {
+                this.element.empty().append('<option disabled selected>Loading...</option>');
+                $.post("/ajax/post/market/symbols", {account: account.element.val()}, (resp) => {
+                    this.element.empty().append('<option disabled selected>Pilih</option>');
+                    if(!resp.success) {
+                        Swal.fire(resp.alert);
+                        return;
+                    }
+
+                    Swal.close();
+                    resp.data.forEach((val, i) => {
+                        this.element.append(`<option value="${val.currency}" data-digits="${val.digits}" data-min="${val.min}" data-max="${val.max}">${val.currency}</option>`);
+                    })
+                }, 'json')
+            },
+            onChange() {
+                account.showLoading("Loading...");
+                let data = {
+                    account: account.element.val(),
+                    symbol: this.element.val()
+                }
+
+                $.post("/ajax/post/market/price-history", data, (resp) => {
+                    if(!resp.success) {
+                        Swal.fire(resp.alert);
+                        return;
+                    }
+
+                    Swal.close();
+                    this.prices = resp.data;
+                    this.loadChart();
+                }, 'json')
+            },
+            loadChart() {
+                let chartData = []; 
+                this.prices.forEach(function(val, index) {
+                    chartData.push({
+                        x: new Date(val.time),
+                        y: [val.openPrice, val.highPrice, val.lowPrice, val.closePrice]
+                    })
+                });
+
+                let digits  = this.prices[0].digits || false;
+                var candlestickChartoptions = {
+                    series: [{
+                        color: '#FFFFFF',
+                        data: chartData
+                    }],
+                    chart: {
+                        type: 'candlestick',
+                        height: 537,
+                        toolbar: {
+                            show: false
+                        }
+                    },
+                    grid: {
+                        borderColor: '#334652',
+                        strokeDashArray: 3,
+                        xaxis: {
+                            lines: {
+                                show: true,
+                            }
+                        },
+                    },
+                    plotOptions: {
+                        candlestick: {
+                            colors: {
+                                upward: '#198754',
+                                downward: '#dc3545'
+                            }
+                        }
+                    },
+                    xaxis: {
+                        type: 'datetime',
+                        axisBorder: {
+                            show: false,
+                        },
+                        axisTicks: {
+                            show: false,
+                        },
+                    },
+                    yaxis: {
+                        tooltip: {
+                            enabled: true,
+                        },
+                        labels: {
+                            show: true,
+                            style: {
+                                colors: '#ffffff',
+                                fontWeight: 400
+                            },
+                            formatter: function (value) {
+                                return (digits !== false) ? parseFloat(value).toFixed(digits) : value
+                            },
+                        }
+                    },
+                    // responsive: [{
+                    //     breakpoint: 575,
+                    //     options: {
+                    //         chart: {
+                    //             height: 250,
+                    //         }
+                    //     },
+                    // }]
+                };
+                var chart = new ApexCharts(document.querySelector("#candlestickChartTest"), candlestickChartoptions);
+                chart.render();
+            },
+            init() {
+                this.element.on('change', () => this.onChange())
+            }
+        }
+
+        account.init();
+        symbol.init();
+    })
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        let table_account = $('#table-account').DataTable({
+            processing: true,
+            serverSide: true,
+            order: [[0, 'desc']],
+            ajax: {
+                url: "/ajax/datatable/web-trade-account",
+                data: function() {
+    
+                }
+            },
+            columnDefs: [
+                { targets: 0, className: "text-center" },
+                { targets: 1, className: "text-end" },
+                { targets: 3, className: "text-center" },
+            ]
+        })
+    })
+</script>
