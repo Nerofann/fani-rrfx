@@ -1954,7 +1954,7 @@ class AppPost {
             ]));  
         }
 
-        if(empty($data['step07_kotapenyelesaian']) || !in_array($data['step07_kotapenyelesaian'], ["BAKTI", "Pengadilan Negeri Jakarta Selatan"])) {
+        if(empty($data['step07_kotapenyelesaian']) || !in_array($data['step07_kotapenyelesaian'], ["BAKTI", "Pengadilan Negeri Jakarta Utara"])) {
             exit(json_encode([
                 'success'   => false,
                 'alert'     => [
