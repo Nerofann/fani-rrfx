@@ -317,7 +317,7 @@
                                             <td class="top-align text-start">
                                                 <div>
                                                     <select id="app_pekerjaan" class="form-control">
-                                                        <?php foreach(['Swasta', 'Wiraswasta', 'Ibu RT', 'Profesional', 'ASN', 'Mahasiswa', 'Pegawai BUMN', 'Lainnya'] as $pekerjaan) : ?>
+                                                        <?php foreach(App\Models\Regol::$listPekerjaan as $pekerjaan) : ?>
                                                             <option value="<?= $pekerjaan ?>" <?= (strtolower($realAccount['ACC_F_APP_KRJ_TYPE'] ?? "") == strtolower($pekerjaan))? "selected" : ""; ?>><?= $pekerjaan ?></option>
                                                         <?php endforeach; ?>
                                                     </select>

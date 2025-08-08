@@ -7,6 +7,25 @@ use Exception;
 
 class Regol {
 
+    public static $listPekerjaan = [
+        'Pengusaha / Wiraswasta',
+        'Pegawai Swasta',
+        'Profesional dan Konsultan',
+        'Pegawai Bank',
+        'Pedagang',
+        'Pegawai Money Changer',
+        'Ibu Rumah Tangga',
+        'Pengurus / Pegawai LSM / Organisasi tidak berbadan hukum lainnya',
+        'Pengurus dan pegawai yayasan / lembaga berbadan hukum lainnya',
+        'Ulama / Pendeta / Pimpinan organisasi dan kelompok keagamaan',
+        'Pelajar / Mahasiswa',
+        'Buruh, Pembantu Rumah Tangga dan Tenaga Keamanan',
+        'Petani dan Nelayan',
+        'Pengrajin',
+        'Lainnya',
+    ];
+
+
     public static function generatePassword(int $len = 8) {
         $lower = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z');
         $upper = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
