@@ -33,6 +33,15 @@ if(!$phone){
     ]);
 }
 
+$sqlCheckPhone = $db->query("SELECT ID_MBR FROM tb_member WHERE MBR_PHONE = '{$phone}' LIMIT 1");
+if($sqlCheckPhone->num_rows != 0) {
+    JsonResponse([
+        'success' => false,
+        'message' => "Nomor Telepon telah terdaftar",
+        'data' => []
+    ]);
+}
+
 /** Check Terakhir Mengirim */
 $sqlCheckOtp = $db->query("SELECT * FROM tb_member_pending WHERE MBR_PENDING_PHONE = {$phone} ORDER BY ID_MBR_PENDING DESC LIMIT 1");
 if($sqlCheckOtp->num_rows == 1) {
