@@ -37,4 +37,19 @@ class BankList {
         }
     }
 
+    public static function findById(string $id): array|bool {
+        try {
+            $db = Database::connect();
+            $sqlGet = $db->query("SELECT * FROM tb_banklist WHERE ID_BANKLST = '{$id}' LIMIT 1");
+            return $sqlGet->fetch_assoc() ?? false;
+
+        } catch (Exception $e) {
+            if(SystemInfo::isDevelopment()) {
+                throw $e;
+            }
+
+            return false;
+        }
+    }
+
 }

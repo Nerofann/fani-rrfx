@@ -37,6 +37,7 @@ class Account {
                         SELECT
                             JSON_ARRAYAGG(
                                 JSON_OBJECT(
+                                    'ID_MBANK', tb_member_bank.ID_MBANK,
                                     'MBANK_NAME', tb_member_bank.MBANK_NAME,
                                     'MBANK_HOLDER', tb_member_bank.MBANK_HOLDER,
                                     'MBANK_ACCOUNT', tb_member_bank.MBANK_ACCOUNT
