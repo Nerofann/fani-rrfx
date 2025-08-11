@@ -6,7 +6,6 @@
                 <div class="card-body">
                     <div class="mb-4 main-content-label">Bank</div>
                     <hr>
-                    test
                 </div>
             </div>
         </div>
