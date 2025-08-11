@@ -17,8 +17,10 @@
                         <label for="account" class="form-label">Account</label>
                         <select name="account" id="account" class="form-select">
                             <option value="">Pilih</option>
-                            <?php foreach(App\Models\Account::myAccount($user['MBR_ID']) as $account) : ?>
-                                <option value="<?= $account['ACC_LOGIN'] ?>"><?= $account['ACC_LOGIN'] ?> (<?= App\Models\Helper::formatCurrency($account['MARGIN_FREE']) ?> USD)</option>
+                            <?php foreach(App\Models\Account::myAccount($user['MBR_ID']) as $key => $account) : ?>
+                                <option value="<?= $account['ACC_LOGIN'] ?>" <?= ($key == 0)? "selected" : ""; ?>>
+                                    <?= $account['ACC_LOGIN'] ?> (<?= App\Models\Helper::formatCurrency($account['MARGIN_FREE']) ?> USD)
+                                </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -220,6 +222,10 @@
                 })
             },
             onChange() {
+                if(!this.element.val()) {
+                    return;
+                }
+                
                 this.showLoading();
                 $.post("/ajax/post/market/connect", {account: this.element.val()}, (resp) => {
                     if(!resp.success) {
@@ -234,7 +240,7 @@
                 }, 'json');
             },
             init() {
-                this.element.on('change', () => this.onChange());
+                this.element.on('change', () => this.onChange()).change();
             },
         }
 
@@ -243,7 +249,8 @@
             prices: [],
             refreshSymbol() {
                 this.element.empty().append('<option disabled selected>Loading...</option>');
-                $.post("/ajax/post/market/symbols", {account: account.element.val()}, (resp) => {
+                let parent = this;
+                $.post("/ajax/post/market/symbols", {account: account.element.val()}, async (resp) => {
                     this.element.empty().append('<option disabled selected>Pilih</option>');
                     if(!resp.success) {
                         Swal.fire(resp.alert);
@@ -251,9 +258,15 @@
                     }
 
                     Swal.close();
-                    resp.data.forEach((val, i) => {
-                        this.element.append(`<option value="${val.currency}" data-digits="${val.digits}" data-min="${val.min}" data-max="${val.max}">${val.currency}</option>`);
+                    await resp.data.forEach((val, i) => {
+                        let selected = (i == 0)? "selected" : "";
+                        this.element.append(`<option ${selected} value="${val.currency}" data-digits="${val.digits}" data-min="${val.volumeMin}" data-max="${val.volumeMax}">${val.currency}</option>`);
                     })
+
+                    let selected = parent?.element?.find('option:selected')?.length;
+                    if(selected) {
+                        parent.element.change();
+                    }
                 }, 'json')
             },
             onChange() {
@@ -350,7 +363,7 @@
                 chart.render();
             },
             init() {
-                this.element.on('change', () => this.onChange())
+                this.element.on('change', () => this.onChange());
             }
         }
 
@@ -360,7 +373,7 @@
             validate() {
                 let data = {
                     account: $('#account').val(),
-                    symbol: $('#Symbol').val(),
+                    symbol: symbol.element.val(),
                     sl: $('#exe-sl').val(),
                     tp: $('#exe-tp').val(),
                     volume: $('#exe-volume').val(),
@@ -379,6 +392,19 @@
                 if(!data.volume || data.volume <= 0) {
                     Swal.fire("Gagal", "Mohon isi jumlah volume", "error");
                     return false;
+                }
+
+                selected = symbol.element.find('option:selected').data();
+                if(selected) {
+                    if(data.volume > selected.max) {
+                        Swal.fire("Gagal", `Max Volume (${selected.max})`, "error");
+                        return;
+                    }
+
+                    if(data.volume < selected.min) {
+                        Swal.fire("Gagal", `Min Volume (${selected.min})`, "error");
+                        return;
+                    }
                 }
 
                 return data;
