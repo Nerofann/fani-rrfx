@@ -9,7 +9,7 @@
             tb_member.MBR_EMAIL,
             tb_racc.ACC_LOGIN,
             tb_dpwd.DPWD_AMOUNT,
-            tb_dpwd.DPWD_PIC,
+            tb_dpwd.DPWD_NOTE1,
             IF(tb_dpwd.DPWD_STSVER = -1, "Accept",
                 IF(tb_dpwd.DPWD_STSVER = 1, "Reject",
                     IF(tb_dpwd.DPWD_STSVER = 0, "Pending", "Unknown")
@@ -80,12 +80,7 @@
     $dt->edit('DPWD_AMOUNT', function($data){
         return "<div class='text-right'>".number_format($data['DPWD_AMOUNT'], 0)."</div>";
     });
-    $dt->edit('DPWD_PIC', function($data){
-        if(!empty($data["DPWD_PIC"])){
-            return "<div class='text-center'><a target='_blank' href='".FileUpload::awsFile($data["DPWD_PIC"])."'>Pic</a></div>";
-        }
-    });
     $dt->edit('ID_DPWD_HASH', function($data){
-        return "<div class='text-center'><a target='_blank' href='/documents/trans-topup.php?acc=".$data['ID_DPWD_HASH']."'>Print</a></div>";
+        return "<div class='text-center'><a target='_blank' href='/export/trans-withdrawal?acc=".$data['ID_DPWD_HASH']."'>Print</a></div>";
     });
     echo $dt->generate()->toJson();

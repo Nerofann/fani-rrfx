@@ -42,7 +42,23 @@ $filePermission = $adminPermissionCore->hasPermission($getAuthrorizedPermissions
         <title> <?= ucwords($page) ?> - <?= CompanyProfile::$name ?> </title>
 
         <!-- FAVICON -->
-        <link rel="icon" href="/assets/img/brand/favicon.ico">
+        <link rel="apple-touch-icon" sizes="57x57" href="../../assets/img/favicon/apple-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="../../assets/img/favicon/apple-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="../../assets/img/favicon/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="../../assets/img/favicon/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="../../assets/img/favicon/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="../../assets/img/favicon/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="../../assets/img/favicon/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="../../assets/img/favicon/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/favicon/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192"  href="../../assets/img/favicon/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="../../assets/img/favicon/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/favicon/favicon-16x16.png">
+        <link rel="manifest" href="../../assets/img/favicon/manifest.json">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="../../assets/img/favicon/ms-icon-144x144.png">
+        <meta name="theme-color" content="#ffffff">
 
 		<!-- BOOTSTRAP CSS -->
 		<link  id="style" href="/assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -83,6 +99,11 @@ $filePermission = $adminPermissionCore->hasPermission($getAuthrorizedPermissions
         <!-- END PAGE -->
 
 		<a href="#top" id="back-to-top"><i class="fe fe-arrow-up"></i></a>
+        
+        <?php if($page == 'dashboard'){ ?>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+        <?php }; ?>
 		<script src="/assets/plugins/jquery-ui/ui/widgets/datepicker.js"></script>
 		<script src="/assets/plugins/bootstrap/js/popper.min.js"></script>
 		<script src="/assets/plugins/bootstrap/js/bootstrap.min.js"></script>

@@ -1,7 +1,7 @@
 
 <div class="page-header">
     <div>
-        <h2 class="main-content-title tx-24 mg-b-5">MetaTrader Real Account</h2>
+        <h2 class="main-content-title tx-24 mg-b-5">Real Account</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
             <li class="breadcrumb-item"><a href="javascript:void(0);">MetaTrader</a></li>
@@ -41,6 +41,26 @@
             processing: true,
             serverSide: true,
             deferRender: true,
+			buttons: [
+				{
+					extend: 'excel',
+					text: 'Excel',
+				},
+				{
+					extend: 'copy',
+					text: 'Copy'
+				}
+			],
+            columns: [
+                { data: 'REGDATE', className: 'text-center' },
+                { data: 'LOGIN' },
+                { data: 'NAME' },
+                { data: 'EMAIL' },
+                { data: 'BALANCE', className: 'text-end', render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                { data: 'CREDIT', className: 'text-end', render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                { data: 'PREVBALANCE', className: 'text-end', render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                { data: 'PREVMONTHBALANCE', className: 'text-end', render: $.fn.dataTable.render.number(',', '.', 2, '') }
+            ],
             lengthMenu: [[10, 50, 100, -1], [10, 50, 100, "All"]],
             scrollX: true,
             order: [[ 0, "desc" ]],

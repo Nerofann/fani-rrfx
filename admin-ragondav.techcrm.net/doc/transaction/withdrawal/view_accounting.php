@@ -44,14 +44,18 @@
                                 <td>Amount</td>
                                 <td><input type="text" id="acc-amnt" class="form-control text-dark" readonly></td>
                             </tr>
-                            <tr>
+                            <!-- <tr>
                                 <td>Bank Source</td>
                                 <td><input type="text" id="acc-bksrc" class="form-control text-dark" readonly></td>
-                            </tr>
+                            </tr> -->
                             <tr>
                                 <td>Bank Destination</td>
-                                <td><input type="text" id="acc-bkdst" class="form-control text-dark" readonly></td>
+                                <td><input type="text" id="acc-bksrc" class="form-control text-dark" readonly></td>
                             </tr>
+                            <!-- <tr>
+                                <td>Bank Destination</td>
+                                <td><input type="text" id="acc-bkdst" class="form-control text-dark" readonly></td>
+                            </tr> -->
                             <tr>
                                 <td style="vertical-align: middle;">Note</td>
                                 <td>

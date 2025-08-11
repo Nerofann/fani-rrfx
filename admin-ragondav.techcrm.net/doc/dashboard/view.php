@@ -26,13 +26,6 @@
         IFNULL((
             SELECT
                 SUM(1)
-            FROM tb_schedule
-            WHERE tb_schedule.SCHD_STS = 0
-            LIMIT 1 
-        ), 0) AS PEND_JADTEM,
-        IFNULL((
-            SELECT
-                SUM(1)
             FROM tb_dpwd
             WHERE tb_dpwd.DPWD_TYPE = 1
             AND tb_dpwd.DPWD_STS = 0
@@ -117,7 +110,7 @@
         $ttl_usr        = $RSLT_DASHBOARD["TTL_USR"];
         $ttl_racc       = $RSLT_DASHBOARD["TTL_RACC"];
         $ttl_unracc     = $RSLT_DASHBOARD["TTL_UNRACC"];
-        $pend_jadtem    = $RSLT_DASHBOARD["PEND_JADTEM"];
+        $pend_jadtem    = 0;
         $pend_dp        = $RSLT_DASHBOARD["PEND_DP"];
         $pend_wd        = $RSLT_DASHBOARD["PEND_WD"];
 
@@ -168,7 +161,7 @@
 </div>
 
 <div class="row row-sm">
-	<div class="col-md-12 col-sm-12 col-lg-12 col-xl-12 col-xxl-8">
+	<div class="col-md-8 col-sm-12 col-lg-8 col-xl-8 col-xxl-8">
 		<div class="card custom-card">
 			<div class="card-body pt-2 pb-0">
                 <label class="main-content-label my-auto pt-2">System Usage Graph</label>
@@ -255,7 +248,7 @@
         </div>
 
 	</div>
-	<div class="col-md-12 col-sm-12 col-lg-12  col-xl-12 col-xxl-4">
+	<div class="col-md-4 col-sm-12 col-lg-4 col-xl-4 col-xxl-4">
 		<div class="card custom-card overflow-hidden">
 			<div class="card-header border-bottom-0">
 				<label class="main-content-label my-auto pt-2">Activity</label>
@@ -289,16 +282,6 @@
 					</div>
 					<div class="text-end ms-auto my-auto">
 						<h5 class="font-weight-semibold tx-16 mb-0"><?php echo number_format($ttl_unracc, 0); ?></h5>
-					</div>
-				</li>
-				<li class="list-item px-3 pb-3">
-					<div class="media align-items-center">
-						<div class="media-body ms-3">
-							<p class="tx-medium mg-b-3 tx-15">Pending Jadwal Temu</p>
-						</div>
-					</div>
-					<div class="text-end ms-auto my-auto">
-						<h5 class="font-weight-semibold tx-16 mb-0"><?php echo number_format($pend_jadtem, 0); ?></h5>
 					</div>
 				</li>
 				<li class="list-item px-3 pb-3">
@@ -367,9 +350,9 @@
                     <table class="table table-striped table-hover" id="table-usr">
                         <thead>
                             <tr>
-                                <th>Date Time</th>
-                                <th>Name</th>
-                                <th>Email</th>
+                                <th class="text-center">Date Time</th>
+                                <th class="text-center">Name</th>
+                                <th class="text-center">Email</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -389,9 +372,9 @@
                     <table class="table table-striped table-hover" id="table-dp">
                         <thead>
                             <tr>
-                                <th>Date Time</th>
-                                <th>Name</th>
-                                <th>Amount</th>
+                                <th class="text-center">Date Time</th>
+                                <th class="text-center">Name</th>
+                                <th class="text-center">Amount</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -411,9 +394,9 @@
                     <table class="table table-striped table-hover" id="table-wthdrwl">
                         <thead>
                             <tr>
-                                <th>Date Time</th>
-                                <th>Name</th>
-                                <th>Amount</th>
+                                <th class="text-center">Date Time</th>
+                                <th class="text-center">Name</th>
+                                <th class="text-center">Amount</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -433,25 +416,43 @@
                 { data: 'name' },
                 { data: 'email' }
             ],
-            order: [[0, 'desc']]
+            order: [[0, 'desc']],
+            paging: false,
+            info: false,
+            searching: false,
+            responsive: true
         });
         let tableDp = $('#table-dp').DataTable({
             data : <?= $JSNDT_DP ?>,
             columns: [
                 { data: 'date' },
                 { data: 'name' },
-                { data: 'amnt' }
+                { 
+                    data: 'amnt',
+                    className: 'text-end'
+                }
             ],
-            order: [[0, 'desc']]
+            order: [[0, 'desc']],
+            paging: false,
+            info: false,
+            searching: false,
+            responsive: true
         });
         let tableWd = $('#table-wthdrwl').DataTable({
             data : <?= $JSNDT_WD ?>,
             columns: [
                 { data: 'date' },
                 { data: 'name' },
-                { data: 'amnt' }
+                { 
+                    data: 'amnt',
+                    className: 'text-end'
+                }
             ],
-            order: [[0, 'desc']]
+            order: [[0, 'desc']],
+            paging: false,
+            info: false,
+            searching: false,
+            responsive: true
         });
     });
 </script>

@@ -18,7 +18,9 @@
     }
 
     $data = Helper::getSafeInput($_POST);
-    foreach(["voucher", "note", "auth-dpx", "auth-act"] as $req) {
+    // $REQ_POST = ["voucher", "note", "auth-dpx", "auth-act"]; //Old req pos
+    $REQ_POST = ["note", "auth-dpx", "auth-act"];
+    foreach($REQ_POST as $req) {
         if(empty($data[ $req ])) {
             $req = str_replace("add_", "", $req);
             JsonResponse([
@@ -68,7 +70,7 @@
     switch (strtolower($data["auth-act"])) {
         case 'accept':
             $UPDATE_DATA["DPWD_STS"]  = -1;
-            $UPDATE_DATA["DPWD_VOUCHER"] = $data["voucher"];
+            // $UPDATE_DATA["DPWD_VOUCHER"] = $data["voucher"];
             break;
         
         case 'reject':

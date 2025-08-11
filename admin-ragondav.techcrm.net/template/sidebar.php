@@ -1,10 +1,13 @@
+<?php
+    $login_page = $page;
+?>
 <div class="sticky">
     <div class="main-menu main-sidebar main-sidebar-sticky side-menu">
         <div class="main-sidebar-header main-container-1 active">
             <div class="sidemenu-logo">
                 <a class="main-logo" href="#">
-                    <img src="/assets/img/brand/logo-light.png" class="header-brand-img desktop-logo" alt="logo">
-                    <img src="/assets/img/brand/logo-light.png" class="header-brand-img icon-logo" alt="logo">
+                    <img src="/assets/img/logo-black4.png" class="header-brand-img desktop-logo" alt="logo">
+                    <img src="/assets/img/icon-rrfx4.png" class="header-brand-img icon-logo" alt="logo">
                     <img src="/assets/img/brand/logo.png" class="header-brand-img desktop-logo theme-logo" alt="logo">
                     <img src="/assets/img/brand/logo.png" class="header-brand-img icon-logo theme-logo" alt="logo">
                 </a>

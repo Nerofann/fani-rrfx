@@ -11,8 +11,8 @@
         </div>
         <div class="main-header-center">
             <div class="responsive-logo">
-                <a href="/dashboard"><img src="/assets/img/brand/logo.png" class="mobile-logo" alt="logo"></a>
-                <a href="/dashboard"><img src="/assets/img/brand/logo-light.png" class="mobile-logo-dark" alt="logo"></a>
+                <a href="/dashboard"><img src="/assets/img/logo-rrfx3.png" class="mobile-logo" alt="logo"></a>
+                <a href="/dashboard"><img src="/assets/img/logo-rrfx-white1.png" class="mobile-logo-dark" alt="logo"></a>
             </div>
         </div>
         <div class="main-header-right">
@@ -48,7 +48,7 @@
                         <!-- Profile -->
                         <div class="dropdown main-profile-menu">
                             <a class="d-flex" href="javascript:void(0);">
-                                <span class="main-img-user"><img alt="avatar" src="/assets/img/users/1.jpg"></span>
+                                <span class="main-img-user"><img alt="avatar" src="../../assets/img/icon-rrfx4.png"></span>
                             </a>
                             <div class="dropdown-menu">
                                 <div class="header-navheading">

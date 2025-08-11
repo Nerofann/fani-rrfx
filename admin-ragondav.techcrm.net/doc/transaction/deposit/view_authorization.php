@@ -53,12 +53,12 @@
                                 <td>Bank Destination</td>
                                 <td><input type="text" id="auth-bkdst" class="form-control text-dark" readonly></td>
                             </tr>
-                            <tr>
+                            <!-- <tr>
                                 <td style="vertical-align:middle;">Voucher</td>
                                 <td>
                                     <input type="text" name="voucher" value="-" autocomplete="off" class="form-control" required>
                                 </td>
-                            </tr>
+                            </tr> -->
                             <tr>
                                 <td style="vertical-align: middle;">Note</td>
                                 <td>

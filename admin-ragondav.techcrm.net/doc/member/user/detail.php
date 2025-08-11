@@ -21,9 +21,7 @@
             tb_racc.ACC_F_APP_KRJ_JBTN,
             tb_racc.ACC_F_APP_KRJ_LAMA,
             tb_member_bank.MBANK_NAME,
-            tb_member_bank.MBANK_BRANCH,
             tb_member_bank.MBANK_ACCOUNT,
-            tb_member_bank.MBANK_TYPE,
             tb_racc.ACC_F_APP_KEKYAN_NJOP,
             tb_racc.ACC_F_APP_KEKYAN_DPST,
             tb_racc.ACC_F_APP_KEKYAN_NILAI,
@@ -159,19 +157,9 @@
                             <td style="vertical-align: top;"><?php echo ($RSLT_USER["MBANK_NAME"] ?? '') ?></td>
                         </tr>
                         <tr>
-                            <td width="45%" style="vertical-align: top;">Cabang</td>
-                            <td width="1%" style="vertical-align: top; text-align:center;"><div style="margin:0px 3px;">:</div></td>
-                            <td style="vertical-align: top;"><?php echo ($RSLT_USER["MBANK_BRANCH"] ?? '') ?></td>
-                        </tr>
-                        <tr>
                             <td width="45%" style="vertical-align: top;">Nomor Rekening</td>
                             <td width="1%" style="vertical-align: top; text-align:center;"><div style="margin:0px 3px;">:</div></td>
                             <td style="vertical-align: top;"><?php echo ($RSLT_USER["MBANK_ACCOUNT"] ?? '') ?></td>
-                        </tr>
-                        <tr>
-                            <td width="45%" style="vertical-align: top;">Jenis Rekening</td>
-                            <td width="1%" style="vertical-align: top; text-align:center;"><div style="margin:0px 3px;">:</div></td>
-                            <td style="vertical-align: top;"><?php echo ($RSLT_USER["MBANK_TYPE"] ?? '') ?></td>
                         </tr>
                     </table>
                     <div style="border-top:1px solid black;text-align:left;vertical-align: middle;padding: 10px 0 10px 0;"></div>
