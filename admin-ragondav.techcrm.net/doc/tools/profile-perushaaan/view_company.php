@@ -6,7 +6,6 @@
                 <div class="card-body">
                     <div class="mb-4 main-content-label">Company</div>
                     <hr>
-                    test Company
                 </div>
             </div>
         </div>
