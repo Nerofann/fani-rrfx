@@ -12,6 +12,6 @@ $dt->query("
 ");
 
 $dt->edit('MARGIN_FREE', fn($col) :string => App\Models\Helper::formatCurrency($col['MARGIN_FREE']) . " USD");
-$dt->add('ACTION', fn($col) :string => '<a class="btn btn-sm btn-success text-white"><i class="fas fa-lock"></i></a>');
+$dt->add('ACTION', fn($col) :string => '<a class="btn btn-sm btn-success text-white btn-update" data-login="'.$col['ACC_LOGIN'].'"><i class="fas fa-lock"></i></a>');
 
 echo $dt->generate()->toJson();

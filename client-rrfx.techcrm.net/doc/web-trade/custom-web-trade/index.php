@@ -464,7 +464,47 @@
                 { targets: 0, className: "text-center" },
                 { targets: 1, className: "text-end" },
                 { targets: 3, className: "text-center" },
-            ]
+            ],
+            drawCallback: function() {
+                $('.btn-update').on('click', async function(evt) {
+                    let target = $(evt.currentTarget);
+                    if(target) {
+                        const { value: password } = await Swal.fire({
+                            title: "Update Password",
+                            showCancelButton: true,
+                            reverseButtons: true,
+                            input: "password",
+                            inputLabel: "Password",
+                            inputPlaceholder: "Enter your password",
+                            inputAttributes: {
+                                autocapitalize: "off",
+                                autocorrect: "off",
+                            }
+                        })
+
+                        if(!password) {
+                            Swal.fire("Gagal", "Mohon isi kolom password", "info");
+                            return;
+                        }
+
+                        Swal.fire({
+                            text: "Loading...",
+                            allowOutsideClick: false,
+                            didOpen: function() {
+                                Swal.showLoading();
+                            }
+                        })
+
+                        $.post("/ajax/post/account/update-password", {login: target.data('login'), password: password}, (resp) => {
+                            Swal.fire(resp.alert).then(() => {
+                                if(resp.success) {
+                                    table_account.draw();
+                                }
+                            });
+                        }, 'json')
+                    }
+                })
+            }
         })
 
         table_opentrade = $('#table-opened-order').DataTable({
