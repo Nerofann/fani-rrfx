@@ -8,6 +8,9 @@
                     <hr>
                     test Company
                 </div>
+                <div class="card-footer">
+                    <button class="btn btn-primary" onclick="window.location.href='/doc/tools/profile-perushaaan/view_company.php'">View Company</button>
+                </div>
             </div>
         </div>
     </div>
