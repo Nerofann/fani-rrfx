@@ -13,7 +13,7 @@ if($isLoggedIn) {
 	<div class="login-body login-body-2">
 		<div class="top d-flex justify-content-between align-items-center">
 			<div class="logo">
-				<img src="/assets/images/logo-black-new.png" class="img_logo" alt="Logo">
+				<img src="/assets/images/logo-rrfx3.png" class="img_logo" alt="Logo">
 			</div>
 			<a href="/" aria-label="go to Home"><i class="fa-duotone fa-house-chimney"></i></a>
 		</div>

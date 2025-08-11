@@ -100,7 +100,7 @@ use App\Models\FileUpload;
             <div class="card">
                 <div class="card-body">
                     <div id="economicCalendarWidget"></div>
-                    <script async type="text/javascript" data-type="calendar-widget" src="https://www.tradays.com/c/js/widgets/calendar/widget.js?v=13">{"width":"100%","height":"400","mode":"2","theme":1}</script>
+                    <script async type="text/javascript" data-type="calendar-widget" src="https://www.tradays.com/c/js/widgets/calendar/widget.js?v=13">{"width":"100%","height":"400","mode":"2","theme":0}</script>
                 </div>
             </div>
         </div>

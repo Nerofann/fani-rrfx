@@ -36,7 +36,7 @@ if(empty($authPage)) {
 	<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body class="dark-theme">
+<body class="light-theme">
 
     <!-- main content start -->
 	<?php require_once __DIR__ . "/auth/$authPage.php"; ?>
