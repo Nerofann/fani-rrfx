@@ -88,7 +88,7 @@ if($defaultIdspn == 0) {
     ]);
 }
 
-/** Validasi OTP database */
+/** Validasi Nomor Telepon */
 $phone = $verihub->phoneValidation($data['phone_code'], $data['phone']);
 if(!$phone) {
     JsonResponse([
@@ -98,14 +98,16 @@ if(!$phone) {
     ]);
 }
 
-// $isValidOTP = $verihub->validate_otp_sms($phone, $data['otp']);
-// if($isValidOTP !== TRUE) {
-//     JsonResponse([
-//         'success'   => false,
-//         'message'   => $isValidOTP ?? "Invalid otp",
-//         'data'      => []
-//     ]);
-// }
+/** Validasi OTP Database */
+$sqlGetPending = $db->query("SELECT * FROM tb_member_pending WHERE MBR_PENDING_PHONE = '{$phone}' AND MBR_PENDING_OTP = '".$data['otp']."' AND MBR_PENDING_OTP_EXPIRED > NOW() LIMIT 1");
+$memberPending = $sqlGetPending->fetch_assoc();
+if($sqlGetPending->num_rows != 1) {
+    JsonResponse([
+        'success'   => false,
+        'message'   => "Kode Otp Salah",
+        'data'      => []
+    ]);
+}
 
 /** Insert */
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
@@ -113,7 +115,6 @@ mysqli_begin_transaction($db);
 
 $newMbrId = User::createMbrId();
 $passwordHash = password_hash($data['password'], PASSWORD_BCRYPT);
-$dateExpired = date("Y-m-d H:i:s", strtotime("+1 hour"));
 $insert = Database::insert("tb_member", [
     'MBR_ID' => $newMbrId,
     'MBR_IDSPN' => $defaultIdspn,
@@ -125,7 +126,7 @@ $insert = Database::insert("tb_member", [
     'MBR_NAME' => $data['fullname'],
     'MBR_COUNTRY' => $data['country'],
     'MBR_OTP' => $data['otp'],
-    'MBR_OTP_EXPIRED' => $dateExpired,
+    'MBR_OTP_EXPIRED' => $memberPending['MBR_PENDING_OTP_EXPIRED'],
     'MBR_STS' => 0
 ]);
 
@@ -138,16 +139,10 @@ if(!$insert) {
     ]);
 }
 
-// /** Validasi OTP dengan Verihubs */
-// $otpVerification = $verihub->sendOtp_sms_verification(['otp' => $data['otp'], 'phone' => $phone]);
-// if(!$otpVerification['success']) {
-//     $db->rollback();
-//     JsonResponse([
-//         'success'   => false,
-//         'message'   =>  $otpVerification['message'],
-//         'data'      => []
-//     ]);
-// }
+/** Validasi OTP dengan Verihubs */
+if($memberPending['MBR_PENDING_OTP_METHOD'] == "sms") {
+    $otpVerification = $verihub->sendOtp_sms_verification(['otp' => $data['otp'], 'phone' => $phone]);
+}
 
 /** Email Verifikasi */
 $emailData = [
