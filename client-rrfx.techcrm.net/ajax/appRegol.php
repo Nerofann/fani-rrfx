@@ -259,8 +259,6 @@ class AppPost {
     public function createDemo($data, $user) {
         global $web_name_full;
         $this->checkCsrfToken($data);
-       
-        
         
         $mbrid = $user['MBR_ID'] ?? 0;
         $demoAccount = Account::getDemoAccount(md5(md5($mbrid)));
@@ -272,6 +270,23 @@ class AppPost {
             ]);
         }
 
+        /** Get Demo Type */
+        $sqlGetType = $this->db->query("SELECT ID_RTYPE, RTYPE_GROUP, RTYPE_LEVERAGE FROM tb_racctype WHERE UPPER(RTYPE_TYPE) = 'DEMO' LIMIT 1");
+        $demoType = $sqlGetType->fetch_assoc() ?? [];
+        if($sqlGetType->num_rows == 0 || empty($demoType)) {
+            JsonResponse([
+                'success' => false,
+                'message' => "Gagal membuat akun demo, Jenis akun tidak valid",
+                'data' => []
+            ]);
+
+            exit(json_encode([
+                'success'   => false,
+                'error'     => ""
+            ]));
+        }
+
+        /** check type */
         $init_margin = 10000;
         $meta_pass = Account::generatePassword();
         $meta_investor = Account::generatePassword();
@@ -285,7 +300,7 @@ class AppPost {
             'group' => "demo\MandiriInvestindo\MMUSD", 
             'fullname' => $user['MBR_NAME'], 
             'email' => $user['MBR_EMAIL'], 
-            'leverage' => 200,
+            'leverage' => $demoType['RTYPE_LEVERAGE'],
             'comment' => "metaapi"
         ];
 
@@ -305,27 +320,11 @@ class AppPost {
             'comment' => "metaapi"
         ]);
 
-        /** Get Demo Type */
-        $sqlGetType = $this->db->query("SELECT ID_RTYPE FROM tb_racctype WHERE UPPER(RTYPE_TYPE) = 'DEMO' LIMIT 1");
-        $demoType = $sqlGetType->fetch_assoc()['ID_RTYPE'] ?? 0;
-        if($sqlGetType->num_rows == 0 || $demoType == 0) {
-            JsonResponse([
-                'success' => false,
-                'message' => "Gagal membuat akun demo, Jenis akun tidak valid",
-                'data' => []
-            ]);
-
-            exit(json_encode([
-                'success'   => false,
-                'error'     => ""
-            ]));
-        }
-
         /** Insert Demo */
         $insertDemo = Database::insert("tb_racc", [
             'ACC_MBR' => $user['MBR_ID'],
             'ACC_DERE' => 2,
-            'ACC_TYPE' => $demoType,
+            'ACC_TYPE' => $demoType['ID_RTYPE'],
             'ACC_LOGIN' => $createDemo->Login,
             'ACC_PASS' => $meta_pass,
             'ACC_INVESTOR' => $meta_investor,
