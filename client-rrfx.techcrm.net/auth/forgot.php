@@ -2,7 +2,7 @@
     <div class="login-body">
         <div class="top d-flex justify-content-between align-items-center">
             <div class="logo">
-                <img src="/assets/images/logo-black-new.png" alt="Logo">
+                <img src="/assets/images/logo-rrfx3.png" alt="Logo">
             </div>
             <a href="/"><i class="fa-duotone fa-house-chimney"></i></a>
         </div>
