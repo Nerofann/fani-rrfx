@@ -75,9 +75,9 @@ $isIB = false;
                         <li class="sidebar-dropdown-item">
                             <a href="/account" class="sidebar-link"><span class="nav-icon"><i class="fa-light fa-user-tie"></i></span> <span class="sidebar-txt">Account</span></a>
                         </li>
-                        <!-- <li class="sidebar-dropdown-item">
-                            <a href="../web-trade" class="sidebar-link"><span class="nav-icon"><i class="fa-light fa-chart-column"></i></span> <span class="sidebar-txt">Web Trade</span></a>
-                        </li> -->
+                        <li class="sidebar-dropdown-item">
+                            <a href="/web-trade" class="sidebar-link"><span class="nav-icon"><i class="fa-light fa-chart-column"></i></span> <span class="sidebar-txt">Web Trade</span></a>
+                        </li>
                     </ul>
                 </li>
                 
