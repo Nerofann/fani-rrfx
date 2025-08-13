@@ -4,6 +4,7 @@
     use App\Models\Dpwd;
     use App\Models\Helper;
     use App\Models\FileUpload;
+    use App\Models\CompanyProfile;
 
     $realAccount = Account::realAccountDetail(($acc ?? ""));
     $accnd = Account::accoundCondition($realAccount['ID_ACC']);
@@ -12,6 +13,8 @@
     $bankName = $bank[0] ?? "-";
     $bankAccount = $bank[1] ?? "-";
     $bankHolder = $bank[2] ?? "-";
+    $companyProfile = CompanyProfile::profilePerusahaan();
+    $mainOffice = CompanyProfile::getMainOffice();
 ?>
 
 <!DOCTYPE html>
@@ -26,9 +29,7 @@
         </style>
     </head>
     <body>
-        <div class="header">
-            <img style="object-fit: cover; max-height: 100%; max-width: 100%;" src="data:image/png;base64,<?= base64_encode(file_get_contents($logo_pdf)); ?>">
-        </div>
+        <?php require_once(__DIR__  . "/header.php"); ?><hr>
 
         <div class="section">
             <h4 class="text-center" style="margin: 0px;">ACCOUNT CONDITION</h4>

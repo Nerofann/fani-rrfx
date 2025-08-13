@@ -2,7 +2,10 @@
     use App\Models\Dpwd;
     use App\Models\Account;
     use App\Models\Helper;
+    use App\Models\CompanyProfile;
     $data = Helper::getSafeInput($_GET);
+    $companyProfile = CompanyProfile::profilePerusahaan();
+    $mainOffice = CompanyProfile::getMainOffice();
 
     $depositData = Dpwd::findById($data["acc"]);
     $realAccount = Account::realAccountDetail(md5(md5($depositData["DPWD_RACC"])));
@@ -41,9 +44,7 @@
         </style>
     </head>
     <body>
-        <div class="header">
-            <img style="object-fit: cover; max-height: 100%; max-width: 100%;" src="data:image/png;base64,<?= base64_encode(file_get_contents($logo_pdf)); ?>">
-        </div>
+        <?php require_once(__DIR__  . "/header.php"); ?><hr>
 
         <div class="section" style="padding: 0px;">
             <h4 class="text-center" style="margin: 0px;">NOTA PENERIMAAN MARGIN</h4>
@@ -113,7 +114,7 @@
                         <td width="3%"></td>
                         <td class="v-align-top">
                             <p style="margin: 0px;">Mengetahui,</p>
-                            <p style="margin: 0px;"><?= $company_name; ?></p>
+                            <p style="margin: 0px;"><?= $companyProfile['COMPANY_NAME'] ?></p>
                             <div style="height: 80px;"></div>
                             <p style="margin: 0px; border-bottom: 1px solid black;"></p>
                         </td>

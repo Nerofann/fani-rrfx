@@ -34,12 +34,9 @@
         </style>
     </head>
     <body>
-        <div class="header">
-            <img style="object-fit: cover; max-height: 100%; max-width: 100%;" src="data:image/png;base64,<?= base64_encode(file_get_contents($logo_pdf)); ?>">
-        </div>
-
+        <?php require_once(__DIR__  . "/header.php"); ?><hr>
         <div class="section">
-            <div style="text-align:center;vertical-align: middle;padding: 10px 0 10px 0;">
+            <div style="text-align:center;vertical-align: middle;padding: 0 0 10px 0;">
                 <h3>BUKTI KONFIRMASI PENERIMAAN NASABAH<br>
                 PADA <?= strtoupper($company) ?></h3>
             </div>

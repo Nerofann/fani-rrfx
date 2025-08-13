@@ -4,15 +4,60 @@
         <?php require_once(__DIR__  . "/../style.php"); ?>
     </head>
     <body>
-        <div class="header">
-            <img style="object-fit: cover; max-height: 100%; max-width: 100%;" src="data:image/png;base64,<?= base64_encode(file_get_contents($logo_pdf)); ?>">
-        </div>
-
-        <div class="row">
+        <?php require_once(__DIR__  . "/../header.php"); ?><hr>
+        <div class="row" style="font-size: 14px;">
             <div class="col-md-8 mx-auto">
                 <div class="card">
                     <div class="card-body">
                         <div class="text-center mb-25"><h5>PROFIL PERUSAHAAN PIALANG BERJANGKA</h5></div>
+<style>
+  .kv-table td { vertical-align: top; }
+  .pair { display: flex; align-items: flex-start; }
+  .pair .sep { flex: 0 0 16px; text-align: center; }
+  .pair .val { flex: 1 1 auto; text-align: left; word-break: break-word; white-space: pre-line; }
+</style>
+
+<div class="table-responsive">
+  <table class="table table-hover kv-table" style="table-layout:auto">
+    <tr>
+      <td style="white-space:nowrap;">Nama</td>
+      <td>: <?= htmlspecialchars($profile['COMPANY_NAME'] ?? "-"); ?></td>
+    </tr>
+
+    <tr>
+      <td style="white-space:nowrap;">Alamat</td>
+      <td>
+        <div class="pair">
+          <div class="sep">:</div>
+          <div class="val">
+            <?= nl2br(htmlspecialchars($profile['OFFICE']['OFC_ADDRESS'] ?? "-")); ?>
+          </div>
+        </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td style="white-space:nowrap;">No. Telepon</td>
+      <td>: <?= htmlspecialchars($profile['OFFICE']['OFC_PHONE'] ?? "-"); ?></td>
+    </tr>
+
+    <tr>
+      <td style="white-space:nowrap;">Faksimili</td>
+      <td>: <?= htmlspecialchars($profile['OFFICE']['OFC_FAX'] ?? "-"); ?></td>
+    </tr>
+
+    <tr>
+      <td style="white-space:nowrap;">E-mail</td>
+      <td>: <?= htmlspecialchars($profile['OFFICE']['OFC_EMAIL'] ?? "-"); ?></td>
+    </tr>
+
+    <tr>
+      <td style="white-space:nowrap;">Home-page</td>
+      <td>: <?= htmlspecialchars($profile['PROF_HOMEPAGE'] ?? "-"); ?></td>
+    </tr>
+  </table>
+</div>
+                        <hr>
                         <div class="table-responsive">
                             <table class="table table-fixed table-hover">
                                 <tr>

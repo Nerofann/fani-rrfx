@@ -34,12 +34,24 @@
     </head>
     <body>
         <div class="header">
-            <img style="object-fit: cover; max-height: 100%; max-width: 100%;" src="data:image/png;base64,<?= base64_encode(file_get_contents($logo_pdf)); ?>">
+            <table width="100%" style="border-collapse: collapse;">
+                <tr>
+                    <td width="30%" style="vertical-align:top;"><img style="object-fit: cover; max-height: 100%; max-width: 100%;" src="data:image/png;base64,<?= base64_encode(file_get_contents($logo_pdf)); ?>"></td>
+                    <td width="10%">&nbsp;</td>
+                    <td style="text-align:right;">
+                        <strong><?= $COMPANY_PRF['COMPANY_NAME'] ?></strong>
+                        <p style="font-size: 12px; margin: 0px;">
+                            <?= $COMPANY_MOF['OFC_ADDRESS'] ?><br>
+                            Telp. <?= $COMPANY_MOF['OFC_PHONE'] ?>, Fax. <?= $COMPANY_MOF['OFC_FAX'] ?>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+            <hr>
         </div>
         
         
         <div class="section">
-            <hr>
             <div style="text-align:center;"><h4>PERNYATAAN PENGUNGKAPAN<br><i>(DISCLOSURE STATEMENT)</i></h4></div>
             <ol>
                 <li>Perdagangan Berjangka BERISIKO SANGAT TINGGI tidak cocok untuk semua orang. Pastikan bahwa anda SEPENUHNYA MEMAHAMI RISIKO ini sebelum melakukan perdagangan.</li>

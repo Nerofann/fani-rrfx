@@ -30,12 +30,9 @@
         </style>
     </head>
     <body>
-        <div class="header">
-            <img style="object-fit: cover; max-height: 100%; max-width: 100%;" src="data:image/png;base64,<?= base64_encode(file_get_contents($logo_pdf)); ?>">
-        </div>
+        <?php require_once(__DIR__  . "/../header.php"); ?><hr>
 
         <div class="section">
-            
             <div>
                 <?php
                     if(file_exists($file = CRM_ROOT.App\Models\Regol::urlTradingRule(str_replace('pdf', 'html', $realAccount['RTYPE_FILE'])))){

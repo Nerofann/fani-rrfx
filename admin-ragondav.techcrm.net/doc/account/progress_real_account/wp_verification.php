@@ -9,6 +9,7 @@
     $page_title      = 'Progress Real Account';
     $web_name_full   = $COMPANY;
     $progressAccount = Account::realAccountDetail($data["d"]);
+    $id_acc          = $data["d"];
     $userBanks       = (!empty($progressAccount["MBR_BKJSN"])) ? json_decode($progressAccount["MBR_BKJSN"], true) : [];
 ?>
 <div class="page-header">

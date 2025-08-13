@@ -53,9 +53,7 @@
         </style>
     </head>
     <body>
-        <div class="header">
-            <img style="object-fit: cover; max-height: 100%; max-width: 100%;" src="data:image/png;base64,<?= base64_encode(file_get_contents($logo_pdf)); ?>">
-        </div>
+        <?php require_once(__DIR__  . "/header.php"); ?><hr>
 
         <div class="section">
             <h4 class="text-center" style="margin: 0px;">SURAT PERNYATAAN</h4>
