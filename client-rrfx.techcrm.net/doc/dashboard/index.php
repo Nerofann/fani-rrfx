@@ -61,11 +61,7 @@
         <div class="dashboard-top-box dashboard-top-box-2 rounded border-0 panel-bg h-100">
             <div class="left h-100 d-flex flex-column">
                 <p class="d-flex justify-content-between mb-2">Date Reg.</p>
-                <h3 class="fw-normal"><?php
-
-use App\Models\FileUpload;
-
- echo $user['MBR_DATETIME'] ?></h3>
+                <h3 class="fw-normal"><?= $user['MBR_DATETIME'] ?></h3>
                 <p class="text-muted mt-auto"><a href="personal-information"><small>View Profile</small></a></p>
             </div>
             <div class="right">
@@ -107,25 +103,26 @@ use App\Models\FileUpload;
     </div>
 </div>
 
-<div class="row mt-2">
-    <div class="col-md-12">
-        <div class="panel">
-            <div class="card p-2">
-                <div class="text-center">
-                    <h5 class="mb-0">News</h5>
+<?php $formatNews = App\Models\Blog::formatGrouped(App\Models\Blog::get()); ?>
+<?php foreach($formatNews as $type) : ?>
+    <div class="row mt-2">
+        <div class="col-md-12">
+            <div class="panel">
+                <div class="card p-2">
+                    <div class="text-center">
+                        <h5 class="mb-0"><?= $type['alias']; ?></h5>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <?php $SQL_GET_NEWS = mysqli_query($db, "SELECT * FROM tb_blog ORDER BY BLOG_DATETIME DESC LIMIT 8"); ?>
-    <?php if($SQL_GET_NEWS) : ?>
-        <?php while($news = mysqli_fetch_assoc($SQL_GET_NEWS)) : ?>
+
+        <?php foreach($type['data'] as $news) : ?>
             <div class="col-md-3">
                 <div class="card h-100">
-                    <img src="<?= FileUpload::awsFile($news['BLOG_IMG']);?>" class="card-img-top" alt="Blog Image">
+                    <img src="<?= App\Models\FileUpload::awsFile($news['BLOG_IMG']);?>" class="card-img-top" alt="Blog Image">
                     <div class="card-body">
                         <div class="d-flex flex-column h-100">
-                            <p class="small"><?php echo str_replace(['\r\n', '&amp;nbsp;'], ["<br>", ' '],substr(strip_tags($news['BLOG_MESSAGE']), 0, 200)) ?>...</p>
+                            <p class="small"><?php echo str_replace(['\r\n', '&amp;nbsp;'], ["<br>", ' '],substr(strip_tags(html_entity_decode($news['BLOG_MESSAGE'])), 0, 200)) ?>...</p>
                             <div class="mt-auto">
                                 <a href="/news/<?php echo $news['BLOG_SLUG'] ?>" class="mt-auto btn btn-sm btn-primary">Detail</a>
                             </div>
@@ -133,9 +130,9 @@ use App\Models\FileUpload;
                     </div>
                 </div>
             </div>
-        <?php endwhile; ?>
-    <?php endif; ?>
-</div>
+        <?php endforeach; ?>
+    </div>
+<?php endforeach; ?>
 
 <!-- <script src="/assets/vendor/js/apexcharts.js"></script> -->
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
