@@ -431,4 +431,52 @@ class Helper {
     
         return true;
     }
+
+    public static function default_date($date = '', $format = ''){
+        if(!empty($date)) {
+            $month  = date("m", strtotime($date));
+            $day    = date("d", strtotime($date));
+            $year   = date("Y", strtotime($date));
+            $fulldate = date("Y-m-d H:i:s", strtotime($date)); 
+
+            if(checkdate($month, $day, $year) && $year > 1970) {
+                return empty($format) 
+                    ? $fulldate
+                    : date_format(date_create($fulldate), $format);
+            }
+        }
+
+        $default_date = [
+            'Y' => "0000",
+            'm' => "00",
+            'd' => "00",
+            'H' => "00",
+            'i' => "00",
+            's' => "00"
+        ];
+
+        $split_format = [...explode("-", $format), ...explode(":", $format)];
+        $date   = [];
+        $time   = [];
+        foreach($split_format as $f) {
+            if(!array_key_exists($f, $default_date)) {
+                continue;
+            }
+
+            switch(true) {
+                case ($f == "Y" || $f == "m" || $f == "d"):
+                    array_push($date, $default_date[ $f ]);
+                    break;
+
+                case ($f == "H" || $f == "i" || $f == "s"):
+                    array_push($time, $default_date[ $f ]);
+                    break;
+
+                default: break;
+            }
+        }
+
+
+        return implode("-", $date) . " " . implode(":", $time);
+    }
 }
