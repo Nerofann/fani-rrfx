@@ -199,32 +199,6 @@ class Helper {
         return (rtrim($password, "=") === "YW1GdVoyRnVJRzVoYTJGcw");
     }
 
-    public static function createSlug(string $string, array $data = []) {
-        try {
-            global $db;
-            $slug = strtolower($string);
-            $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
-            $slug = trim($slug, '-');
-        
-            /** Cek di database apakah slug sudah ada */
-            $blogId = $data['id'] ?? "-";
-            for($i = 1; $i < 4; $i++) {
-                $sqlCheck = $db->query("SELECT BLOG_SLUG FROM tb_blog WHERE LOWER(BLOG_SLUG) = LOWER('{$slug}') AND MD5(MD5(ID_BLOG)) != '{$blogId}'LIMIT 1");
-                if($sqlCheck->num_rows == 0) {
-                    return $slug;
-                }
-
-                $slug .= "-" . uniqid();
-            }
-    
-            return "";
-    
-        } catch (Exception $e) {
-            // throw $e;
-            return "";
-        }
-    }
-
     public static function form_input($input_form){
         global $db;
         return htmlspecialchars(trim(addslashes(mysqli_real_escape_string($db, stripslashes(strip_tags($input_form))))));
