@@ -4,7 +4,8 @@
     use App\Models\Dpwd;
     use App\Models\Helper;
     use App\Models\Admin;
-    use App\Models\Logger;
+use App\Models\Blog;
+use App\Models\Logger;
     use App\Models\FileUpload;
     use Config\Core\Database;
     
@@ -49,6 +50,15 @@
         }
     }
 
+    /** create slug */
+    $slug = Blog::createSlug($data['title']);
+    if(!$slug) {
+        JsonResponse([
+            'success'   => false,
+            'message'   => "Failed to create slug, please try again",
+            'data'      => []
+        ]);
+    }
 
     /**Stored data for update*/
     $UPDATE_DATA = [
@@ -56,7 +66,7 @@
         "BLOG_TITLE"      => $data["title"],
         "BLOG_MESSAGE"    => htmlentities($_POST["content"]),
         "BLOG_AUTHOR"     => $data["author"],
-        "BLOG_SLUG"       => $data["content"],
+        "BLOG_SLUG"       => $slug,
         "BLOG_DATETIME"   => date("Y-m-d H:i:s")
     ];
 
@@ -79,6 +89,7 @@
             'data'      => []
         ]);
     }
+    
     $UPDATE_DATA["BLOG_IMG"] = $PRCSF["filename"];
 
     /**Eksekusi database*/
