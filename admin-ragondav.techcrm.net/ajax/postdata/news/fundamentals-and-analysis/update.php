@@ -4,7 +4,8 @@
     use App\Models\Dpwd;
     use App\Models\Helper;
     use App\Models\Admin;
-    use App\Models\Logger;
+use App\Models\Blog;
+use App\Models\Logger;
     use App\Models\FileUpload;
     use Config\Core\Database;
     
@@ -51,8 +52,8 @@
     }
 
     /** Check ID */
-    $SQL_CHECK = $db->query('SELECT * FROM tb_blog WHERE MD5(MD5(tb_blog.ID_BLOG)) = "'.$data["edt-btn"].'"');
-    if((!$SQL_CHECK) || $SQL_CHECK->num_rows == 0){
+    $blog = Blog::findById($data['edt-btn']);
+    if(!$blog){
         JsonResponse([
             'code'      => 200,
             'success'   => false,
@@ -60,7 +61,17 @@
             'data'      => []
         ]);
     }
-    $RSLT_CHECK = $SQL_CHECK->fetch_assoc();
+
+    /** create new slug */
+    $slug = Blog::createSlug($data['title'], $blog['ID_BLOG']);
+    if(!$slug) {
+        JsonResponse([
+            'code'      => 200,
+            'success'   => false,
+            'message'   => "News data not found.",
+            'data'      => []
+        ]);
+    }
 
     /**Stored data for update*/
     $UPDATE_DATA = [
@@ -88,7 +99,7 @@
     
 
     /**Eksekusi database*/
-    $update = Database::update('tb_blog', $UPDATE_DATA, ["ID_BLOG" => $RSLT_CHECK["ID_BLOG"]]);
+    $update = Database::update('tb_blog', $UPDATE_DATA, ["ID_BLOG" => $blog["ID_BLOG"]]);
     if(!$update){
         JsonResponse([
             'code'      => 200,
