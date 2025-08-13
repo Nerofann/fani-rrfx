@@ -69,7 +69,7 @@ class Blog {
         }
     }
 
-    public static function createSlug(string $string): string|bool {
+    public static function createSlug(string $string, int $blogid = 0): string|bool {
         try {
             global $db;
             $slug = strtolower($string);
@@ -79,7 +79,7 @@ class Blog {
             /** Cek di database apakah slug sudah ada */
             $maximalCheck = 5;
             for($i = 1; $i <= $maximalCheck; $i++) {
-                $sqlCheck = $db->query("SELECT BLOG_SLUG FROM tb_blog WHERE LOWER(BLOG_SLUG) = LOWER('{$slug}') LIMIT 1");
+                $sqlCheck = $db->query("SELECT BLOG_SLUG FROM tb_blog WHERE LOWER(BLOG_SLUG) = LOWER('{$slug}') AND ID_BLOG != {$blogid} LIMIT 1");
                 if($sqlCheck->num_rows == 0) {
                     return $slug;
                 }
@@ -89,6 +89,25 @@ class Blog {
     
             return false;
     
+        } catch (Exception $e) {
+            if(SystemInfo::isDevelopment()) {
+                throw $e;
+            }
+
+            return false;
+        }
+    }
+
+    public static function findById(string $md5id): array|bool {
+        try {
+            $db = Database::connect();
+            $sqlGet = $db->query("SELECT * FROM tb_blog WHERE MD5(MD5(ID_BLOG)) = '{$md5id}' LIMIT 1");
+            if($sqlGet->num_rows != 1) {
+                return false;
+            }
+
+            return $sqlGet->fetch_assoc() ?? false;
+
         } catch (Exception $e) {
             if(SystemInfo::isDevelopment()) {
                 throw $e;
