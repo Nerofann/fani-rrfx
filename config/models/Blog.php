@@ -69,4 +69,33 @@ class Blog {
         }
     }
 
+    public static function createSlug(string $string): string|bool {
+        try {
+            global $db;
+            $slug = strtolower($string);
+            $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
+            $slug = trim($slug, '-');
+        
+            /** Cek di database apakah slug sudah ada */
+            $maximalCheck = 5;
+            for($i = 1; $i <= $maximalCheck; $i++) {
+                $sqlCheck = $db->query("SELECT BLOG_SLUG FROM tb_blog WHERE LOWER(BLOG_SLUG) = LOWER('{$slug}') LIMIT 1");
+                if($sqlCheck->num_rows == 0) {
+                    return $slug;
+                }
+
+                $slug .= "-" . uniqid();
+            }
+    
+            return false;
+    
+        } catch (Exception $e) {
+            if(SystemInfo::isDevelopment()) {
+                throw $e;
+            }
+
+            return false;
+        }
+    }
+
 }
