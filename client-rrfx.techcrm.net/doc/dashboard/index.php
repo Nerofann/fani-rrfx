@@ -103,7 +103,7 @@
     </div>
 </div>
 
-<?php $formatNews = App\Models\Blog::formatGrouped(App\Models\Blog::get()); ?>
+<?php $formatNews = App\Models\Blog::formatGrouped(App\Models\Blog::get(), 4); ?>
 <?php foreach($formatNews as $type) : ?>
     <div class="row mt-2">
         <div class="col-md-12">
@@ -124,7 +124,7 @@
                         <div class="d-flex flex-column h-100">
                             <p class="small"><?php echo str_replace(['\r\n', '&amp;nbsp;'], ["<br>", ' '],substr(strip_tags(html_entity_decode($news['BLOG_MESSAGE'])), 0, 200)) ?>...</p>
                             <div class="mt-auto">
-                                <a href="/news/<?php echo $news['BLOG_SLUG'] ?>" class="mt-auto btn btn-sm btn-primary">Detail</a>
+                                <a href="/news?detail=<?php echo $news['BLOG_SLUG'] ?>" class="mt-auto btn btn-sm btn-primary">Detail</a>
                             </div>
                         </div>
                     </div>
