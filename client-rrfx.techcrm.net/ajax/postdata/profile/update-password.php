@@ -16,7 +16,7 @@ foreach($required as $key => $text) {
     if(empty($data[ $key ])) {
         JsonResponse([
             'success' => false,
-            'message' => "Kolom {$tex} wajib diisi",
+            'message' => "Kolom {$text} wajib diisi",
             'data' => []
         ]);
     }
