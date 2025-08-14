@@ -22,7 +22,7 @@
     $company_name    = $COMPANY_PRF["COMPANY_NAME"];
     $userBank        = (!empty($progressAccount["MBR_BKJSN"])) ? json_decode($progressAccount["MBR_BKJSN"], true) : [];
     $profile         = array_merge(($COMPANY_PRF ?? []), ["OFFICE" => ($COMPANY_MOF ?? [])]);
-    $bank            = explode("/", $depositData['DPWD_BANKSRC']);
+    $bank            = explode("/", ($depositData['DPWD_BANKSRC'] ?? ''));
     $admBanks        = $db->query("SELECT * FROM tb_bankadm");
     $offices         = $db->query("SELECT * FROM tb_office");
     $bankName        = $bank[0] ?? "-";

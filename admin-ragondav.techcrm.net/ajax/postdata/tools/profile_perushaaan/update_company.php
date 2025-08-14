@@ -22,6 +22,7 @@
         "direktur-kepatuhan",
         "direktur-operational",
         "komisaris-utama",
+        "komisaris",
         "sp-merge",
         "no_izin_usaha",
         "tgl_izin_usaha",
@@ -30,7 +31,8 @@
         "no_keanggotaan_lembaga",
         "tgl_keanggotaan_lembaga",
         "no_persetujuan_peserta",
-        "tgl_persetujuan_peserta"
+        "tgl_persetujuan_peserta",
+        "faxmail"
     ];
     $data = Helper::getSafeInput($_POST);
     foreach($REQ_POST as $req) {
@@ -63,6 +65,7 @@
         "PROF_DIREKTUR"                  => $data["direktur-kepatuhan"],
         "PROF_OPERATIONAL"               => $data["direktur-operational"],
         "PROF_KOMISARIS_UTAMA"           => $data["komisaris-utama"],
+        "PROF_KOMISARIS"                 => $data["komisaris"],
         "PROF_PEMEGANG_SAHAM"            => $data["sp-merge"],
         "PROF_NO_IZIN_USAHA"             => $data["no_izin_usaha"],
         "PROF_TGL_IZIN_USAHA"            => $data["tgl_izin_usaha"],
@@ -71,7 +74,8 @@
         "PROF_NO_KEANGGOTAAN_LEMBAGA"    => $data["no_keanggotaan_lembaga"],
         "PROF_TGL_KEANGGOTAAN_LEMBAGA"   => $data["tgl_keanggotaan_lembaga"],
         "PROF_NO_PERSETUJUAN_PESERTA"    => $data["no_persetujuan_peserta"],
-        "PROF_TGL_PERSETUJUAN_PESERTA"   => $data["tgl_persetujuan_peserta"]
+        "PROF_TGL_PERSETUJUAN_PESERTA"   => $data["tgl_persetujuan_peserta"],
+        "PROF_FAX"                       => $data["faxmail"]
     ];
 
     

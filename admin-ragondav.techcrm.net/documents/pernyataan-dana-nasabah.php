@@ -8,7 +8,7 @@
     $realAccount = Account::realAccountDetail(($acc ?? ""));
     $accnd = Account::accoundCondition($realAccount['ID_ACC']);
     $depositData     = Dpwd::findByRaccId($realAccount["ID_ACC"]);
-    $bank = explode("/", $depositData['DPWD_BANKSRC']);
+    $bank            = explode("/", ($depositData['DPWD_BANKSRC'] ?? ''));
     $bankName = $bank[0] ?? "-";
     $bankAccount = $bank[1] ?? "-";
     $bankHolder = $bank[2] ?? "-";
@@ -73,7 +73,7 @@
                 </tbody>
             </table>
             
-            <p class="text-justify">Dengan mengisi kolom “YA” di bawah ini, Bersama ini saya menyatakan bahwa dana yang saya gunakan untuk bertransaksi di <?= $company_name ?> adalah milik saya pribadi dan bukan dana pihak lain, serta tidak diperoleh dari hasil kejahatan, penipuan, penggelapan, tindak pidana korupsi, tindak pidana narkotika, tindak pidana di bidang kehutanan, hasil pencucian uang, dan perbuatan melawan hukum lainnya serta tidak dimaksudkan untuk melakukan pencucian uang dan/atau pendanaan terorisme.</p>
+            <p class="text-justify">Dengan mengisi kolom “YA” di bawah ini, Bersama ini saya menyatakan bahwa dana yang saya gunakan untuk bertransaksi di <?= $COMPANY_PRF['COMPANY_NAME'] ?> adalah milik saya pribadi dan bukan dana pihak lain, serta tidak diperoleh dari hasil kejahatan, penipuan, penggelapan, tindak pidana korupsi, tindak pidana narkotika, tindak pidana di bidang kehutanan, hasil pencucian uang, dan perbuatan melawan hukum lainnya serta tidak dimaksudkan untuk melakukan pencucian uang dan/atau pendanaan terorisme.</p>
 
             <p class="text-justify">Demikian surat pernyataan ini saya buat dalam keadaan sadar, sehat jasmani dan rohani serta tanpa paksaan dari pihak manapun.</p>
 

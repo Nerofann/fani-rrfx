@@ -37,8 +37,8 @@
                     <a target="_blank" data-tst="test" href="/export/account-condition?acc=<?php echo $id_acc; ?>" class="btn btn-primary mx-2">Account Condition</a>
                     <a target="_blank" data-tst="test" href="/export/bukti-konfirmasi-penerimaan-nasabah?acc=<?php echo $id_acc; ?>" class="btn btn-primary mx-2">WP Confirm</a>
                     <a target="_blank" data-tst="test" href="/export/pernyataan-pengungkapan?acc=<?php echo $id_acc; ?>" class="btn btn-primary mx-2">Diclosure Statemen</a>
-                    <!-- <a target="_blank" href="/export/all.php?acc=<?php echo $id_acc; ?>" class="btn btn-primary mx-2">All Document</a> -->
-                    <a id="all" href="javascript:void(0);" class="btn btn-primary mx-2">All Document</a>
+                    <a target="_blank" href="/export/all?acc=<?php echo $id_acc; ?>" class="btn btn-primary mx-2">All Document</a>
+                    <!-- <a id="all" href="javascript:void(0);" class="btn btn-primary mx-2">All Document</a> -->
                 </div>
             </div>
         </div>

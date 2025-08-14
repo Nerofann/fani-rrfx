@@ -46,7 +46,7 @@
                 </tbody>
             </table>
 
-            <p style="margin-bottom: 0px;">Dengan mengisi kolom “YA” di bawah ini, saya menyatakan bahwa saya telah memiliki pengalaman yang mencukupi dalam melaksanakan transaksi Perdagangan Berjangka karena pernah bertransaksi pada Perusahaan Pialang Berjangka PT Delapan Belas Berjangka, dan telah memahami tentang tata cara bertransaksi Perdagangan Berjangka. </p>
+            <p style="margin-bottom: 0px;">Dengan mengisi kolom “YA” di bawah ini, saya menyatakan bahwa saya telah memiliki pengalaman yang mencukupi dalam melaksanakan transaksi Perdagangan Berjangka karena pernah bertransaksi pada <?= $realAccount['ACC_F_PENGLAMAN_PERSH'] ?>, dan telah memahami tentang tata cara bertransaksi Perdagangan Berjangka. </p>
             <p>Demikian Pernyataan ini dibuat dengan sebenarnya dalam keadaan sadar, sehat jasmani dan rohani serta tanpa paksaan apapun dari pihak manapun.</p>
 
             <p style="margin: 0px;">Pernyataan menerima/tidak: Ya</p>

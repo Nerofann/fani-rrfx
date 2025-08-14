@@ -22,7 +22,7 @@
     $company_name    = $COMPANY_PRF["COMPANY_NAME"];
     $userBank        = (!empty($progressAccount["MBR_BKJSN"])) ? json_decode($progressAccount["MBR_BKJSN"], true) : [];
     $profile         = array_merge(($COMPANY_PRF ?? []), ["OFFICE" => ($COMPANY_MOF ?? [])]);
-    $bank            = explode("/", $depositData['DPWD_BANKSRC']);
+    $bank            = explode("/", ($depositData['DPWD_BANKSRC'] ?? ''));
     $admBanks        = $db->query("SELECT * FROM tb_bankadm");
     $offices         = $db->query("SELECT * FROM tb_office");
     $bankName        = $bank[0] ?? "-";
@@ -183,6 +183,11 @@
                     <?php endforeach; ?>
                 </tbody>
             </table>
+            <p style="text-align:justify;">Dengan mengisi kolom "YA" dibawah ini, saya menyatakan bahwa saya telah membaca dan memahami seluruh isi document yg disampaikan dalm FORMULIR NOMOR 1 sampai dengan FORMULIR NOMOR <?= $key ?>.</p>
+            <p style="text-align:justify;">Demikian pernyataan ini dibuat dengan sebenarnya dalam keadaan sadar, sehat jasmani dan rohani serta tanpa paksaan apapun dari pihak manapun</p>
+            <p>Pernyataan menerima/tidak: Ya</p>
+            <p>Menerima pada Tanggal (DD/MM/YYYY): <?= date('Y-m-d', strtotime($realAccount["ACC_F_PROFILE_DATE"])) ?></p>
+            <p>IP Address: <?= $realAccount["ACC_F_PROFILE_IP"] ?></p>
         </div>
     </body>
 </html>

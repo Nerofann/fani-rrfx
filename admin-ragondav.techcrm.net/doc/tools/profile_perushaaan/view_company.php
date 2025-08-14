@@ -139,6 +139,17 @@
                         </div>
 
                         <div class="form-group">
+                            <div class="row row-sm">
+                                <div class="col-md-3">
+                                    <label for="faxmail" class="form-label">Nomor faximili</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" name="faxmail" id="faxmail" placeholder="Komisaris Utama" value="<?php echo $profile['PROF_FAX'] ?>" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <div class="d-flex justify-content-end w-100">
                                 <button type="submit" name="submit-profile" class="btn btn-success">Update</button>
                             </div>
@@ -161,11 +172,12 @@
             });
             $('#form-company').on('submit', function(ev){
                 ev.preventDefault();
-                $(this).find(':submit').addClass('loading');
+                let sbmBtn = $(this).find(':submit');
+                sbmBtn.addClass('loading');
                 let data = Object.fromEntries(new FormData(this));
 
                 $.post("/ajax/post/tools/profile_perushaaan/update_company", data, function(resp) {
-                    $(this).find(':submit').removeClass('loading');
+                    sbmBtn.removeClass('loading');
                     Swal.fire(resp.alert).then(() => {
                         if(resp.success) {
                             location.reload();

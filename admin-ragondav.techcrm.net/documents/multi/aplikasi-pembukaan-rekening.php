@@ -258,27 +258,27 @@
                             Rekening Bank Nasabah Untuk Penyetoran dan Penarikan Margin (hanya rekening dibawah ini yang dapat Saudara pergunakan untuk lalulintas margin)
                         </td>
                     </tr>
-                    <?php foreach($userBank as $bank) : ?>
+                    <?php foreach($userBanks as $bank) : ?>
                         <tr>
                             <td width="35%" class="v-align-middle">Nama Bank</td>
                             <td width="3%" class="v-align-middle">:</td>
-                            <td class="v-align-middle"><?= $bank['MBANK_NAME'] ?></td>
+                            <td class="v-align-middle"><?= ($bank['MBANK_NAME'] ?? '') ?></td>
                         </tr>
-                        <tr>
+                        <!-- <tr>
                             <td width="35%" class="v-align-middle">Cabang</td>
                             <td width="3%" class="v-align-middle">:</td>
-                            <td class="v-align-middle"><?= $bank['MBANK_BRANCH'] ?></td>
-                        </tr>
+                            <td class="v-align-middle"><?= ($bank['MBANK_BRANCH'] ?? '') ?></td>
+                        </tr> -->
                         <tr>
                             <td width="35%" class="v-align-middle">Nomor A/C</td>
                             <td width="3%" class="v-align-middle">:</td>
-                            <td class="v-align-middle"><?= $bank['MBANK_ACCOUNT'] ?></td>
+                            <td class="v-align-middle"><?= ($bank['MBANK_ACCOUNT'] ?? '') ?></td>
                         </tr>
-                        <tr>
+                        <!-- <tr>
                             <td width="35%" class="v-align-middle">Jenis Rekening</td>
                             <td width="3%" class="v-align-middle">:</td>
-                            <td class="v-align-middle"><?= $bank['MBANK_TYPE'] ?></td>
-                        </tr>
+                            <td class="v-align-middle"><?= ($bank['MBANK_TYPE'] ?? '') ?></td>
+                        </tr> -->
                     <?php endforeach; ?>
                 </tbody>
             </table>

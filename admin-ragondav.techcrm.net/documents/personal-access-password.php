@@ -8,7 +8,7 @@
     $realAccount = Account::realAccountDetail(($acc ?? ""));
     $accnd = Account::accoundCondition($realAccount['ID_ACC']);
     $depositData     = Dpwd::findByRaccId($realAccount["ID_ACC"]);
-    $bank = explode("/", $depositData['DPWD_BANKSRC']);
+    $bank            = explode("/", ($depositData['DPWD_BANKSRC'] ?? ''));
     $bankName = $bank[0] ?? "-";
     $bankAccount = $bank[1] ?? "-";
     $bankHolder = $bank[2] ?? "-";

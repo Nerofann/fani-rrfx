@@ -41,7 +41,7 @@
                                                     data-email="<?= $office['OFC_EMAIL']; ?>" 
                                                     data-iframe="<?= $office['OFC_IFRAME']; ?>"
                                                     class="btn btn-sm btn-success btn-edit"><i class="fas fa-edit"></i></a>
-                                                <a href="javascript:void(0)" data-value="<?= md5(md5($office['ID_OFC'])); ?>" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+                                                <a href="javascript:void(0)" data-value="<?= md5(md5($office['ID_OFC'])); ?>" class="btn btn-sm btn-danger dltBtn"><i class="fas fa-trash"></i></a>
                                             </td>
                                         </tr>
                                     <?php endwhile; ?>
@@ -120,35 +120,35 @@
                             <div class="col-md-12 mb-2">
                                 <div class="form-group">
                                     <label for="edit_ofc_city" class="form-label">Kota</label>
-                                    <input type="text" class="form-control" name="edit_ofc_city" id="edit_ofc_city" placeholder="Nama Kota" required>
+                                    <input type="text" class="form-control" name="ofc_city" id="edit_ofc_city" placeholder="Nama Kota" required>
                                 </div>
                             </div>
         
                             <div class="col-md-12 mb-2">
                                 <div class="form-group">
                                     <label for="edit_ofc_address" class="form-label">Address</label>
-                                    <input type="text" class="form-control" name="edit_ofc_address" id="edit_ofc_address" placeholder="Alamat Kantor" required>
+                                    <input type="text" class="form-control" name="ofc_address" id="edit_ofc_address" placeholder="Alamat Kantor" required>
                                 </div>
                             </div>
 
                             <div class="col-md-12 mb-2">
                                 <div class="form-group">
                                     <label for="edit_ofc_phone" class="form-label">Telepon</label>
-                                    <input type="text" class="form-control" name="edit_ofc_phone" id="edit_ofc_phone" placeholder="No. Telepon kantor" required>
+                                    <input type="text" class="form-control" name="ofc_phone" id="edit_ofc_phone" placeholder="No. Telepon kantor" required>
                                 </div>
                             </div>
 
                             <div class="col-md-12 mb-2">
                                 <div class="form-group">
                                     <label for="edit_ofc_email" class="form-label">Email</label>
-                                    <input type="text" class="form-control" name="edit_ofc_email" id="edit_ofc_email" placeholder="Email Kantor" required>
+                                    <input type="text" class="form-control" name="ofc_email" id="edit_ofc_email" placeholder="Email Kantor" required>
                                 </div>
                             </div>
         
                             <div class="col-md-12 mb-2">
                                 <div class="form-group">
                                     <label for="edit_content" class="form-label">Iframe <small class="text-danger">* Hanya Link Embed saja</small></label>
-                                    <textarea name="edit_content" id="edit_content" rows="10" class="form-control" placeholder="Contoh: https://www.google.com/maps/embed?"></textarea>
+                                    <textarea name="content" id="edit_content" rows="10" class="form-control" placeholder="Contoh: https://www.google.com/maps/embed?"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -181,21 +181,6 @@
                 }, 'json');
             });
 
-            $('#form-edt-kantor').on('submit', function(ev){
-                ev.preventDefault();
-                $(this).find(':submit').addClass('loading');
-                let data = Object.fromEntries(new FormData(this));
-    
-                $.post("/ajax/post/tools/profile_perushaaan/update_kantor", data, function(resp) {
-                    $(this).find(':submit').removeClass('loading');
-                    $('#modalAddOffice').modal('hide');
-                    Swal.fire(resp.alert).then(() => {
-                        if(resp.success) {
-                            location.reload();
-                        }
-                    });
-                }, 'json');
-            });
 
             $('.btn-edit').on('click', function(btn) {
                 $('#edit_ofc_city').val($(btn.currentTarget).data('city'))
@@ -205,6 +190,42 @@
                 $('#edit_content').val($(btn.currentTarget).data('iframe'))
                 $('#edit-office').val($(btn.currentTarget).data('id'))
                 $('#modalEditOffice').modal('show')
+            });
+            $('#form-edt-kantor').on('submit', function(ev){
+                ev.preventDefault();
+                $(this).find(':submit').addClass('loading');
+                let data = Object.fromEntries(new FormData(this));
+    
+                $.post("/ajax/post/tools/profile_perushaaan/update_kantor", data, function(resp) {
+                    $('#modalEditOffice').modal('hide');
+                    Swal.fire(resp.alert).then(() => {
+                        if(resp.success) {
+                            location.reload();
+                        }
+                    });
+                }, 'json');
+                $(this).find(':submit').removeClass('loading');
+            });
+
+            
+            $('.dltBtn').on('click', function(e){
+                Swal.fire({
+                    title: `Delete Office`,
+                    text: `Are you sure to delete this Office?`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    reverseButtons: true
+                }).then((result) => {
+                    if(result.isConfirmed) {
+                        $.post("/ajax/post/tools/profile_perushaaan/delete_kantor", {x: $(this).data('value')}, function(resp) {
+                            Swal.fire(resp.alert).then(() => {
+                                if(resp.success) {
+                                    location.reload();
+                                }
+                            })
+                        }, 'json');
+                    }
+                });
             });
         });
     </script>

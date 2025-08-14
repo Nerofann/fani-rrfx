@@ -39,7 +39,7 @@ try {
     $profile_perusahaan = ProfilePerusahaan::get();
     $profile_perusahaan['setting_telp_pmbr'] = $setting_telp_pmbr ?? 0;
 
-    $_GET['logo_pdf'] = "https://client-rrfx.techcrm.net/assets/images/logo-white-new.png";
+    $_GET['logo_pdf'] = "https://client-rrfx.techcrm.net/assets/images/logo-white-new1.png";
     $_GET['profile_perusahaan'] = $profile_perusahaan;
     $_GET['company_name'] = $profile_perusahaan['PROF_COMPANY_NAME'];
     $_GET['company_address'] = $profile_perusahaan['OFFICE']['OFC_ADDRESS'] ?? "-";

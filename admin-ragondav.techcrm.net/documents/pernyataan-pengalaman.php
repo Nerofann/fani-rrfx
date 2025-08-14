@@ -18,7 +18,7 @@ $list_wpb_satu   = ProfilePerusahaan::list_wpb(-1, 2);
 $list_wpb_satu   = ProfilePerusahaan::list_wpb(2, 2);
 $tgl_lahir       = Helper::bulan(date("m", strtotime($realAccount['ACC_TANGGAL_LAHIR'])));
 $profile         = array_merge(($COMPANY_PRF ?? []), ["OFFICE" => ($COMPANY_MOF ?? [])]);
-$bank            = explode("/", $depositData['DPWD_BANKSRC']);
+$bank            = explode("/", ($depositData['DPWD_BANKSRC'] ?? ''));
 $bankName        = $bank[0] ?? "-";
 $bankAccount     = $bank[1] ?? "-";
 $bankHolder      = $bank[2] ?? "-";

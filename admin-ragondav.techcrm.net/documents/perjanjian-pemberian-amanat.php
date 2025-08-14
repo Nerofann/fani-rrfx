@@ -22,7 +22,7 @@ $date_day        = Helper::hari(date('w', strtotime($realAccount["ACC_F_PERJ_DAT
 $date_month      = Helper::bulan(date('m', strtotime($realAccount["ACC_F_PERJ_DATE"])));
 $userBank        = (!empty($progressAccount["MBR_BKJSN"])) ? json_decode($progressAccount["MBR_BKJSN"], true) : [];
 $profile         = array_merge(($COMPANY_PRF ?? []), ["OFFICE" => ($COMPANY_MOF ?? [])]);
-$bank            = explode("/", $depositData['DPWD_BANKSRC']);
+$bank            = explode("/", ($depositData['DPWD_BANKSRC'] ?? ''));
 $admBanks        = $db->query("SELECT * FROM tb_bankadm");
 $offices         = $db->query("SELECT * FROM tb_office");
 $bankName        = $bank[0] ?? "-";
