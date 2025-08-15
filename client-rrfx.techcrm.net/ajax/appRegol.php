@@ -2778,7 +2778,7 @@ class AppPost {
         }
 
         /** Check Maximum */
-        if($amountSource < $progressAccount['RTYPE_MAXDEPOSIT']) {
+        if($amountSource > $progressAccount['RTYPE_MAXDEPOSIT']) {
             exit(json_encode([
                 'success'   => false,
                 'alert'     => [
