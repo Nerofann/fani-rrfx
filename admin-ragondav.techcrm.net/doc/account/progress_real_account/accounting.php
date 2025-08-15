@@ -94,7 +94,7 @@
                                     <td class="text-center" colspan="2">
                                         <div class="form-group">
                                             <label>Rate</label>
-                                            <input class="form-control text-center" placeholder="" value="<?= Helper::formatCurrency($progressAccount['RTYPE_RATE']) ?>" readonly type="text">
+                                            <input class="form-control text-center" placeholder="" value="<?= (($progressAccount["RTYPE_ISFLOATING"]) ? 'Floating' : Helper::formatCurrency($progressAccount['RTYPE_RATE'])) ?>" readonly type="text">
                                         </div>
                                     </td>
                                     <td class="text-center">
@@ -105,11 +105,11 @@
                                     </td>
                                 </tr>
                             <?php elseif($depositData['DPWD_CURR_FROM'] == "USD") : ?>
-                                <tr>
+                                <!-- <tr>
                                     <td class="text-center">The sum of rupiah :</td>
-                                    <td colspan="2"><input class="form-control text-center marquee" placeholder="" value="<?php echo Helperpenyebut(round($depositData["DPWD_AMOUNT"], 0)).' rupiah'; ?>" readonly type="text"></td>
+                                    <td colspan="2"><input class="form-control text-center marquee" placeholder="" value="<?php echo Helper::penyebut(round($depositData["DPWD_AMOUNT"], 0)).' rupiah'; ?>" readonly type="text"></td>
                                     <td><input class="form-control text-center" placeholder="" value="<?= $depositData['DPWD_CURR_TO'] . " " . number_format($depositData["DPWD_AMOUNT"], 0, ',', '.') ?>" readonly type="text"></td>
-                                </tr>
+                                </tr> -->
                                 <tr>
                                     <td class="text-center">
                                         <div class="form-group">
@@ -120,14 +120,14 @@
                                     <td class="text-center" colspan="2">
                                         <div class="form-group">
                                             <label>Rate</label>
-                                            <input class="form-control text-center" placeholder="" value="<?= Helper::formatCurrency($depositData['DPWD_RATE']) ?>" readonly type="text">
+                                            <input class="form-control text-center" placeholder="" value="<?= (($progressAccount["RTYPE_ISFLOATING"]) ? 'Floating' : Helper::formatCurrency($depositData['DPWD_RATE'])) ?>" readonly type="text">
                                         </div>
                                     </td>
                                     <td class="text-center">
-                                        <div class="form-group">
+                                        <!-- <div class="form-group">
                                             <label>Amount in IDR</label>
                                             <input class="form-control text-center" placeholder="" value="<?= Helper::formatCurrency($depositData["DPWD_AMOUNT"], 0) ?>" readonly type="text">
-                                        </div>
+                                        </div> -->
                                     </td>
                                 </tr>
                             <?php endif; ?>

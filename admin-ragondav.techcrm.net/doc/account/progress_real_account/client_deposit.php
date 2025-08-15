@@ -94,21 +94,17 @@
                             <tr>
                                 <td colspan="2" class="fw-bold row-separator bg-primary">Jumlah</td>
                             </tr>
-                            <tr>
-                                <td width="30%" class="fw-bold">Nilai IDR</td>
-                                <td>IDR <?= Helper::formatCurrency($depositData['DPWD_AMOUNT']) ?></td>
-                            </tr>
 
                             <?php if($progressAccount['RTYPE_ISFLOATING'] == 1) : ?>
                                 <tr>
                                     <td width="30%" class="fw-bold">Nilai USD</td>
                                     <td>USD <?= Helper::formatCurrency($depositData['DPWD_AMOUNT'] / $depositData['DPWD_RATE']) ?></td>
                                 </tr>
-                                <tr>
-                                    <td width="30%" class="fw-bold">Rate</td>
-                                    <td><?= Helper::formatCurrency($depositData['DPWD_RATE']) ?></td>
-                                </tr>
                             <?php else : ?>
+                                <tr>
+                                    <td width="30%" class="fw-bold">Nilai IDR</td>
+                                    <td>IDR <?= Helper::formatCurrency($depositData['DPWD_AMOUNT']) ?></td>
+                                </tr>
                                 <tr>
                                     <td width="30%" class="fw-bold">Nilai USD</td>
                                     <td>USD <?= Helper::formatCurrency($depositData['DPWD_AMOUNT'] / $progressAccount['RTYPE_RATE']) ?></td>
@@ -123,17 +119,17 @@
                             <tr>
                                 <td colspan="2" class="fw-bold row-separator bg-primary">Detail Akun</td>
                             </tr>
-                            <tr>
+                            <!-- <tr>
                                 <td width="30%" class="fw-bold">Login</td>
                                 <td><?= $progressAccount['ACC_LOGIN'] ?></td>
-                            </tr>
+                            </tr> -->
                             <tr>
                                 <td width="30%" class="fw-bold">Group</td>
-                                <td><?= $progressAccount['RTYPE_TYPE'] ?></td>
+                                <td><?= $progressAccount['RTYPE_GROUP'] ?></td>
                             </tr>
                             <tr>
                                 <td width="30%" class="fw-bold">Type</td>
-                                <td><?= $progressAccount['RTYPE_NAME'] ?></td>
+                                <td><?= $progressAccount['RTYPE_TYPE'] ?></td>
                             </tr>
                         </tbody>
                     </table>

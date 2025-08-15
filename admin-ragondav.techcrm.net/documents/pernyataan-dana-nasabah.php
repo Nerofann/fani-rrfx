@@ -4,6 +4,8 @@
     use App\Models\Dpwd;
     use App\Models\Helper;
     use App\Models\FileUpload;
+    use App\Models\CompanyProfile;
+    use App\Models\ProfilePerusahaan;
 
     $realAccount = Account::realAccountDetail(($acc ?? ""));
     $accnd = Account::accoundCondition($realAccount['ID_ACC']);
@@ -12,6 +14,8 @@
     $bankName = $bank[0] ?? "-";
     $bankAccount = $bank[1] ?? "-";
     $bankHolder = $bank[2] ?? "-";
+    $COMPANY_PRF     = CompanyProfile::profilePerusahaan();
+    $COMPANY_MOF     = CompanyProfile::getMainOffice();
 ?>
 
 <!DOCTYPE html>

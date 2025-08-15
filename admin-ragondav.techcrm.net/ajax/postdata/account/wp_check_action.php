@@ -20,7 +20,7 @@
     }
 
     $data = Helper::getSafeInput($_POST);
-    foreach(["sbmt_id", "sbmt_act", "sbmt_note", "login", "forex"] as $req) {
+    foreach(["sbmt_id", "sbmt_act", "sbmt_note", "forex"] as $req) {
         if(empty($data[ $req ])) {
             $req = str_replace("add_", "", $req);
             JsonResponse([
@@ -100,6 +100,36 @@
         switch ($data["sbmt_act"]) {
             case 'accept':
                 $UPDATE_RACC["ACC_WPCHECK"] = 4;
+                if(empty($data['login'])) {
+                    $db->rollback();
+                    JsonResponse([
+                        'success'   => false,
+                        'message'   => "Kolom login diperlukan",
+                        'data'      => []
+                    ]);
+                }
+
+                /** Login filter RACC*/
+                $CHECK_LOGIN = $db->query('SELECT 1 FROM tb_racc WHERE tb_racc.ACC_TYPE = 1 AND tb_racc.ACC_LOGIN = "'.$data['login'].'"');
+                if((!$CHECK_LOGIN) || ($CHECK_LOGIN->num_rows > 0)){
+                    $db->rollback();
+                    JsonResponse([
+                        'success'   => false,
+                        'message'   => "Nomer login sudah digunakan.",
+                        'data'      => []
+                    ]);
+                }
+
+                /** Login filter account condition*/
+                $CHECK_ACCNDLGN = $db->query('SELECT 1 FROM tb_acccond WHERE tb_acccond.ACCCND_MBR != '.$ACCOUNT_CHECK["ACC_MBR"].' AND tb_acccond.ACCCND_LOGIN = "'.$data['login'].'"');
+                if((!$CHECK_ACCNDLGN) || ($CHECK_ACCNDLGN->num_rows > 0)){
+                    $db->rollback();
+                    JsonResponse([
+                        'success'   => false,
+                        'message'   => "Nomer login sudah digunakan.",
+                        'data'      => []
+                    ]);
+                }
 
                 /** Insert account condition */
                 Database::insert('tb_acccond', [
@@ -117,9 +147,13 @@
 
                 /** Update Deposit */
                 Database::update('tb_dpwd', ["DPWD_STS" => 0], ["ID_DPWD" => $DEPOSIT_CHECK["ID_DPWD"]]);
+
+                /** Delete account condition previous record(s) */
+                Database::delete('tb_acccond', ["ACCCND_ACC" => $ACCOUNT_CHECK["ID_ACC"], "ACCCND_STS" => 0]);
                 break;
             
             default:
+                $db->rollback();
                 JsonResponse([
                     'code'      => 200,
                     'success'   => false,
@@ -144,6 +178,7 @@
         ]);
 
         mysqli_commit($db);
+
     } catch (Exception | mysqli_sql_exception $e) {
         mysqli_rollback($db);
         JsonResponse([

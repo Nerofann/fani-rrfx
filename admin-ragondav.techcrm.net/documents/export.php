@@ -77,7 +77,7 @@ try {
     $dompdf = new Dompdf($options);
 
     if($filename == 'all'){
-        $html = '';
+        $appender = '';
         $ALL_DOCS = [
             "profile-perusahaan",
             "pernyataan-simulasi",
@@ -96,8 +96,21 @@ try {
             $temp_html = parseHtmlText($filename, [...$_GET, 'dompdf' => $dompdf]);
             $loadDOM = new DOMDocument();
             $loadDOM->loadHTML($temp_html, LIBXML_NOERROR);
-            $html .= DOMinnerHTML($loadDOM->getElementsByTagName('body')->item(0));
+            $appender .= DOMinnerHTML($loadDOM->getElementsByTagName('body')->item(0));
+            $appender .= '<div class="break-before"></div>';
         }
+        $html = '
+            <!DOCTYPE html>
+            <html>
+                <head>
+                    '.file_get_contents(__DIR__.'/style.php').'
+                </head>
+                <body>
+                    '.str_replace(["â", "â", "â"], ['"', '"', '&#10004;'], $appender).'
+                </body>
+            </html>
+        ';
+
     }else{ $html = parseHtmlText($filename, [...$_GET, 'dompdf' => $dompdf]); }
 
     $dompdf->loadHtml($html);

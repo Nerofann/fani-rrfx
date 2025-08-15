@@ -342,7 +342,7 @@
                                             <h6 class="fw-bold mb-2">Nama-Nama Wakil Pialang Berjangka yang secara khusus ditunjuk oleh Pialang Berjangka untuk melakukan verifikasi dalam rangka penerimaan Nasabah elektronik online</h6>
                                         </td>
                                     </tr>
-                                    <?php foreach($list_wpb_satu as $wpb) : ?>
+                                    <?php foreach($list_wpb_dua as $wpb) : ?>
                                         <tr>
                                             <?php foreach($wpb as $w) : ?>
                                                 <td width="30%" class="top-align text-start"><?php echo $w['WPB_NAMA'] ?></td>

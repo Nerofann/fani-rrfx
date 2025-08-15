@@ -15,7 +15,7 @@ $COMPANY_PRF     = CompanyProfile::profilePerusahaan();
 $COMPANY_MOF     = CompanyProfile::getMainOffice();
 $company         = CompanyProfile::$name;
 $list_wpb_satu   = ProfilePerusahaan::list_wpb(-1, 2);
-$list_wpb_satu   = ProfilePerusahaan::list_wpb(2, 2);
+$list_wpb_dua    = ProfilePerusahaan::list_wpb(2, 2);
 $profile         = array_merge(($COMPANY_PRF ?? []), ["OFFICE" => ($COMPANY_MOF ?? [])]);
 $bank            = explode("/", ($depositData['DPWD_BANKSRC'] ?? ''));
 $bankName        = $bank[0] ?? "-";

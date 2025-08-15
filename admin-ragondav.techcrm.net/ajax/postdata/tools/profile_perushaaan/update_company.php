@@ -32,7 +32,8 @@
         "tgl_keanggotaan_lembaga",
         "no_persetujuan_peserta",
         "tgl_persetujuan_peserta",
-        "faxmail"
+        "faxmail",
+        "email_pengaduan"
     ];
     $data = Helper::getSafeInput($_POST);
     foreach($REQ_POST as $req) {
@@ -75,7 +76,10 @@
         "PROF_TGL_KEANGGOTAAN_LEMBAGA"   => $data["tgl_keanggotaan_lembaga"],
         "PROF_NO_PERSETUJUAN_PESERTA"    => $data["no_persetujuan_peserta"],
         "PROF_TGL_PERSETUJUAN_PESERTA"   => $data["tgl_persetujuan_peserta"],
-        "PROF_FAX"                       => $data["faxmail"]
+        "PROF_FAX"                       => $data["faxmail"],
+        "PROF_EML_PENGADUAN"             => $data["email_pengaduan"],
+        "PROF_PHONE_PENGADUAN"           => $data["phone_pengaduan"],
+        "PROF_FAX_PENGADUAN"             => $data["faks_pengaduan"]
     ];
 
     

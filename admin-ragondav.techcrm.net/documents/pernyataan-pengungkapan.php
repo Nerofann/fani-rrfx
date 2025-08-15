@@ -12,7 +12,7 @@
     $COMPANY_PRF     = CompanyProfile::profilePerusahaan();
     $COMPANY_MOF     = CompanyProfile::getMainOffice();
     $company         = CompanyProfile::$name;
-    $bank            = explode("/", $depositData['DPWD_BANKSRC']);
+    $bank            = explode("/", ($depositData['DPWD_BANKSRC'] ?? ''));
     $bankName        = $bank[0] ?? "-";
     $bankAccount     = $bank[1] ?? "-";
     $bankHolder      = $bank[2] ?? "-";

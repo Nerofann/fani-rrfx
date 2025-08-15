@@ -149,6 +149,38 @@
                             </div>
                         </div>
 
+                        <div class="mb-4 main-content-label">Pengaduan</div>
+                        <div class="form-group">
+                            <div class="row row-sm">
+                                <div class="col-md-3">
+                                    <label for="email_pengaduan" class="form-label">Email Pengaduan</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" name="email_pengaduan" id="email_pengaduan" placeholder="Email Pengaduan" value="<?php echo $profile['PROF_EML_PENGADUAN'] ?>" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row row-sm">
+                                <div class="col-md-3">
+                                    <label for="phone_pengaduan" class="form-label">Phone Pengaduan</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" name="phone_pengaduan" id="phone_pengaduan" placeholder="Phone Pengaduan" value="<?php echo $profile['PROF_PHONE_PENGADUAN'] ?>" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row row-sm">
+                                <div class="col-md-3">
+                                    <label for="faks_pengaduan" class="form-label">Faks Pengaduan</label>
+                                </div>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" name="faks_pengaduan" id="faks_pengaduan" placeholder="Faks Pengaduan" value="<?php echo $profile['PROF_FAX_PENGADUAN'] ?>" required>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <div class="d-flex justify-content-end w-100">
                                 <button type="submit" name="submit-profile" class="btn btn-success">Update</button>

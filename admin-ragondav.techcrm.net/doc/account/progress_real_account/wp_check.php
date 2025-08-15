@@ -107,7 +107,7 @@
                                 <div class="col-md-9">
                                     <div class="input-group">
                                         <span class="input-group-text"><?php echo $progressAccount['RTYPE_CURR'] ?></span>
-                                        <input type="text" class="form-control text-center" name="margin" value="<?php echo number_format($depositData['DPWD_AMOUNT'], 2) ?>" readonly required>
+                                        <input type="text" class="form-control text-center" name="margin" value="<?php echo number_format($depositData['DPWD_AMOUNT_SOURCE'], 2) ?>" readonly required>
                                     </div>
                                 </div>
                             </div>
@@ -115,7 +115,20 @@
                         <div class="col-md-6 mb-3">
                             <div class="input-group">
                                 <span class="input-group-text">Fixed Rate</span>
-                                <input type="text" class="form-control text-center" name="margin" value="<?php echo number_format($progressAccount['RTYPE_RATE'], 0) ?>" readonly required>
+                                <input 
+                                    type="text" 
+                                    class="form-control text-center" 
+                                    name="margin" 
+                                    value="
+                                        <?php
+                                            if($progressAccount['RTYPE_ISFLOATING'] == 1){
+                                                echo 'Floating';
+                                            }else{ echo number_format($progressAccount['RTYPE_RATE'], 0); }
+                                        ?>
+                                    " 
+                                    readonly 
+                                    required
+                                >
 
                                 <!-- <select name="fix_rate" id="" class="form-control text-center" required>
                                     <option value="10.000" <?php echo ($progressAccount['RTYPE_RATE'] == '10000') ? 'selected' : ""; ?>>10.000</option>

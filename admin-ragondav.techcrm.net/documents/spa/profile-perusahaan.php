@@ -134,8 +134,8 @@
                                     <td colspan="3">
                                         Nomor atau alamat email jika terjadi keluhan:<br>
                                         Email : <?= $profile['PROF_EML_PENGADUAN'] ?><br>
-                                        No. Telepon : <?= $profile['OFFICE']['OFC_PHONE'] ?><br>
-                                        Faks : <?= $profile['PROF_FAX'] ?>
+                                        No. Telepon : <?= $profile['PROF_PHONE_PENGADUAN'] ?><br>
+                                        Faks : <?= $profile['PROF_FAX_PENGADUAN'] ?>
                                     </td>
                                 </tr>
                                 <tr>
@@ -167,7 +167,7 @@
                                         Nama-Nama Wakil Pialang Berjangka yang secara khusus ditunjuk oleh Pialang Berjangka untuk melakukan verifikasi dalam rangka penerimaan Nasabah elektronik on- line:<br>
                                         <ol style="margin-left:-20px;margin-top:0px;margin-bottom:0px;">
                                             <?php 
-                                                foreach($list_wpb_satu as $wpb){
+                                                foreach($list_wpb_dua as $wpb){
                                                     foreach($wpb as $w){
                                                         echo "<li>".$w['WPB_NAMA']."</li>";
                                                     }; 

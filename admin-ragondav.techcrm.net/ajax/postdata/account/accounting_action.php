@@ -128,6 +128,9 @@
 
             case 'reject':
                 $UPDATE_RACC["ACC_WPCHECK"] = 3;
+                
+                /** Delete account condition previous record(s) */
+                Database::delete('tb_acccond', ["ACCCND_ACC" => $ACCOUNT_CHECK["ID_ACC"], "ACCCND_STS" => 0]);
 
                 break;
             

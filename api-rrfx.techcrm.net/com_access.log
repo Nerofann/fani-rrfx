@@ -16,3 +16,8 @@
 172.70.214.100 - - [13/Aug/2025:14:44:35 +0700] "GET /profile/info HTTP/1.1" 404 443 "-" "Dart/3.7 (dart:io)"
 172.70.207.109 - - [13/Aug/2025:17:57:43 +0700] "GET /profile/info HTTP/1.1" 404 443 "-" "Dart/3.7 (dart:io)"
 172.70.208.76 - - [14/Aug/2025:09:17:43 +0700] "GET /profile/info HTTP/1.1" 404 443 "-" "Dart/3.7 (dart:io)"
+104.23.229.137 - - [15/Aug/2025:08:32:40 +0700] "GET / HTTP/1.1" 200 643 "-" "python-requests/2.32.4"
+172.71.232.65 - - [15/Aug/2025:08:32:41 +0700] "GET / HTTP/1.1" 200 642 "-" "Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0"
+172.70.208.99 - - [15/Aug/2025:18:22:09 +0700] "GET /profile/info HTTP/1.1" 404 443 "-" "Dart/3.7 (dart:io)"
+162.158.23.174 - - [15/Aug/2025:18:23:40 +0700] "GET /public/slide-home HTTP/1.1" 404 443 "-" "Dart/3.7 (dart:io)"
+162.158.23.164 - - [15/Aug/2025:18:24:20 +0700] "GET /public/slide-home HTTP/1.1" 404 443 "-" "Dart/3.7 (dart:io)"

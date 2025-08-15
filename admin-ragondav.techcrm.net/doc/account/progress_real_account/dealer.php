@@ -114,7 +114,8 @@
                         <div class="col-md-4 mb-2">
                             <div class="input-group">
                                 <span class="input-group-text"><?php echo ($progressAccount['RTYPE_CURR']); ?></span>
-                                <input type="text" class="form-control" name="initial_margin" id="rupiah" value="<?php echo Helper::formatCurrency($progressAccount['ACCCND_AMOUNTMARGIN']); ?>" readonly required>
+                                <!-- <input type="text" class="form-control" name="initial_margin" id="rupiah" value="<?php echo Helper::formatCurrency($progressAccount['ACCCND_AMOUNTMARGIN']); ?>" readonly required> -->
+                                <input type="text" class="form-control" name="initial_margin" id="rupiah" value="<?php echo Helper::formatCurrency($depositData["DPWD_AMOUNT_SOURCE"]); ?>" readonly required>
                             </div>
                         </div>
     

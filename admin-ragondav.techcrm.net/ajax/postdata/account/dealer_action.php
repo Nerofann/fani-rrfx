@@ -119,8 +119,8 @@
                 $UPDATE_RACC["ACC_STS"]         = -1;
                 $UPDATE_RACC["ACC_WPCHECK"]     = 6;
                 $UPDATE_RACC["ACC_LOGIN"]       = $ACCOND_CHECK["ACCCND_LOGIN"];
-                $UPDATE_RACC["ACC_PASS"]        = $data["password"];
-                $UPDATE_RACC["ACC_INVESTOR"]    = $data["investor"];
+                $UPDATE_RACC["ACC_PASS"]        = base64_encode($data["password"]);
+                $UPDATE_RACC["ACC_INVESTOR"]    = base64_encode($data["investor"]);
 
                 $UPDATE_ACCND["ACCCND_STS"]               = -1;
                 break;
