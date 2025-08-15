@@ -15,7 +15,7 @@ $isIB = false;
             </ul>
 
             <?php if($user['MBR_STS'] == 2) : ?>
-                <?php $step = [1, 2]; ?>
+                <?php $step = [1]; ?>
                 <li class="sidebar-item">
                     <a role="button" class="sidebar-link-group-title has-sub">Verification of personal data</a>
                     <ul class="sidebar-link-group">

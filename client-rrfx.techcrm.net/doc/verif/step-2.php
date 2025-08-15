@@ -1,5 +1,5 @@
 <?php
-
+die("<script>location.href = '/dashboard';</script>");
 use App\Models\FileUpload;
 use App\Models\User;
 

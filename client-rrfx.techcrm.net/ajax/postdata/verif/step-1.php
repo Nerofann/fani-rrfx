@@ -52,7 +52,8 @@ $updateData = [
     'MBR_JENIS_KELAMIN' => $gender,
     'MBR_COUNTRY' => $d_country['COUNTRY_NAME'],
     'MBR_ADDRESS' => $address,
-    'MBR_VERIF' => 2
+    'MBR_VERIF' => -1,
+    'MBR_STS' => -1
 ];
 
 $update = Database::update("tb_member", $updateData, ['MBR_ID' => $user['MBR_ID']]);
@@ -75,6 +76,6 @@ JsonResponse([
     'success' => true,
     'message' => "Verification successfull",
     'data' => [
-        'redirect' => '/verif/step-2'
+        'redirect' => '/dashboard'
     ]
 ]);
