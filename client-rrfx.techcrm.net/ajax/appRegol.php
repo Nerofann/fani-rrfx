@@ -2779,11 +2779,11 @@ class AppPost {
 
         /** Check Maximum */
         if($amountSource > $progressAccount['RTYPE_MAXDEPOSIT']) {
-            exit(json_encode([
+            exit(json_encode(value: [
                 'success'   => false,
                 'alert'     => [
                     'title' => "Gagal",
-                    'text'  => "Maximum deposit " . implode(" ", [$progressAccount['RTYPE_CURR'], Helper::formatCurrency($progressAccount['RTYPE_MINDEPOSIT'])]),
+                    'text'  => "Maximum deposit " . implode(" ", [$progressAccount['RTYPE_CURR'], Helper::formatCurrency($progressAccount['RTYPE_MAXDEPOSIT'])]),
                     'icon'  => "error"
                 ]
             ]));  
