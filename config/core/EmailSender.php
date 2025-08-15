@@ -74,7 +74,8 @@ class EmailSender {
             'phone' => $profile['OFFICE']['OFC_PHONE'],
             'support' => $profile['OFFICE']['OFC_EMAIL'],
             'website' => $profile['PROF_HOMEPAGE'],
-            'address' => $profile['OFFICE']['OFC_ADDRESS']
+            'address' => $profile['OFFICE']['OFC_ADDRESS'],
+            'no_bappebti' => $profile['PROF_NO_IZIN_USAHA']
         ];
         
         extract($data, EXTR_OVERWRITE);

@@ -226,7 +226,7 @@
                                                     <tr><td><b>Address</b> : <?= $profile['address'] ?></td></tr>
                                                 </tbody>
                                             </table>
-                                            <p style="text-align: justify; margin-top: 20px;">Resmi dan diatur oleh Badan Pengawas Perdagangan Berjangka Komoditi. Nomor registrasi BAPPEBTI : 912/BAPPEBTI/SI/8/2006.</p>
+                                            <p style="text-align: justify; margin-top: 20px;">Resmi dan diatur oleh Badan Pengawas Perdagangan Berjangka Komoditi. Nomor registrasi BAPPEBTI : <?= $profile['no_bappebti'] ?>.</p>
                                             <p style="margin-top: 10px;">
                                                 <img src="https://mobileibftraders.techcrm.net/assets/img/sosmed/ig.png" alt="Instagram">
                                                 <img src="https://mobileibftraders.techcrm.net/assets/img/sosmed/fb.png" alt="Facebook">
