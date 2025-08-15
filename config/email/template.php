@@ -214,6 +214,27 @@
                                                 <?php require_once $content; ?>
                                             </div>
                                             <!--[if (!mso)&(!IE)]><!-->
+
+                                            <hr>
+                                            <p style="text-align: justify; margin-bottom: 30px;">Anda menerima email ini karena Anda mendaftar di www.mandirifx.co.id jika Anda memiliki pertanyaan, silahkan hubungi kami melalui email di support@mandirifx.co.id. Anda juga dapat menghubungi nomor ( 031 ) - 33601175</p>
+                                            <hr>
+                                            <table>
+                                                <tbody>
+                                                    <tr><td><b>Phone</b> : <?= $profile['name']; ?></td></tr>
+                                                    <tr><td><b>Support</b> : <?= $profile['support'] ?></td></tr>
+                                                    <tr><td><b>Website</b> : <?= $profile['website'] ?></td></tr>
+                                                    <tr><td><b>Address</b> : <?= $profile['address'] ?></td></tr>
+                                                </tbody>
+                                            </table>
+                                            <p style="text-align: justify; margin-top: 20px;">Resmi dan diatur oleh Badan Pengawas Perdagangan Berjangka Komoditi. Nomor registrasi BAPPEBTI : 912/BAPPEBTI/SI/8/2006.</p>
+                                            <p style="margin-top: 10px;">
+                                                <img src="https://mobileibftraders.techcrm.net/assets/img/sosmed/ig.png" alt="Instagram">
+                                                <img src="https://mobileibftraders.techcrm.net/assets/img/sosmed/fb.png" alt="Facebook">
+                                                <img src="https://mobileibftraders.techcrm.net/assets/img/sosmed/linkedin.png" alt="Linkedin">
+                                            </p>
+                                            <hr>
+                                            <h4 style="margin-bottom: 2px;">PEMBERITAHUAN RESIKO:</h4>
+                                            <p style="text-align: justify;">Semua produk finansial yang ditransaksikan dalam sistem margin mempunyai resiko tinggi terhadap dana Anda. Produk finansial ini tidak diperuntukkan bagi semua investor dan Anda bisa saja kehilangan dana lebih dari deposit awal Anda. Pastikan bahwa Anda benar-benar mengerti resikonya, dan mintalah nasihat independen jika diperlukan. Lihat Pemberitahuan Resiko lengkap kami di Ketentuan Bisnis.</p>
                                         </div><!--<![endif]-->
                                     </div>
                                 </div>
@@ -283,4 +304,3 @@
     </table>
 </body>
 </html>
-<?php require_once $content; ?>

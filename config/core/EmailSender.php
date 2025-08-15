@@ -10,6 +10,7 @@ use PHPmailer\PHPMailer\Exception;
 use PHPmailer\PHPMailer\PHPMailer;
 use PHPmailer\PHPMailer\SMTP;
 use Dotenv\Dotenv;
+use App\Models\ProfilePerusahaan;
 use Exception as PHPException;
 
 class EmailSender {
@@ -66,7 +67,16 @@ class EmailSender {
         if(!file_exists($path)) throw new PHPException("[GET] Can't Parsing Files Not Found");
 
         /** Extract Array */
+        $profile = ProfilePerusahaan::get();
         $data['content'] = $path;
+        $data['profile'] = [
+            'name' => $profile['PROF_COMPANY_NAME'],
+            'phone' => $profile['OFFICE']['OFC_PHONE'],
+            'support' => $this->email,
+            'website' => $profile['PROF_HOMEPAGE'],
+            'address' => $profile['OFFICE']['OFC_ADDRESS']
+        ];
+        
         extract($data, EXTR_OVERWRITE);
         ob_start();
         require_once $this->folder . "template.php";
