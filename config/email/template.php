@@ -216,7 +216,7 @@
                                             <!--[if (!mso)&(!IE)]><!-->
 
                                             <hr>
-                                            <p style="text-align: justify; margin-bottom: 30px;">Anda menerima email ini karena Anda mendaftar di www.mandirifx.co.id jika Anda memiliki pertanyaan, silahkan hubungi kami melalui email di support@mandirifx.co.id. Anda juga dapat menghubungi nomor ( 031 ) - 33601175</p>
+                                            <p style="text-align: justify; margin-bottom: 30px;">Anda menerima email ini karena Anda mendaftar di www.mandirifx.co.id jika Anda memiliki pertanyaan, silahkan hubungi kami melalui email di <?= $profile['support'] ?>. Anda juga dapat menghubungi nomor <?= $profile['phone'] ?></p>
                                             <hr>
                                             <table>
                                                 <tbody>

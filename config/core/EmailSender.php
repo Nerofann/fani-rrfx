@@ -72,7 +72,7 @@ class EmailSender {
         $data['profile'] = [
             'name' => $profile['PROF_COMPANY_NAME'],
             'phone' => $profile['OFFICE']['OFC_PHONE'],
-            'support' => $this->email,
+            'support' => $profile['OFFICE']['OFC_EMAIL'],
             'website' => $profile['PROF_HOMEPAGE'],
             'address' => $profile['OFFICE']['OFC_ADDRESS']
         ];
