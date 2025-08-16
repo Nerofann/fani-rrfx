@@ -56,6 +56,14 @@ class ApiWapanel {
                 ];
             }
 
+            if(array_key_exists("error", $response)) {
+                return [
+                    'status'    => false,
+                    'message'   => $response['error'],
+                    'data'      => []
+                ];
+            }
+
             return [
                 'status'    => (strtolower($response['message_status']) == "success")? true : false,
                 'message'   => $response['message_status'] ?? '',
