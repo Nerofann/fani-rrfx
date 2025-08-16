@@ -41,6 +41,14 @@
                                 <td>Email</td>
                                 <td><input type="text" id="auth-email" class="form-control text-dark" readonly></td>
                             </tr>
+                            <tr class="extr-elem">
+                                <td>Amount</td>
+                                <td><input type="text" id="auth-amntl" class="form-control text-dark" readonly></td>
+                            </tr>
+                            <tr class="extr-elem">
+                                <td>Rate</td>
+                                <td><input type="text" id="auth-rate" class="form-control text-dark" readonly></td>
+                            </tr>
                             <tr>
                                 <td>Amount</td>
                                 <td><input type="text" id="auth-amnt" class="form-control text-dark" readonly></td>
@@ -103,6 +111,16 @@
             processing: true,
             serverSide: true,
             deferRender: true,
+			buttons: [
+				{
+					extend: 'excel',
+					text: 'Excel',
+				},
+				{
+					extend: 'copy',
+					text: 'Copy'
+				}
+			],
             lengthMenu: [[10, 50, 100, -1], [10, 50, 100, "All"]],
             scrollX: true,
             order: [[ 0, "desc" ]],
@@ -114,6 +132,9 @@
             drawCallback : () => {
                 $('.edt-btn').on('click', function(){
                     for(var [key, value] of Object.entries(JSON.parse(atob($(this).data('jsn'))))) {
+                        if(key == 'auth-rate'){
+                            $('.extr-elem').css('display', ((value == 0) ? 'none' : ''));
+                        }
                         if($(`#${key}`)[0]?.tagName == 'INPUT'){
                             if($(`#${key}`).attr('type') != 'file'){
                                 if($(`#${key}`).attr('type') == 'checkbox'){

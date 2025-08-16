@@ -8,7 +8,7 @@
             tb_racc.ACC_FULLNAME AS MBR_NAME,
             tb_member.MBR_EMAIL,
             tb_racc.ACC_LOGIN,
-            tb_dpwd.DPWD_AMOUNT,
+            IF(tb_racctype.RTYPE_ISFLOATING = 0, tb_dpwd.DPWD_AMOUNT_SOURCE, tb_dpwd.DPWD_AMOUNT) AS DPWD_AMOUNT,
             tb_dpwd.DPWD_PIC,
             tb_dpwd.DPWD_VOUCHER,
             tb_dpwd.DPWD_NOTE1,
@@ -27,13 +27,16 @@
                     IF(tb_dpwd.DPWD_STS = 0, "Pending", "Unknown")
                 )
             ) AS DPWD_STS,
-            MD5(MD5(tb_dpwd.ID_DPWD)) AS ID_DPWD_HASH
+            MD5(MD5(tb_dpwd.ID_DPWD)) AS ID_DPWD_HASH,
+            tb_racctype.RTYPE_CURR_SYMBOL
         FROM tb_member
         JOIN tb_racc
         JOIN tb_dpwd
+        JOIN tb_racctype
         ON(tb_member.MBR_ID = tb_racc.ACC_MBR
         AND tb_dpwd.DPWD_MBR = tb_member.MBR_ID
-        AND tb_dpwd.DPWD_RACC = tb_racc.ID_ACC)
+        AND tb_dpwd.DPWD_RACC = tb_racc.ID_ACC
+		AND tb_racc.ACC_TYPE = tb_racctype.ID_RTYPE)
         WHERE tb_dpwd.DPWD_STS != 0
         AND tb_dpwd.DPWD_TYPE = 1
     ');
@@ -124,7 +127,7 @@
         };
     });
     $dt->edit('DPWD_AMOUNT', function($data){
-        return "<div class='text-right'>".number_format($data['DPWD_AMOUNT'], 0)."</div>";
+        return "<div class='text-end'>".$data['RTYPE_CURR_SYMBOL'].". ".number_format($data['DPWD_AMOUNT'], 0)."</div>";
     });
     $dt->edit('DPWD_PIC', function($data){
         if(!empty($data["DPWD_PIC"])){

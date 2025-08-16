@@ -11,26 +11,26 @@
     $depositData = Dpwd::findById($data["acc"]);
     $realAccount = Account::realAccountDetail(md5(md5($depositData["DPWD_RACC"])));
 
-    $amountIDR = $depositData['DPWD_AMOUNT'];
-    $amountUSD = $depositData['DPWD_AMOUNT_SOURCE'];
+    $amountIDR = ($depositData["DPWD_CURR_FROM"] == "IDR") ? $depositData['DPWD_AMOUNT_SOURCE'] : $depositData['DPWD_AMOUNT'];
+    $amountUSD = ($depositData["DPWD_CURR_FROM"] == "USD") ? $depositData['DPWD_AMOUNT_SOURCE'] : $depositData['DPWD_AMOUNT'];
     $rate = $depositData['DPWD_RATE'];
 
     /** if IDR to IDR */
-    if($depositData['DPWD_CURR_FROM'] == "IDR") {
-        $amountUSD = 0;
-        $rate = 0;
-        $convert = Account::accountConvertation([
-            'account_id' => $realAccount['ID_ACC'],
-            'amount' => $amountIDR,
-            'from' => "IDR",
-            'to' => "USD"
-        ]);
+    // if($depositData['DPWD_CURR_FROM'] == "IDR") {
+    //     $amountUSD = 0;
+    //     $rate = 0;
+    //     $convert = Account::accountConvertation([
+    //         'account_id' => $realAccount['ID_ACC'],
+    //         'amount' => $amountIDR,
+    //         'from' => "IDR",
+    //         'to' => "USD"
+    //     ]);
 
-        if(is_array($convert)) {
-            $amountUSD = ($amountIDR / $convert['rate']);
-            $rate = $convert['rate'];
-        }
-    }
+    //     if(is_array($convert)) {
+    //         $amountUSD = ($amountIDR / $convert['rate']);
+    //         $rate = $convert['rate'];
+    //     }
+    // }
 ?>
 
 <!DOCTYPE html>
@@ -45,12 +45,10 @@
         </style>
     </head>
     <body>
-        <div class="header">
-            <img style="object-fit: cover; max-height: 100%; max-width: 100%;" src="data:image/png;base64,<?= base64_encode(file_get_contents($logo_pdf)); ?>">
-        </div>
+        <?php require_once(__DIR__  . "/header.php"); ?><hr>
 
         <div class="section" style="padding: 0px;">
-            <h4 class="text-center" style="margin: 0px;">NOTA PENERIMAAN Withdrawal</h4>
+            <h4 class="text-center" style="margin: 0px;">NOTA PENERIMAAN WITHDRAWAL</h4>
             <table class="table no-border" style="margin-top: 20px; font-size: 15px;">
                 <tbody>
                     <tr>
@@ -64,14 +62,14 @@
                         <td class="v-align-top"><?= $realAccount['ACC_FULLNAME'] ?></td>
                     </tr>
                     <tr>
-                        <td width="30%" class="v-align-top">Jumlah Withdrawal Masuk</td>
+                        <td width="30%" class="v-align-top">Jumlah Margin Masuk</td>
                         <td width="3%" class="v-align-top">:</td>
-                        <td class="v-align-top" style="border-bottom: 1px solid black !important;">(Rp <?= Helper::formatCurrency($amountIDR, 0) ?>)</td>
+                        <td class="v-align-top" style="border-bottom: 1px solid black !important;">( <?= $realAccount['RTYPE_CURR_SYMBOL'].' '.Helper::formatCurrency((($realAccount["RTYPE_ISFLOATING"]) ? $amountUSD : $amountIDR), 0) ?>)</td>
                     </tr>
                     <tr>
                         <td width="30%" class="v-align-top">Terbilang</td>
                         <td width="3%" class="v-align-top">:</td>
-                        <td class="v-align-top" style="border-bottom: 1px solid black !important;"><?= Helper::penyebut(intval($amountIDR)) ?></td>
+                        <td class="v-align-top" style="border-bottom: 1px solid black !important;"><?= Helper::penyebut(intval((($realAccount["RTYPE_ISFLOATING"]) ? $amountUSD : $amountIDR))) ?></td>
                     </tr>
                 </tbody>
             </table>
@@ -98,18 +96,18 @@
                                         </td>
                                         <td style="border: 1px solid black !important;" width="20%" class="v-align-top" align="right">
                                             <p style="margin-top: 0px; text-align: right;">
-                                                <?= Helper::formatCurrency($rate) ?>
+                                                <?= Helper::formatCurrency((($realAccount["RTYPE_ISFLOATING"]) ? 'Floating' : $rate)) ?>
                                             </p>    
                                         </td>
                                         <td style="border: 1px solid black !important;" width="20%" class="v-align-top" align="right">
                                             <p style="margin-top: 0px; text-align: right;">
-                                                <?= Helper::formatCurrency($amountIDR) ?>
+                                                <?= Helper::formatCurrency((($realAccount["RTYPE_ISFLOATING"]) ? 0 : $amountIDR)) ?>
                                             </p>    
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="border: 1px solid black !important;" colspan="2" class="text-center">Total</td>
-                                        <td style="text-align: right; border: 1px solid black !important">Rp <?= Helper::formatCurrency($amountIDR) ?></td>
+                                        <td style="text-align: right; border: 1px solid black !important"><?= $realAccount['RTYPE_CURR_SYMBOL'].' '.Helper::formatCurrency((($realAccount["RTYPE_ISFLOATING"]) ? $amountUSD : $amountIDR), 0) ?></td>
                                     </tr>
                                 </tbody>
                             </table>

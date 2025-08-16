@@ -38,6 +38,16 @@
             processing: true,
             serverSide: true,
             deferRender: true,
+			buttons: [
+				{
+					extend: 'excel',
+					text: 'Excel',
+				},
+				{
+					extend: 'copy',
+					text: 'Copy'
+				}
+			],
             lengthMenu: [[10, 50, 100, -1], [10, 50, 100, "All"]],
             scrollX: true,
             order: [[ 0, "desc" ]],

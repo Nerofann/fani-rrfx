@@ -9,24 +9,29 @@
             tb_member.MBR_EMAIL,
             tb_racc.ACC_F_APP_KRJ_TLP,
             tb_racc.ACC_LOGIN,
-            tb_dpwd.DPWD_AMOUNT,
+            IF(tb_racctype.RTYPE_ISFLOATING = 0, tb_dpwd.DPWD_AMOUNT_SOURCE, tb_dpwd.DPWD_AMOUNT) AS DPWD_AMOUNT,
             tb_dpwd.DPWD_PIC,				
             MD5(MD5(tb_dpwd.ID_DPWD)) AS ID_DPWD,
             JSON_OBJECT(
                 "auth-login", tb_racc.ACC_LOGIN,
                 "auth-name", tb_racc.ACC_FULLNAME,
                 "auth-email", tb_member.MBR_EMAIL,
-                "auth-amnt", CAST(FORMAT(tb_dpwd.DPWD_AMOUNT, 2) AS CHAR),
+                "auth-amntl", CAST(CONCAT("Rp. ", FORMAT(tb_dpwd.DPWD_AMOUNT_SOURCE, 0)) AS CHAR),
+                "auth-rate", CAST(IF(tb_racctype.RTYPE_ISFLOATING != 1, FORMAT(tb_racctype.RTYPE_RATE, 0), 0) AS CHAR),
+                "auth-amnt", CAST(CONCAT("$. ", FORMAT(tb_dpwd.DPWD_AMOUNT, 2)) AS CHAR),
                 "auth-bksrc", tb_dpwd.DPWD_BANKSRC,
                 "auth-bkdst", tb_dpwd.DPWD_BANK,
                 "auth-dpx", CAST(MD5(MD5(tb_dpwd.ID_DPWD)) AS CHAR)
-            ) AS JSNDT
+            ) AS JSNDT,
+             tb_racctype.RTYPE_CURR_SYMBOL
         FROM tb_member
         JOIN tb_racc
+        JOIN tb_racctype
         JOIN tb_dpwd
         ON(tb_member.MBR_ID = tb_racc.ACC_MBR
         AND tb_dpwd.DPWD_MBR = tb_member.MBR_ID
-        AND tb_dpwd.DPWD_RACC = tb_racc.ID_ACC)
+        AND tb_dpwd.DPWD_RACC = tb_racc.ID_ACC
+        AND tb_racctype.ID_RTYPE = tb_racc.ACC_TYPE)
         WHERE tb_dpwd.DPWD_STS = 0
         AND tb_dpwd.DPWD_STSACC = -1
         AND tb_dpwd.DPWD_STSVER = -1
@@ -38,7 +43,7 @@
     $dt->edit('DPWD_AMOUNT', function($data){
         return '
             <div class="text-end">
-                '.number_format(($data["DPWD_AMOUNT"] ?? 0), 2).'
+                '.$data['RTYPE_CURR_SYMBOL'].'. '.number_format(($data["DPWD_AMOUNT"] ?? 0), 2).'
             </div>
         ';
     });

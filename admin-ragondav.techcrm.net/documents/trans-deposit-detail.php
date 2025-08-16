@@ -12,26 +12,26 @@
 
     $depositData = Dpwd::findByRaccId($realAccount["ID_ACC"]);
 
-    $amountIDR = $depositData['DPWD_AMOUNT'];
-    $amountUSD = $depositData['DPWD_AMOUNT_SOURCE'];
+    $amountIDR = ($depositData["DPWD_CURR_FROM"] == "IDR") ? $depositData['DPWD_AMOUNT_SOURCE'] : $depositData['DPWD_AMOUNT'];
+    $amountUSD = ($depositData["DPWD_CURR_FROM"] == "USD") ? $depositData['DPWD_AMOUNT_SOURCE'] : $depositData['DPWD_AMOUNT'];
     $rate = $depositData['DPWD_RATE'];
 
     /** if IDR to IDR */
-    if($depositData['DPWD_CURR_FROM'] == "IDR") {
-        $amountUSD = 0;
-        $rate = 0;
-        $convert = Account::accountConvertation([
-            'account_id' => $realAccount['ID_ACC'],
-            'amount' => $amountIDR,
-            'from' => "IDR",
-            'to' => "USD"
-        ]);
+    // if($depositData['DPWD_CURR_FROM'] == "IDR") {
+    //     $amountUSD = 0;
+    //     $rate = 0;
+    //     $convert = Account::accountConvertation([
+    //         'account_id' => $realAccount['ID_ACC'],
+    //         'amount' => $amountIDR,
+    //         'from' => "IDR",
+    //         'to' => "USD"
+    //     ]);
 
-        if(is_array($convert)) {
-            $amountUSD = ($amountIDR / $convert['rate']);
-            $rate = $convert['rate'];
-        }
-    }
+    //     if(is_array($convert)) {
+    //         $amountUSD = ($amountIDR / $convert['rate']);
+    //         $rate = $convert['rate'];
+    //     }
+    // }
 ?>
 
 <!DOCTYPE html>
