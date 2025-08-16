@@ -78,12 +78,6 @@
                     <hr>
     
                     <div class="row">
-                        <div class="col-md-3"><label for="" class="form-label">Login</label></div>
-                        <div class="col-md-9"><input type="text" class="form-control text-center" name="login"></div>
-                    </div>
-                    <hr>
-    
-                    <div class="row">
                         <div class="col-md-6 mb-3">
                             <div class="row">
                                 <div class="col-md-3" id="forexdiv1">Forex</div>
@@ -167,9 +161,18 @@
             $('#fld-act').val($(this).val());
             $('#sbmtacc').click();
         });
+
         $('#wp-check-form').on('submit', function(e){
             e.preventDefault();
             let data = Object.fromEntries(new FormData(this));
+            Swal.fire({
+                text: "Mohon Tunggu...",
+                allowOutsideClick: false,
+                didOpen: function() {
+                    Swal.showLoading();
+                }
+            })
+
             $.post("/ajax/post/account/wp_check_action", data, function(resp) {
                 $('#myModalAcc').modal('hide');
                 Swal.fire(resp.alert).then(() => {
