@@ -226,7 +226,7 @@
                             <div class="row">
                                 <?php if(empty($myBanks)) : ?>
                                     <div class="col-md-6">
-                                        <a target="_blank" href="/personal-information" class="btn btn-outline-primary" style="min-width: 10px;"><i class="fas fa-plus"></i> Tambah Bank</a>
+                                        <a target="_blank" href="/bank" class="btn btn-outline-primary" style="min-width: 10px;"><i class="fas fa-plus"></i> Tambah Bank</a>
                                     </div>
                                 <?php else : ?>
                                     <?php foreach($myBanks as $mbank) : ?>
