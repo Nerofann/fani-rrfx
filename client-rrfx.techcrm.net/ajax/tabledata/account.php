@@ -61,7 +61,6 @@ $dt->edit("ID_ACC", function($data) {
             <div class="text-center">
                 <a href="/deposit" title="Deposit"><button class="btn btn-success"><i class="fa-light fa-arrow-right-to-bracket"></i></button></a>
                 <a href="/withdrawal" title="Withdrawal"><button class="btn btn-danger"><i class="fa-light fa-arrow-right-from-bracket"></i></button></a>
-                <a href="/history?id=" title="History"><button class="btn btn-warning"><i class="fa-light fa-list"></i></button></a>
                 '.$documents.'
             </div>
         ';
