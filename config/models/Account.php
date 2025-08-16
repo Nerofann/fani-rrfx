@@ -548,12 +548,12 @@ class Account {
             $products = [];
             foreach($sqlGet->fetch_all(MYSQLI_ASSOC) as $product) {
                 if(!empty($type)) {
-                    if(strtoupper($product['RTYPE_TYPE_AS']) != strtoupper($type)) {
+                    if(strtoupper($product['RTYPE_TYPE_AS'] ?? "") != strtoupper($type)) {
                         continue;
                     }
                 }
 
-                $productType = strtolower($product['RTYPE_TYPE']);
+                $productType = strtolower($product['RTYPE_TYPE'] ?? "");
                 $index = array_search($productType, array_column($products, "type"));
                 if($index === FALSE) {
                     $products[] = [
