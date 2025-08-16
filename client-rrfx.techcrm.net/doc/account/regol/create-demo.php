@@ -2,59 +2,18 @@
     <div class="col-2"></div>
     <div class="col-8">
         <div class="panel rounded-0">
-            <div class="panel-body invoice" id="invoiceBody">
-                <div class="invoice-header mb-25">
-                    <div class="row justify-content-between align-items-end">
-                        <div class="col-xl-4 col-lg-5 col-sm-6">
-                            <div class="shop-address">
-                                <div class="logo mb-20">
-                                    <img src="/assets/images/logo-black-new.png" alt="Logo">
-                                </div>
-                                <div class="part-txt">
-                                    <p class="mb-1">Nama: <?php echo $user["MBR_NAME"] ?></p>
-                                    <p class="mb-1">Email: <?php echo $user["MBR_EMAIL"] ?></p>
-                                    <p class="mb-1">No.Telp: <?php echo $user["MBR_PHONE"] ?></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="d-flex gap-xl-4 gap-3 status-row">
-                                <div class="w-50">
-                                    <div class="payment-status">
-                                        <label class="form-label">Tanggal</label>
-                                        <input type="date" value="<?php echo date('Y-m-d') ?>" readonly class="form-control text-center">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="invoice-body">
-                    <div class="info-card-wrap mb-25">
-                        <div class="row">
-                            <div class="col-md-2 col-sm-6"></div>
-                            <div class="col-md-8 col-sm-6">
-                                <div class="panel">
-                                    <div class="panel-body">
-                                        <div class="profile-sidebar">
-                                            <div class="bottom">
-                                                <h6 class="profile-sidebar-subtitle">Informasi Demo Account</h6>
-                                                <ul>
-                                                    <li>Login Meta: <span id="login"><?= $demoAccount['ACC_LOGIN'] ?? "" ?></span></li>
-                                                    <li>Password Meta: <span id="passw"><?= $demoAccount['ACC_PASS'] ?? "" ?></span></li>
-                                                    <li>Investor Meta: <span id="invst"><?= $demoAccount['ACC_INVESTOR'] ?? "" ?></span></li>
-                                                    <li>Phone Meta: <span id="phone"><?= $demoAccount['ACC_PASSPHONE'] ?? "" ?></span></li>
-                                                </ul>
-                                                <h6 class="profile-sidebar-subtitle">Note</h6>
-                                                <p id="nte"></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-2 col-sm-6"></div>
-                        </div>
-                    </div>
+            <div class="panel">
+                <div class="panel-body">
+                    <h6>Informasi Demo Account</h6>
+                    <table class="table table-bordered table-fixed">
+                        <tbody>
+                            <tr><td class="text-start"><b>Login Meta:</b> <span id="login"><?= $demoAccount['ACC_LOGIN'] ?? "" ?></span></td></tr>
+                            <tr><td class="text-start"><b>Password Meta:</b> <span id="passw"><?= $demoAccount['ACC_PASS'] ?? "" ?></span></td></tr>
+                            <tr><td class="text-start"><b>Investor Meta:</b> <span id="invst"><?= $demoAccount['ACC_INVESTOR'] ?? "" ?></span></td></tr>
+                            <tr><td class="text-start"><b>Phone Meta:</b> <span id="phone"><?= $demoAccount['ACC_PASSPHONE'] ?? "" ?></span></td></tr>
+                        </tbody>
+                    </table>
+                    <p id="nte"></p>
                 </div>
             </div>
             <?php if(empty($demoAccount)) : ?>
