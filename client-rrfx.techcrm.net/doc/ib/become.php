@@ -8,15 +8,12 @@ $terms_balance = false;
 $ibData = User::get_ib_data($user['MBR_ID']);
 
 foreach($standartAccount as $sac) {
-    if($detail->message->MARGIN_FREE >= 100) {
+    if($sac['MARGIN_FREE'] >= 100) {
         $terms_balance = true;
         break;
     }
 }
 ?>
-<pre>
-    <?php print_r($standartAccount); ?>
-</pre>
 <div class="row">
     <div class="col-md-12 mb-25">
         <div class="dashboard-breadcrumb mb-25">
@@ -26,7 +23,7 @@ foreach($standartAccount as $sac) {
         </div>
     </div>
 
-    <?php if($ibData && $ibData['BECOME_STS'] == -1) : ?>
+    <?php if(is_array($ibData) && $ibData['BECOME_STS'] == -1) : ?>
         <div class="col-md-6 m-auto mb-25">
             <div class="panel">
                 <div class="panel-header">
