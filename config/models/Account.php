@@ -261,14 +261,17 @@ class Account {
                     ACC_TYPE, 
                     RTYPE_TYPE,
                     ACC_PASS,
-                    ACC_INVESTOR
+                    ACC_INVESTOR,
+                    mt5u.BALANCE,
+                    mt5u.MARGIN_FREE
                 FROM tb_racc 
                 JOIN tb_racctype ON (ID_RTYPE = ACC_TYPE)
-                WHERE MD5(MD5(ACC_MBR)) = '{$userid}' 
+                JOIN mt5_users mt5u ON (mt5u.LOGIN = ACC_LOGIN)
+                WHERE MD5(MD5(ACC_MBR)) = '{$userid}'
                 AND ACC_DERE = 1 
                 AND ACC_LOGIN != 0
                 AND ACC_WPCHECK = 6
-                AND UPPER(RTYPE_TYPE) IN ('STANDARD', 'PRO')
+                AND UPPER(RTYPE_TYPE) IN ('STANDARD', 'STANDARD-PLUS')
             ");
 
             if($sqlGet->num_rows == 0) {
