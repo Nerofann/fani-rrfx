@@ -1,6 +1,7 @@
 <?php
-    
-    use App\Models\Account;
+
+use App\Factory\MetatraderFactory;
+use App\Models\Account;
     use App\Models\Dpwd;
     use App\Models\Helper;
     use App\Models\Admin;
@@ -9,6 +10,8 @@
     use Config\Core\Database;
     use Config\Core\EmailSender;
     
+    $apiManager = MetatraderFactory::apiManager();
+    $apiTerminal = MetatraderFactory::apiTerminal();
     $listGrup = $adminPermissionCore->availableGroup();
     $adminRoles = Admin::adminRoles();
     if(!$adminPermissionCore->hasPermission($authorizedPermission, "/account/dealer_action")) {
@@ -116,37 +119,108 @@
         /**Accept || Reject Processing*/
         switch ($data["sbmt_act"]) {
             case 'accept':
-                $UPDATE_RACC["ACC_STS"]         = -1;
-                $UPDATE_RACC["ACC_WPCHECK"]     = 6;
-                $UPDATE_RACC["ACC_LOGIN"]       = $ACCOND_CHECK["ACCCND_LOGIN"];
-                $UPDATE_RACC["ACC_PASS"]        = base64_encode($data["password"]);
-                $UPDATE_RACC["ACC_INVESTOR"]    = base64_encode($data["investor"]);
+                /** Update Account condition */
+                $updateAccnd = Database::update('tb_acccond', ['ACCCND_STS' => -1], ["ID_ACCCND" => $ACCOND_CHECK["ID_ACCCND"]]);
+                if(!$updateAccnd) {
+                    $db->rollback();
+                    JsonResponse([
+                        'success'   => false,
+                        'message'   => "Gagal memperbarui account condition ",
+                        'data'      => []
+                    ]);
+                }
 
-                $UPDATE_ACCND["ACCCND_STS"]               = -1;
+                /** create metatrader account */
+                $password = Helper::generatePassword();
+                $investor = Helper::generatePassword();
+                $accountData = [
+                    "master_pass" => $password, 
+                    "investor_pass" => $investor, 
+                    "group" => $ACCOUNT_CHECK['RTYPE_GROUP'], 
+                    "fullname" => $ACCOUNT_CHECK['ACC_FULLNAME'], 
+                    "email" => $ACCOUNT_CHECK['MBR_EMAIL'], 
+                    "leverage" => $ACCOUNT_CHECK['RTYPE_LEVERAGE'], 
+                    "comment" => "metaapi"
+                ];
+                
+                $accountCreate = $apiManager->createAccount($accountData);
+                if(!is_object($accountCreate) || !property_exists($accountCreate, "Login")) {
+                    $db->rollback();
+                    JsonResponse([
+                        'success'   => false,
+                        'message'   => "Gagal membuat akun metatrader",
+                        'data'      => []
+                    ]);
+                }
+
+                /** Test Connection */
+                $login = $accountCreate->Login; // Update Login
+                $connect = $apiTerminal->connect(['login' => $login, 'password' => $password]); // Test Connection
+                if($connect) {
+                    $UPDATE_RACC["ACC_TOKEN"] = $connect;
+                }
+
+                /** deposit margin */
+                $depositMargin = $apiManager->deposit([
+                    'login' => $login,
+                    'amount' => $ACCOND_CHECK['ACCCND_AMOUNTMARGIN'],
+                    'comment' => "acccnd-".$DEPOSIT_CHECK['ID_DPWD']
+                ]);
+                    
+                /** Update RACC */
+                $updateRaccData = [
+                    'ACC_STS' => -1,
+                    'ACC_WPCHECK' => 6,
+                    'ACC_LOGIN' => $login,
+                    'ACC_PASS' => base64_encode($password),
+                    'ACC_INVESTOR' => base64_encode($investor)
+                ];
+
+                $updateRacc = Database::update('tb_racc', $updateRaccData, ["ID_ACC" => $ACCOUNT_CHECK["ID_ACC"]]);
+                if(!$updateRacc) {
+                    $db->rollback();
+                    JsonResponse([
+                        'success'   => false,
+                        'message'   => "Gagal memperbarui data akun",
+                        'data'      => []
+                    ]);
+                }
+
+                /** Send Email */
+                $emailData = [
+                    'subject'        => "Real Account Info",
+                    'name'           => $ACCOUNT_CHECK["ACC_FULLNAME"],
+                    'login'          => $login,
+                    'metaPassword'   => $password,
+                    'metaInvestor'   => $investor
+                ];
+                $emailSender = EmailSender::init(['email' => $ACCOUNT_CHECK['MBR_EMAIL'], 'name' => $ACCOUNT_CHECK['MBR_NAME']]);
+                $emailSender->useFile("dealer", $emailData);
+                $send = $emailSender->send();
                 break;
 
             case 'reject':
-                $UPDATE_RACC["ACC_WPCHECK"] = 4;
-
+                $updateRacc = Database::update('tb_racc', ['ACC_WPCHECK' => 4], ["ID_ACC" => $ACCOUNT_CHECK["ID_ACC"]]);
+                if($updateRacc) {
+                    $db->rollback();
+                    JsonResponse([
+                        'success' => false,
+                        'message' => "Gagal memperbarui data akun",
+                        'data' => []
+                    ]);
+                }
                 break;
             
             default:
+                $db->rollback();
                 JsonResponse([
-                    'code'      => 200,
                     'success'   => false,
                     'message'   => "Invalid action",
                     'data'      => []
                 ]);
             break;
         }
-
         
-        /** Update Account condition */
-        Database::update('tb_acccond', $UPDATE_ACCND, ["ID_ACCCND" => $ACCOND_CHECK["ID_ACCCND"]]);
-
-        /** Update RACC */
-        Database::update('tb_racc', $UPDATE_RACC, ["ID_ACC" => $ACCOUNT_CHECK["ID_ACC"]]);
-
         /** Insert note */
         Database::insert('tb_note', [
             "NOTE_MBR"   => $ACCOUNT_CHECK["ACC_MBR"],
@@ -157,28 +231,9 @@
             "NOTE_NOTE"  => $data["sbmt_note"],
         ]);
 
-        /** Send email if accept */
-        if($data["sbmt_act"] == 'accept'){
-            $emailData = [
-                'subject'        => "Real Account Info",
-                'name'           => $ACCOUNT_CHECK["ACC_FULLNAME"],
-                'login'          => $ACCOND_CHECK["ACCCND_LOGIN"],
-                'metaPassword'   => $data["password"],
-                'metaInvestor'   => $data["investor"]
-            ];
-            $emailSender = EmailSender::init(['email' => $ACCOUNT_CHECK['MBR_EMAIL'], 'name' => $ACCOUNT_CHECK['MBR_NAME']]);
-            $emailSender->useFile("dealer", $emailData);
-            $send = $emailSender->send();
-            if(!$send) {
-                JsonResponse([
-                    'success' => false,
-                    'message' => "Failed",
-                    'data' => []
-                ]);
-            }
-        }
-
         mysqli_commit($db);
+        // $db->rollback();
+        
     } catch (Exception | mysqli_sql_exception $e) {
         mysqli_rollback($db);
         JsonResponse([
@@ -201,6 +256,6 @@
         'success'   => true,
         'message'   => "Success ".$data["sbmt_act"],
         'data'      => [
-            "reloc" => '/account/progress_real_account/view'
+            "reloc" => '/account/active_real_account/document/'.md5(md5($ACCOUNT_CHECK['ID_ACC']))
         ]
     ]);
