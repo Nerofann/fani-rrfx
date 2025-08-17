@@ -5,20 +5,23 @@
     use App\Models\Helper;
     use App\Models\FileUpload;
     $data = Helper::getSafeInput($_GET);
+    $id_acc = $data["d"];
 
-    $COMPANY         = App\Models\CompanyProfile::$name;
-    $progressAccount = Account::realAccountDetail($data["d"]);
+    $COMPANY = App\Models\CompanyProfile::$name;
+    $progressAccount = Account::realAccountDetail($id_acc);
     $progressAccount = array_merge((Account::accoundCondition($progressAccount["ID_ACC"]) ?? []), $progressAccount);
-    $depositData     = Dpwd::findByRaccId($progressAccount["ID_ACC"]);
-    $page_title      = 'Progress Real Account';
-    $web_name_full   = $COMPANY;
-    $id_acc          = $data["d"];
-    $userBanks       = (!empty($progressAccount["MBR_BKJSN"])) ? json_decode($progressAccount["MBR_BKJSN"], true) : [];
-    $MULTIPN         = ["multi", "multilateral"];
-    $SPANAME         = ["spa"];
+    $depositData = Dpwd::findByRaccId($progressAccount["ID_ACC"]);
+    $page_title = 'Progress Real Account';
+    $web_name_full = $COMPANY;
+    $userBanks = (!empty($progressAccount["MBR_BKJSN"])) ? json_decode($progressAccount["MBR_BKJSN"], true) : [];
+    $accountCondition = Account::accoundCondition($progressAccount['ID_ACC']);
 
     if((!$depositData) || (!$progressAccount)){
         die("<script>alert('Invalid Account');location.href = '/account/progress_real_account/view'</script>");
+    }
+    
+    if(!$accountCondition){
+        die("<script>alert('Invalid Account Condition');location.href = '/account/progress_real_account/view'</script>");
     }
 
     /** explode bank admin */
@@ -78,6 +81,7 @@
                                 <td class="text-center">Client's Name :</td>
                                 <td colspan="3"><input class="form-control text-center" placeholder="" value="<?php echo $progressAccount["ACC_FULLNAME"] ?>" readonly type="text"></td>
                             </tr>
+
                             <?php if($depositData['DPWD_CURR_FROM'] == "IDR") : ?>
                                 <tr>
                                     <td class="text-center">The sum of rupiah :</td>
@@ -88,7 +92,7 @@
                                     <td class="text-center">
                                         <div class="form-group">
                                             <label>Amount in USD</label>
-                                            <input class="form-control text-center" placeholder="" value="<?= Helper::formatCurrency($depositData['DPWD_AMOUNT_SOURCE'] / $progressAccount['RTYPE_RATE']) ?>" readonly type="text">
+                                            <input class="form-control text-center" placeholder="" value="<?= Helper::formatCurrency($accountCondition['ACCCND_AMOUNTMARGIN']) ?>" readonly type="text">
                                         </div>
                                     </td>
                                     <td class="text-center" colspan="2">
@@ -104,17 +108,13 @@
                                         </div>
                                     </td>
                                 </tr>
+
                             <?php elseif($depositData['DPWD_CURR_FROM'] == "USD") : ?>
-                                <!-- <tr>
-                                    <td class="text-center">The sum of rupiah :</td>
-                                    <td colspan="2"><input class="form-control text-center marquee" placeholder="" value="<?php echo Helper::penyebut(round($depositData["DPWD_AMOUNT"], 0)).' rupiah'; ?>" readonly type="text"></td>
-                                    <td><input class="form-control text-center" placeholder="" value="<?= $depositData['DPWD_CURR_TO'] . " " . number_format($depositData["DPWD_AMOUNT"], 0, ',', '.') ?>" readonly type="text"></td>
-                                </tr> -->
                                 <tr>
                                     <td class="text-center">
                                         <div class="form-group">
                                             <label>Amount in USD</label>
-                                            <input class="form-control text-center" placeholder="" value="<?= Helper::formatCurrency($depositData['DPWD_AMOUNT_SOURCE']) ?>" readonly type="text">
+                                            <input class="form-control text-center" placeholder="" value="<?= Helper::formatCurrency($accountCondition['ACCCND_AMOUNTMARGIN']) ?>" readonly type="text">
                                         </div>
                                     </td>
                                     <td class="text-center" colspan="2">
@@ -123,13 +123,8 @@
                                             <input class="form-control text-center" placeholder="" value="<?= (($progressAccount["RTYPE_ISFLOATING"]) ? 'Floating' : Helper::formatCurrency($depositData['DPWD_RATE'])) ?>" readonly type="text">
                                         </div>
                                     </td>
-                                    <td class="text-center">
-                                        <!-- <div class="form-group">
-                                            <label>Amount in IDR</label>
-                                            <input class="form-control text-center" placeholder="" value="<?= Helper::formatCurrency($depositData["DPWD_AMOUNT"], 0) ?>" readonly type="text">
-                                        </div> -->
-                                    </td>
                                 </tr>
+
                             <?php endif; ?>
                         </tbody>
                     </table>
@@ -164,7 +159,7 @@
                     </div>
                 </div>
                 <div class="modal-footer text-center">
-                    <input type="hidden" name="sbmt_id" value="<?= $data["d"] ?>">
+                    <input type="hidden" name="sbmt_id" value="<?= $id_acc ?>">
                     <input type="hidden" name="sbmt_act" id="acc-act">
                     <button type="submit" class="btn btn-primary ripple btn-block text-white" type="button" id="sendButton2">Submit</button>
                 </div>
@@ -179,9 +174,13 @@
             $('#uloadMutasi').css('display', ($(this).val() == 'reject' ? 'none' : ''));
             $('#fileMutasi').prop('required', ($(this).val() == 'reject' ? false : true));
         });
+
         $('#accntng-form').on('submit', function(ev){
             ev.preventDefault();
             let data = new FormData(this);
+            let button = $(this).find('button[type="submit"]');
+
+            button.addClass('loading');
             $.ajax({
                 url         : '/ajax/post/account/accounting_action',
                 type        : 'POST',
@@ -193,6 +192,7 @@
                 processData : false
             }).done((resp) => {
                 $('#modal-datepicker').modal('hide');
+                button.removeClass('loading');
                 Swal.fire(resp.alert).then(() => {
                     if(resp.success) {
                         if(resp?.data?.reloc?.length){
