@@ -2529,8 +2529,8 @@ class AppPost {
         /** Verifikasi ke Verihub (Jika belum pernah berhasil) */
         $statusVerifikasiVerihub = $progressAccount['ACC_DOC_VERIF'] ?? 0;
         if($statusVerifikasiVerihub == 0) {
-            // $verif = $this->verifikasiVerihub($data, $user, $progressAccount);
-            $verif = 1;
+            // $verif = 1;
+            $verif = $this->verifikasiVerihub($data, $user, $progressAccount);
             $statusVerifikasiVerihub = -1;
             $data['reference_id'] = $verif;
         }

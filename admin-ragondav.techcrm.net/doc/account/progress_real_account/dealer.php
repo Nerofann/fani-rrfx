@@ -5,21 +5,23 @@
     use App\Models\Helper;
     use App\Models\FileUpload;
     $data = Helper::getSafeInput($_GET);
-
-    $COMPANY         = App\Models\CompanyProfile::$name;
+    $id_acc = $data["d"];
+    $COMPANY = App\Models\CompanyProfile::$name;
     $progressAccount = Account::realAccountDetail($data["d"]);
     $progressAccount = array_merge((Account::accoundCondition($progressAccount["ID_ACC"]) ?? []), $progressAccount);
-    $depositData     = Dpwd::findByRaccId($progressAccount["ID_ACC"]);
-    $page_title      = 'Progress Real Account';
-    $web_name_full   = $COMPANY;
-    $id_acc          = $data["d"];
-    $userBanks       = (!empty($progressAccount["MBR_BKJSN"])) ? json_decode($progressAccount["MBR_BKJSN"], true) : [];
-    $MULTIPN         = ["multi", "multilateral"];
-    $SPANAME         = ["spa"];
-    $date_month      = Helper::bulan(date("m"));
+    $depositData = Dpwd::findByRaccId($progressAccount["ID_ACC"]);
+    $page_title = 'Progress Real Account';
+    $web_name_full = $COMPANY;
+    $userBanks = (!empty($progressAccount["MBR_BKJSN"])) ? json_decode($progressAccount["MBR_BKJSN"], true) : [];
+    $date_month = Helper::bulan(date("m"));
+    $accountCondition = Account::accoundCondition($progressAccount['ID_ACC']);
 
     if((!$depositData) || (!$progressAccount)){
         die("<script>alert('Invalid Account');location.href = '/account/progress_real_account/view'</script>");
+    }
+
+    if(!$accountCondition) {
+        die("<script>alert('Invalid Account Condition');location.href = '/account/progress_real_account/view'</script>");
     }
 
     /** explode bank admin */
@@ -57,15 +59,6 @@
                     
                         <div class="col-md-3 mb-2 mt-auto"><label for="" class="form-label">No. Account</label></div>
                         <div class="col-md-9 mb-2"><input type="text" class="form-control" readonly value="<?php echo $progressAccount['ACCCND_LOGIN']; ?>" required></div>
-    
-                        <div class="col-md-3 mb-2 mt-auto"><label for="" class="form-label">Password</label></div>
-                        <div class="col-md-3 mb-2 mt-auto"><input type="text" class="form-control text-center" name="password" id="mt-pass" value="<?= $progressAccount['ACC_PASS'] ?? "-" ?>" required autocomplete="off"></div>
-                        <div class="col-md-4 mb-2">
-                            <div class="input-group">
-                                <span class="input-group-text">Investor</span>
-                                <input type="text" class="form-control text-center" name="investor" id="mt-invstr" value="<?= $progressAccount['ACC_INVESTOR'] ?? "-" ?>" required autocomplete="off">
-                            </div>
-                        </div>
     
                         <div class="col-md-3 mb-2 mt-auto">Nama Investor</div>
                         <div class="col-md-9 mb-2"><input type="text" class="form-control" value="<?php echo $progressAccount['MBR_NAME'] ?>" readonly></div>
@@ -110,11 +103,10 @@
                     </div>
     
                     <div class="row">
-                        <div class="col-md-3 mb-2 mt-auto">Nilai Margin</div>
+                        <div class="col-md-3 mb-2 mt-auto">Nilai Deposit</div>
                         <div class="col-md-4 mb-2">
                             <div class="input-group">
                                 <span class="input-group-text"><?php echo ($progressAccount['RTYPE_CURR']); ?></span>
-                                <!-- <input type="text" class="form-control" name="initial_margin" id="rupiah" value="<?php echo Helper::formatCurrency($progressAccount['ACCCND_AMOUNTMARGIN']); ?>" readonly required> -->
                                 <input type="text" class="form-control" name="initial_margin" id="rupiah" value="<?php echo Helper::formatCurrency($depositData["DPWD_AMOUNT_SOURCE"]); ?>" readonly required>
                             </div>
                         </div>
@@ -131,7 +123,16 @@
                                 </select> -->
                             </div>
                         </div>
-    
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3 mb-2 mt-auto">Nilai Margin</div>
+                        <div class="col-md-9 mb-2">
+                            <div class="input-group">
+                                <span class="input-group-text">USD</span>
+                                <input type="text" class="form-control" value="<?= Helper::formatCurrency($accountCondition["ACCCND_AMOUNTMARGIN"]); ?>" readonly required>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="row">
@@ -161,7 +162,7 @@
     
                 <div class="card-footer text-center">
                     <input type="hidden" name="sbmt_act" id="fld-act">
-                    <input type="hidden" name="sbmt_id" id="sbmt_id" value="<?= $data["d"] ?>">
+                    <input type="hidden" name="sbmt_id" id="sbmt_id" value="<?= $id_acc ?>">
                     <button type="submit" id="sbmtacc" style="display: none;"></button>
                     <button type="button" value="reject" data-act="reject" class="btn btn-danger act-btna">Reject</button>
                     <button type="button" value="accept" data-act="accept" class="btn btn-success act-btna">Accept</button>
