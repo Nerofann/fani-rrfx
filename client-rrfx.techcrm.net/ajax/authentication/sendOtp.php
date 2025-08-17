@@ -59,7 +59,7 @@ if($sqlCheckOtp->num_rows == 1) {
 
 // $type = Helper::form_input($_POST['type'] ?? "");
 // $type = strtolower($type);
-$type = "whatsapp";
+$type = "sms";
 $otp = random_int(1000, 9999);
 $expiredSeconds = 0;
 $sendOtp = false;
