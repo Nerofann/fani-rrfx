@@ -169,37 +169,39 @@ if(!$updateMember) {
     ]);
 }
 
-// /** Send Verification Verihub */
-// $fileContentKTP = file_get_contents(FileUpload::awsFile($fileKtp['filename']));
-// $fileContentSelfie = file_get_contents(FileUpload::awsFile($fileSelfie['filename']));
-$reference_id = md5($user['MBR_ID'] . $user['MBR_CODE']);
-// $sendVerification = Verihubs::send_idVerification([
-//     'mbrid' => $user['MBR_ID'],
-//     'nik'   => $data['no_idt'],
-//     'name'  => $data['fullname'],
-//     'birth_date' => $data['date_of_birth'],
-//     'email' => $user['MBR_EMAIL'], 
-//     'phone' => $user['MBR_PHONE'], 
-//     'selfie_photo' => ("data:".$fotoSelfie['type'].";base64,".base64_encode($fileContentSelfie)), 
-//     'ktp_photo' => ("data:".$fotoKtp['type'].";base64,".base64_encode($fileContentKTP)), 
-//     'reference_id' => $reference_id
-// ]);
+/** Send Verification Verihub */
+$fileContentKTP = file_get_contents(FileUpload::awsFile($fileKtp['filename']));
+$fileContentSelfie = file_get_contents(FileUpload::awsFile($fileSelfie['filename']));
+$uniqid = uniqid();
+$reference_id = md5($user['MBR_ID'] . $user['MBR_CODE'] . $uniqid);
+$sendVerification = $verihub->send_idVerification([
+    'mbrid' => $user['MBR_ID'],
+    'nik'   => $data['no_idt'],
+    'name'  => $data['fullname'],
+    'birth_date' => $data['date_of_birth'],
+    'email' => $user['MBR_EMAIL'], 
+    'phone' => $user['MBR_PHONE'], 
+    'selfie_photo' => ("data:".$fotoSelfie['type'].";base64,".base64_encode($fileContentSelfie)), 
+    'ktp_photo' => ("data:".$fotoKtp['type'].";base64,".base64_encode($fileContentKTP)), 
+    'reference_id' => $reference_id
+]);
 
-// if(!$sendVerification['success']) {
-//     $db->rollback();
-//     JsonResponse([
-//         'success' => false,
-//         'message' => $sendVerification['message'] ,
-//         'data' => []
-//     ]);
-// }
+if(!$sendVerification['success']) {
+    $db->rollback();
+    JsonResponse([
+        'success' => false,
+        'message' => $sendVerification['message'] ,
+        'data' => []
+    ]);
+}
 
+$data['uniqid'] = $uniqid;
 $data['reference_id'] = $reference_id;
 Logger::client_log([
     'mbrid' => $user['MBR_ID'],
     'module' => "verification",
     'message' => "Verification KTP & Selfie",
-    'data'  => json_encode($data)
+    'data'  => $data
 ]);
 
 $db->commit();
