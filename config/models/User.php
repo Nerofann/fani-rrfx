@@ -38,8 +38,10 @@ class User extends UserAuth {
             if($sqlGet->num_rows != 1) {
                 return false;
             }
-    
-            return $sqlGet->fetch_assoc() ?? false;
+
+            $user = $sqlGet->fetch_assoc();
+            $user['userid'] = md5(md5($userid));
+            return $user;
 
         } catch (Exception $e) {
             if(ini_get("display_errors") == "1") {
@@ -263,6 +265,35 @@ class User extends UserAuth {
             }
 
             return [];
+        }
+    }
+
+    public static function get_ib_data(int $mbrid = 0, array $status = [0, -1, 1]): array|bool {
+        try {
+            $db = Database::connect();
+            $sqlGet = $db->query("
+                SELECT 
+                    tbi.*,
+                    tm.MBR_NAME,
+                    tm.MBR_EMAIL,
+                    tm.MBR_ID,
+                    tm.MBR_TYPE
+                FROM tb_become_ib tbi
+                JOIN tb_member tm ON (tm.MBR_ID = tbi.BECOME_MBR)
+                WHERE BECOME_MBR = {$mbrid} 
+                AND BECOME_STS IN (".implode(",", $status).")
+                ORDER BY ID_BECOME DESC
+                LIMIT 1
+            ");
+
+            return $sqlGet->fetch_assoc() ?? false;       
+
+        } catch (Exception $e) {
+            if(SystemInfo::isDevelopment()) {
+                throw $e;
+            }
+
+            return false;
         }
     }
 }
