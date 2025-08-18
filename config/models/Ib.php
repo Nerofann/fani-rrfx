@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 
+use Config\Core\Database;
 use Config\Core\SystemInfo;
 use Exception;
 
@@ -12,7 +13,30 @@ class Ib {
         '3' => "Trader"
     ];
 
+    public static array $status = [
+        '-1' => [
+            'text' => "Success",
+            'html' => '<span class="badge bg-success">Success</span>'
+        ],
+        '0' => [
+            'text' => "Pending",
+            'html' => '<span class="badge bg-warning">Pending</span>'
+        ],
+        '1' => [
+            'text' => "Rejected",
+            'html' => '<span class="badge bg-danger">Rejected</span>'
+        ],
+    ];
+
     public static array $requiredAccounts = ['STANDARD', 'STANDARD-PLUS'];
+
+    public static function getIbType(): bool|int {
+        return array_search("Ib", self::$userType);
+    }
+
+    public static function getTraderType(): bool|int {
+        return array_search("Trader", self::$userType);
+    }
 
     public static function isAllowToBecomeIb(string $mbridHash): array {
         try {
@@ -99,4 +123,23 @@ class Ib {
             return false;
         }
     }
+
+    public static function findById(string $id): array|bool {
+        try {
+            $db = Database::connect();
+            $sqlGet = $db->query("SELECT * FROM tb_become_ib WHERE MD5(MD5(ID_BECOME)) = '{$id}' LIMIT 1");
+            if($sqlGet->num_rows != 1) {
+                return false;
+            }
+
+            return $sqlGet->fetch_assoc() ?? false;
+
+        } catch (Exception $e) {
+            if(SystemInfo::isDevelopment()) {
+                throw $e;
+            }
+
+            return false;
+        }
+    } 
 }
