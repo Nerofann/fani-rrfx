@@ -401,7 +401,8 @@ class Account {
                 $lastAccount['ACC_WPCHECK_DATE'], 
                 $lastAccount['ACC_PASS'], 
                 $lastAccount['ACC_INVESTOR'], 
-                $lastAccount['ACC_PASS'], 
+                $lastAccount['ACC_TOKEN'], 
+                $lastAccount['ACC_DATETIME'], 
                 $lastAccount['ACC_PASSPHONE'], 
                 $lastAccount['ACC_INITIALMARGIN'],
                 $lastAccount['ACC_LAST_STEP'],
@@ -412,7 +413,24 @@ class Account {
                 $lastAccount['ACC_KODE_NASABAH'],
             );
 
-            $lastAccount['ACC_DATETIME'] = date("Y-m-d H:i:s");
+            $datetime = date("Y-m-d H:i:s");
+            $lastAccount['ACC_DATETIME'] = $datetime;
+            $lastAccount['ACC_F_PROFILE_DATE'] = $datetime;
+            $lastAccount['ACC_F_SIMULASI_DATE'] = $datetime;
+            $lastAccount['ACC_F_PENGLAMAN_DATE'] = $datetime;
+            $lastAccount['ACC_F_APPPEMBUKAAN_DATE'] = $datetime;
+            $lastAccount['ACC_F_APP_DATE'] = $datetime;
+            $lastAccount['ACC_F_RESK_DATE'] = $datetime;
+            $lastAccount['ACC_F_PERJ_DATE'] = $datetime;
+            $lastAccount['ACC_F_TRDNGRULE_DATE'] = $datetime;
+            $lastAccount['ACC_F_KODE_DATE'] = $datetime;
+            $lastAccount['ACC_F_DANA_DATE'] = $datetime;
+            $lastAccount['ACC_F_DISC_DATE'] = $datetime;
+            $lastAccount['ACC_F_DISC_DATE2'] = $datetime;
+            $lastAccount['ACC_F_DISC_DATE3'] = $datetime;
+            $lastAccount['ACC_F_DISC_DATE4'] = $datetime;
+            $lastAccount['ACC_F_CMPLT_DATE'] = $datetime;
+            $lastAccount['ACC_WPCHECK_DATE'] = $datetime;
             $lastAccount['ACC_STS'] = 0; 
             $lastAccount['ACC_LOGIN'] = 0;
             $lastAccount['ACC_WPCHECK'] = 0;
