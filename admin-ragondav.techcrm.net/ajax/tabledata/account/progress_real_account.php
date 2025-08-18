@@ -2,7 +2,7 @@
 
     $dt->query('
         SELECT
-            tb_racc.ACC_F_PROFILE_DATE,
+            tb_racc.ACC_DATETIME,
             tb_racc.ACC_FULLNAME,
             LOWER(tb_member.MBR_EMAIL) AS MBR_EMAIL,
             (
