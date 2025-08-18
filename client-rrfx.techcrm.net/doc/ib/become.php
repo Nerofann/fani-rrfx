@@ -1,19 +1,12 @@
 <?php
 
-use App\Models\Account;
 use App\Models\User;
+use App\Models\Ib;
 
-$standartAccount = Account::haveStandartAccount($user['userid']);
-$terms_balance = false;
+$isAllowToBecomeIb = Ib::isAllowToBecomeIb($user['userid']);
 $ibData = User::get_ib_data($user['MBR_ID']);
-
-foreach($standartAccount as $sac) {
-    if($sac['MARGIN_FREE'] >= 100) {
-        $terms_balance = true;
-        break;
-    }
-}
 ?>
+
 <div class="row">
     <div class="col-md-12 mb-25">
         <div class="dashboard-breadcrumb mb-25">
@@ -46,8 +39,8 @@ foreach($standartAccount as $sac) {
             </div>
         </div>
 
-    <?php else : ?>
-        <?php $havePendingIb = (is_array($ibData) && $ibData['BECOME_STS'] == 0); ?>
+    <?php elseif(!empty($isAllowToBecomeIb['requirements'])) : ?>
+        <?php $havePendingIb = (is_array($ibData)); ?>
         <div class="col-md-6 m-auto mb-25">
             <div class="panel">
                 <div class="panel-header">
@@ -57,47 +50,46 @@ foreach($standartAccount as $sac) {
                     <form action="" method="post" id="form-request-ib">
                         <div class="mb-25">
                             <ul>
-                                <li>
-                                    <?php if(count($standartAccount) >= 1 || $havePendingIb) : ?>
-                                        <i class="fas fa-check text-success"></i>
-                                    <?php else : ?> 
-                                        <i class="fas fa-x text-danger"></i>
-                                    <?php endif; ?>
-                                    Have a standard account
-                                </li>
-                                <li>
-                                    <?php if($terms_balance === TRUE || $havePendingIb) : ?>
-                                        <i class="fas fa-check text-success"></i>
-                                    <?php else : ?> 
-                                        <i class="fas fa-x text-danger"></i>
-                                    <?php endif; ?>
-                                    Have at least $100 free margin in real accounts
-                                </li>
+                                <?php foreach($isAllowToBecomeIb['requirements'] as $require) : ?>
+                                    <li>
+                                        <?php if($require || $havePendingIb) : ?>
+                                            <i class="fas fa-check text-success"></i>
+                                        <?php else : ?> 
+                                            <i class="fas fa-x text-danger"></i>
+                                        <?php endif; ?>
+                                        <?= $require['text'] ?>
+                                    </li>
+                                <?php endforeach; ?>
                             </ul>
                         </div>
     
-                        <?php if(empty($ibData) || $ibData['BECOME_STS'] == 1) : ?>
-                            <?php if($ibData['BECOME_STS'] == 1) : ?>
-                                <div class="alert alert-danger">
-                                    <small>Permintaan anda sebelumnya telah ditolak, keterangan: </small>
-                                    <br>
-                                    <small><?= $ibData['BECOME_NOTE'] ?></small>
-                                </div>
-                            <?php endif; ?>
+                        <?php if(!empty($ibData) && $ibData['BECOME_STS'] == 1) : ?>
+                            <div class="alert alert-danger mb-25">
+                                <small>Permintaan anda sebelumnya telah ditolak, keterangan: </small>
+                                <br>
+                                <small><?= $ibData['BECOME_NOTE'] ?></small>
+                            </div>
+                        <?php endif; ?>
     
+                        
+                        <?php if(!$ibData || $ibData['BECOME_STS'] == 1) : ?>
                             <div class="d-flex justify-content-between mb-25">
                                 <div class="form-check">
                                     <input class="form-check-input" name="terms" type="checkbox" required>
-                                    <label class="form-check-label text-white" for="loginCheckbox">
-                                        I agree <a href="#" class="text-white text-decoration-underline">Terms & Policy</a>
+                                    <label class="form-check-label" for="loginCheckbox">
+                                        I agree <a href="#" class="text-decoration-underline">Terms & Policy</a>
                                     </label>
                                 </div>
                             </div>
-    
-                            <button type="submit" class="btn btn-primary" <?= ($terms_balance === TRUE && count($standartAccount) >= 1)? "" : "disabled" ?>>Request Become IB</button>
+                            
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary" <?= ($isAllowToBecomeIb['success'])? "" : "disabled" ?>>Request Become IB</button>
+                            </div>
     
                         <?php elseif($ibData['BECOME_STS'] == 0) : ?>
-                            <button type="button" class="btn btn-info" disabled>In review</button>
+                            <div class="text-end">
+                                <button type="button" class="btn btn-info" disabled>In review</button>
+                            </div>
                         <?php endif; ?>
                     </form>
                 </div>
@@ -112,7 +104,8 @@ foreach($standartAccount as $sac) {
                     Swal.fire({
                         title: "Are you sure to continue?",
                         icon: 'question',
-                        showCancelButton: true
+                        showCancelButton: true,
+                        reverseButtons: true
                     }).then((result) => {
                         if(result.value) {
                             Swal.fire({
@@ -122,7 +115,7 @@ foreach($standartAccount as $sac) {
                                 }
                             })
         
-                            $.post("/ajax/post/becomeIb", Object.fromEntries(new FormData(this).entries()) , function(resp) {
+                            $.post("/ajax/post/ib/become", Object.fromEntries(new FormData(this).entries()) , function(resp) {
                                 if(!resp.success) {
                                     Swal.fire("Failed", resp.error, "error");
                                     return false;
