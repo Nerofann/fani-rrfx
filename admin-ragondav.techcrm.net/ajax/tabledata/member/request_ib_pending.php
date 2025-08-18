@@ -11,7 +11,7 @@ $dt->query("
     JOIN (
         SELECT
             tr.ACC_MBR,
-            GROUP_CONCAT(tr.ID_ACC SEPARATOR ',') as ACCOUNTS_ID
+            GROUP_CONCAT(CONCAT(tr.ID_ACC, '.', tr.ACC_LOGIN) SEPARATOR ',') as ACCOUNTS_ID
         FROM tb_racc tr
         WHERE tr.ACC_DERE = 1 
         AND tr.ACC_WPCHECK = 6
@@ -23,6 +23,19 @@ $dt->query("
 
 $dt->edit("ACCOUNTS_ID", function($col) {
     $list = [];
+    $accounts = (explode(",", $col['ACCOUNTS_ID']) ?? []);
+    foreach($accounts as $acc) {
+        $detail = explode(".", $acc);
+        $idAcc = (isset($detail[0])) ? md5(md5($detail[0])) : "-";
+        $accLogin = $detail[1];
+        $list[] = '<a href="/account/active_real_account/document/'.$idAcc.'">'.$accLogin.'</a>';
+    }
+
+    return implode(", ", $list);
+});
+
+$dt->edit("ID_BECOME", function($col) {
+    return '<div class="action d-flex justify-content-center gap-2" data-id="'.md5(md5($col['ID_BECOME'])).'"></div>';
 });
 
 echo $dt->generate()->toJson();
