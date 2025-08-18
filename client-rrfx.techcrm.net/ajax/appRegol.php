@@ -2337,7 +2337,7 @@ class AppPost {
 
         // /** Detect FaceLiveness */
         // if(strtoupper($progressAccount['RTYPE_TYPE']) == "MICRO") {
-        //     $base64Image = file_get_contents($aws_folder . $newFileName);
+        //     $base64Image = file_get_contents(FileUpload::awsFile($newFileName));
         //     $base64Image = ("data:image/jpeg;base64,".base64_encode($base64Image));
         //     $validSelfie = $verihub->detectFaceLiveness(['mbrid' => $progressAccount['ACC_MBR'], 'image' => $base64Image]);
         //     if($validSelfie['success'] !== TRUE || $validSelfie['code'] != 200) {
@@ -2575,12 +2575,11 @@ class AppPost {
     }
 
     private function verifikasiVerihub($data, $user, $progressAccount) {
-        global $aws_folder;
         $verihub            = VerihubFactory::init();
         $uniqid             = uniqid();
         $reference_id       = md5($user['MBR_ID'] . $uniqid);
-        $fileContentKTP     = file_get_contents($aws_folder . $progressAccount['ACC_F_APP_FILE_ID']);
-        $fileContentSelfie  = file_get_contents($aws_folder . $progressAccount['ACC_F_APP_FILE_FOTO']);
+        $fileContentKTP     = file_get_contents(FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_ID']));
+        $fileContentSelfie  = file_get_contents(FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_FOTO']));
         $sendVerification   = $verihub->send_idVerification([
             'mbrid' => $user['MBR_ID'],
             'nik'   => $progressAccount['ACC_NO_IDT'],
