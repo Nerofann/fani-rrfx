@@ -38,120 +38,6 @@
     if(!$account) {
         exit('Invalid Request');
     }
-
-    
-    $steps = [
-        [],
-        [
-            'title' => "Buat Akun Demo",
-            'success' => !empty($realAccount['ACC_DEMO']),
-            'page' => "create-demo",
-            'show' => true
-        ],
-        [
-            'title' => "Rate & Jenis Real Account",
-            'success' => !empty($realAccount),
-            'page' => "account-type",
-            'show' => true
-        ],
-        [
-            'title' => "Profile Perusahaan Pialang",
-            'success' => !empty($realAccount['ACC_F_PROFILE']),
-            'page' => "profile-perusahaan",
-            'show' => true
-        ],
-        [
-            'title' => "Pernyataan Simulasi Perdagangan Berjangka",
-            'success' => !empty($realAccount['ACC_F_SIMULASI']),
-            'page' => "pernyataan-simulasi",
-            'show' => true
-        ],
-        [
-            'title' => "Pernyataan Pengalaman Transaksi Perdagangan Berjangka",
-            'success' => !empty($realAccount['ACC_F_PENGLAMAN']),
-            'page' => "pernyataan-pengalaman",
-            'show' => true
-        ],
-        [
-            'title' => "Pernyataan Pengungkapan #1",
-            'success' => !empty($realAccount['ACC_F_DISC']),
-            'page' => "pernyataan-pengungkapan-1",
-            'show' => true
-        ],
-        [
-            'title' => "Aplikasi Pembukaan Rekening",
-            'success' => !empty($realAccount['ACC_F_APP']),
-            'page' => "aplikasi-pembukaan-rekening",
-            'show' => true
-        ],
-        [
-            'title' => "Pernyataan Pengungkapan #2",
-            'success' => !empty($realAccount['ACC_F_DISC2']),
-            'page' => "pernyataan-pengungkapan-2",
-            'show' => true
-        ],
-        [
-            'title' => "Formulir Dokumen Resiko",
-            'success' => !empty($realAccount['ACC_F_RESK']),
-            'page' => "formulir-dokumen-resiko",
-            'show' => true
-        ],
-        [
-            'title' => "Pernyataan Pengungkapan #3",
-            'success' => !empty($realAccount['ACC_F_DISC3']),
-            'page' => "pernyataan-pengungkapan-3",
-            'show' => true
-        ],
-        [
-            'title' => "Perjanjian Pemberian Amanat",
-            'success' => !empty($realAccount['ACC_F_PERJ']),
-            'page' => "perjanjian-pemberian-amanat",
-            'show' => true
-        ],
-        [
-            'title' => "Peraturan Perdagangan",
-            'success' => !empty($realAccount['ACC_F_TRDNGRULE']),
-            'page' => "peraturan-perdagangan",
-            'show' => true
-        ],
-        [
-            'title' => "Pernyataan Bertanggung Jawab",
-            'success' => !empty($realAccount['ACC_F_KODE']),
-            'page' => "pernyataan-bertanggung-jawab",
-            'show' => true
-        ],
-        [
-            'title' => "Pernyataan Dana Nasabah",
-            'success' => !empty($realAccount['ACC_F_DANA']),
-            'page' => "pernyataan-dana-nasabah",
-            'show' => true
-        ],
-        [
-            'title' => "Pernyataan Pengungkapan #4",
-            'success' => !empty($realAccount['ACC_F_DISC4']),
-            'page' => "pernyataan-pengungkapan-4",
-            'show' => true
-        ],
-        [
-            'title' => "Verifikasi Identitas",
-            'success' => (($realAccount['ACC_DOC_VERIF'] ?? 0) == -1),
-            'page' => "verifikasi-identitas",
-            'show' => true
-        ],
-        [
-            'title' => "Kelengkapan Formulir",
-            'success' => !empty($realAccount['ACC_F_CMPLT']),
-            'page' => "kelengkapan-formulir",
-            'show' => true
-        ],
-        [
-            'title' => "Deposit New Account",
-            'success' => !empty($realAccount['ACC_F_CMPLT']),
-            'page' => "deposit-new-account",
-            'show' => ($realAccount['ACC_STS'] == 1 && $realAccount['ACC_WPCHECK'] >= 1)
-        ],
-    ];
-
 ?>
 
 <!DOCTYPE html>
@@ -172,14 +58,28 @@
             <h4 class="text-center" style="margin: 0px;">VERIFIKASI KELENGKAPAN PROSES PENERIMAAN NASABAH SECARA ELEKTRONIK ONLINE</h4>
             <table class="table" style="margin-top: 20px;">
                 <tbody>
-                    <?php foreach($steps as $key => $st) : ?>
-                        <?php if(!empty($st) && $st['page'] != "selesai") : ?>
-                            <tr>
-                                <td width="6%" class="text-center"><?= $key ?></td>
-                                <td class="text-start fw-bold"><?= $st['title'] ?></td>
-                                <td width="10%" class="text-center"><?= $st['success']? '<div style="font-family: DejaVu Sans, sans-serif;">✔</div>' : '<i class="fa-solid fa-x text-danger"></i>'; ?></td>
-                            </tr>
-                        <?php endif; ?>
+                    <?php 
+                    $arrayList = [
+                        "PROFILE PERUSAHAAN PIALANG BERJANGKA",
+                        "PERNYATAAN TELAH MELAKUKAN SIMULASI PERDAGANGAN BERJANGKA ATAU PERNYATAAN TELAH BERPENGALAMAN DALAM MELAKSANAKAN TRANSAKSI PERDAGANGAN BERJANGKA",
+                        "PERNYATAAN PENGUNGKAPAN (DISCLOSURE STATEMENT)",
+                        "APLIKASI PEMBUKAAN REKENING TRANSAKSI",
+                        "PERNYATAAN PENGUNGKAPAN (DISCLOSURE STATEMENT)",
+                        "DOKUMEN PEMBERITAHUAN ADANYA RISIKO",
+                        "PERNYATAAN PENGUNGKAPAN (DISCLOSURE STATEMENT)",
+                        "PERJANJIAN PEMBERIAN AMANAT",
+                        "DAFTAR KONTRAK BERJANGKA, KONTRAK DERIVATIF DAN KONTRAK DERIVATIF LAINNYA BESERTA PERATURAN PERDAGANGAN (TRADING RULES)",
+                        "PERNYATAAN BERTANGGUNG JAWAB ATAS KODE AKSES TRANSAKSI NASABAH (PERSONAL ACCESS PASSWORD)",
+                        "PERNYATAAN BAHWA DANA YANG DIGUNAKAN SEBAGAI MARGIN MERUPAKAN DANA MILIK NASABAH SENDIRI",
+                    ];
+                    ?>
+                        
+                    <?php foreach($arrayList as $key => $val) : ?>
+                        <tr>
+                            <td width="6%" class="text-center"><?= $key + 1 ?></td>
+                            <td class="text-start fw-bold"><?= $val ?></td>
+                            <td width="10%" class="text-center"><div style="font-family: DejaVu Sans, sans-serif;">✔</div></td>
+                        </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
