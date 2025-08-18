@@ -296,4 +296,19 @@ class User extends UserAuth {
             return false;
         }
     }
+
+    public static function findByMemberId(int $mbrid = 0): array|bool {
+        try {
+            $db = Database::connect();
+            $sqlGet = $db->query("SELECT * FROM tb_member WHERE MBR_ID = {$mbrid} LIMIT 1");
+            return $sqlGet->fetch_assoc() ?? false;       
+
+        } catch (Exception $e) {
+            if(SystemInfo::isDevelopment()) {
+                throw $e;
+            }
+
+            return false;
+        }
+    }
 }
