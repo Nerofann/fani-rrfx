@@ -2,6 +2,7 @@
 
 use App\Models\Helper;
 use App\Models\Ib;
+use App\Models\Logger;
 use App\Models\User;
 use Config\Core\Database;
 
@@ -50,6 +51,13 @@ if(!$insert) {
         'data' => []
     ]);
 }
+
+Logger::client_log([
+    'mbrid' => $user['MBR_ID'],
+    'module' => "request_ib",
+    'message' => "Submit become ib",
+    'data' => $data
+]);
 
 JsonResponse([
     'success' => true,
