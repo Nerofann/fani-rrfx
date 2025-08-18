@@ -250,38 +250,6 @@ class Account {
         }
     }
 
-    public static function haveStandartAccount(string $userid) {
-        try {
-            global $db;
-            $sqlGet = $db->query("
-                SELECT 
-                    ID_ACC, 
-                    ACC_LOGIN, 
-                    RTYPE_CURR, 
-                    ACC_TYPE, 
-                    RTYPE_TYPE,
-                    ACC_PASS,
-                    ACC_INVESTOR
-                FROM tb_racc 
-                JOIN tb_racctype ON (ID_RTYPE = ACC_TYPE)
-                WHERE MD5(MD5(ACC_MBR)) = '{$userid}' 
-                AND ACC_DERE = 1 
-                AND ACC_LOGIN != 0
-                AND ACC_WPCHECK = 6
-                AND UPPER(RTYPE_TYPE) IN ('STANDARD', 'PRO')
-            ");
-
-            if($sqlGet->num_rows == 0) {
-                return [];
-            }
-
-            return $sqlGet->fetch_all(MYSQLI_ASSOC);
-
-        } catch (Exception $e) {
-            return [];
-        }
-    }
-
     public static function getDemoAccount(string $userid): array {
         try {
             global $db;
