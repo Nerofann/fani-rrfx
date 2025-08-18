@@ -7,23 +7,37 @@
                     <div class="text-center"><h5>VERIFIKASI KELENGKAPAN PROSES PENERIMAAN NASABAH SECARA ELEKTRONIK ONLINE</h5></div>
                     <hr>
                     <div class="table-responsive">
-                        <table class="table table-bordered">
+                        <table class="table table-bordered table-fixed">
                             <thead>
                                 <tr>
-                                    <th class="text-start">No</th>
+                                    <th width="6%" class="text-start">No</th>
                                     <th class="text-start">Prosess</th>
-                                    <th class="text-start">Status</th>
+                                    <th width="10%" class="text-start">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach($steps as $key => $st) : ?>
-                                    <?php if(!empty($st) && $st['page'] != "selesai") : ?>
-                                        <tr>
-                                            <td width="6%" class="text-center"><?= $key ?></td>
-                                            <td class="text-start fw-bold"><?= $st['title'] ?></td>
-                                            <td width="10%" class="text-center"><?= $st['success']? '<i class="fa-solid fa-check text-primary"></i>' : '<i class="fa-solid fa-x text-danger"></i>'; ?></td>
-                                        </tr>
-                                    <?php endif; ?>
+                                <?php 
+                                $arrayList = [
+                                    "PROFILE PERUSAHAAN PIALANG BERJANGKA",
+                                    "PERNYATAAN TELAH MELAKUKAN SIMULASI PERDAGANGAN BERJANGKA ATAU PERNYATAAN TELAH BERPENGALAMAN DALAM MELAKSANAKAN TRANSAKSI PERDAGANGAN BERJANGKA",
+                                    "PERNYATAAN PENGUNGKAPAN (DISCLOSURE STATEMENT)",
+                                    "APLIKASI PEMBUKAAN REKENING TRANSAKSI",
+                                    "PERNYATAAN PENGUNGKAPAN (DISCLOSURE STATEMENT)",
+                                    "DOKUMEN PEMBERITAHUAN ADANYA RISIKO",
+                                    "PERNYATAAN PENGUNGKAPAN (DISCLOSURE STATEMENT)",
+                                    "PERJANJIAN PEMBERIAN AMANAT",
+                                    "DAFTAR KONTRAK BERJANGKA, KONTRAK DERIVATIF DAN KONTRAK DERIVATIF LAINNYA BESERTA PERATURAN PERDAGANGAN (TRADING RULES)",
+                                    "PERNYATAAN BERTANGGUNG JAWAB ATAS KODE AKSES TRANSAKSI NASABAH (PERSONAL ACCESS PASSWORD)",
+                                    "PERNYATAAN BAHWA DANA YANG DIGUNAKAN SEBAGAI MARGIN MERUPAKAN DANA MILIK NASABAH SENDIRI",
+                                ];
+                                ?>
+    
+                                <?php foreach($arrayList as $key => $val) : ?>
+                                    <tr>
+                                        <td class="text-center"><?= ($key + 1) ?></td>
+                                        <td class="text-start fw-bold"><?= $val ?></td>
+                                        <td class="text-center"><i class="fa-solid fa-check text-primary"></i></td>
+                                    </tr>
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
