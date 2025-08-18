@@ -9,44 +9,5 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-12 mb-3">
-        <div class="card custom-card">
-            <div class="card-header">
-                <h5 class="card-title">Request Pending</h5>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover table-bordered" id="table-pending">
-                        <thead>
-                            <tr>
-                                <th>Tanggal Pengajuan</th>
-                                <th>Nama</th>
-                                <th>Email</th>
-                                <th>Account</th>
-                                <th>#</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#table-pending').DataTable({
-            processing: true,
-            serverSide: true,
-            deferRender: true,
-            order: [[0, 'desc']],
-            ajax: {
-                url: "/ajax/datatable/member/request_ib_pending/view"
-            },
-            columnDefs: [
-                { targets: 4, className: "text-center" },
-            ]
-        })
-    })
-</script>
+<?php require_once __DIR__ . "/view_pending.php" ?>
+<?php require_once __DIR__ . "/view_history.php" ?>
