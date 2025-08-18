@@ -102,7 +102,7 @@ switch($type) {
             ]);
         }
         
-        $sendVerihub = $verihub->sendOtp_sms(['phone' => $phone, 'otp' => $otp]);
+        $sendVerihub = $verihub->sendOtp_sms(['phone' => $phone, 'otp' => $otp, 'template' => 'RRFX KMNA OTP: $OTP']);
         $sendOtp = [
             'success' => $sendVerihub['success'],
             'message' => $sendVerihub['message'] ?? "",

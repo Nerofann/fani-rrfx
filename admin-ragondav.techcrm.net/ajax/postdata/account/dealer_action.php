@@ -119,17 +119,6 @@ use App\Models\Account;
         /**Accept || Reject Processing*/
         switch ($data["sbmt_act"]) {
             case 'accept':
-                /** Update Account condition */
-                $updateAccnd = Database::update('tb_acccond', ['ACCCND_STS' => -1], ["ID_ACCCND" => $ACCOND_CHECK["ID_ACCCND"]]);
-                if(!$updateAccnd) {
-                    $db->rollback();
-                    JsonResponse([
-                        'success'   => false,
-                        'message'   => "Gagal memperbarui account condition ",
-                        'data'      => []
-                    ]);
-                }
-
                 /** create metatrader account */
                 $password = Helper::generatePassword();
                 $investor = Helper::generatePassword();
@@ -182,6 +171,22 @@ use App\Models\Account;
                     JsonResponse([
                         'success'   => false,
                         'message'   => "Gagal memperbarui data akun",
+                        'data'      => []
+                    ]);
+                }
+
+                /** Update Account condition */
+                $updateAccndData = [
+                    'ACCCND_STS' => -1,
+                    'ACCCND_LOGIN' => $login,
+                ];
+
+                $updateAccnd = Database::update('tb_acccond', $updateAccndData, ["ID_ACCCND" => $ACCOND_CHECK["ID_ACCCND"]]);
+                if(!$updateAccnd) {
+                    $db->rollback();
+                    JsonResponse([
+                        'success'   => false,
+                        'message'   => "Gagal memperbarui account condition ",
                         'data'      => []
                     ]);
                 }
