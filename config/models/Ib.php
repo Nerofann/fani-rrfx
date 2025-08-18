@@ -142,4 +142,102 @@ class Ib {
             return false;
         }
     } 
+
+    public static function userUpline($mbrid): array|bool {
+        try {
+            $db = Database::connect();
+            $mbrid ??= 1000000000;
+            $sqlGet = $db->query("SELECT * FROM tb_member WHERE MBR_ID = {$mbrid} LIMIT 1");
+            if($sqlGet->num_rows != 1) {
+                return false;
+            }
+
+            return $sqlGet->fetch_assoc() ?? false;
+
+        } catch (Exception $e) {
+            if(SystemInfo::isDevelopment()) {
+                throw $e;
+            }
+
+            return false;
+        }
+    } 
+
+    public static function getNetworks(int $mbrId, string $format = "downline"): array {
+        global $db;
+        $format = strtolower($format);
+        if(!in_array($format, ["downline", "upline"])) {
+            return [];
+        }
+
+        try {
+            switch($format) {
+                case "downline" :
+                    $query = "
+                        WITH RECURSIVE member_hierarchy AS (
+                            SELECT 
+                                MBR_ID,
+                                MBR_NAME,
+                                MBR_CODE,
+                                MBR_IDSPN,
+                                MBR_EMAIL,
+                                MBR_TYPE
+                            FROM tb_member
+                            WHERE MBR_ID = {$mbrId}
+                            UNION ALL
+                            SELECT 
+                                m.MBR_ID,
+                                m.MBR_NAME,
+                                m.MBR_CODE,
+                                m.MBR_IDSPN,
+                                m.MBR_EMAIL,
+                                m.MBR_TYPE
+                            FROM tb_member m
+                            INNER JOIN member_hierarchy mh ON m.MBR_IDSPN = mh.MBR_ID
+                        )
+                        SELECT * FROM member_hierarchy WHERE MBR_ID != {$mbrId};    
+                    ";
+                    break;
+
+                case "upline" :
+                    $query = "
+                        WITH RECURSIVE member_hierarchy AS (
+                            SELECT 
+                                MBR_ID,
+                                MBR_NAME,
+                                MBR_CODE,
+                                MBR_IDSPN,
+                                MBR_EMAIL,
+                                MBR_TYPE
+                            FROM tb_member
+                            WHERE MBR_ID = {$mbrId}
+                            UNION ALL
+                            SELECT 
+                                m.MBR_ID,
+                                m.MBR_NAME,
+                                m.MBR_CODE,
+                                m.MBR_IDSPN,
+                                m.MBR_EMAIL,
+                                m.MBR_TYPE
+                            FROM tb_member m
+                            INNER JOIN member_hierarchy mh ON m.MBR_ID = mh.MBR_IDSPN
+                        )
+                        SELECT * FROM member_hierarchy WHERE MBR_ID != {$mbrId};    
+                    ";
+                    break;
+            }
+            
+            $sqlGetDownline = $db->query($query);
+            $data = $sqlGetDownline->fetch_all(MYSQLI_ASSOC);
+    
+            return $data;
+        
+        } catch (Exception $e) {
+            if(SystemInfo::isDevelopment()) {
+                throw $e;
+            }
+
+            return [];
+        }
+    }
 }
