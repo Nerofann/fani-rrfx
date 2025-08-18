@@ -104,7 +104,7 @@ if(!is_array($rateInfo)) {
 }
 
 $rate = $rateInfo['rate'];
-$amountMargin = ($DEPOSIT_CHECK['DPWD_CURR_FROM'] == "IDR")? ($DEPOSIT_CHECK['DPWD_AMOUNT'] / $rate) : $DEPOSIT_CHECK['DPWD_AMOUNT'];
+$amountMargin = ($DEPOSIT_CHECK['DPWD_CURR_FROM'] == "IDR")? ($DEPOSIT_CHECK['DPWD_AMOUNT'] / $rate) : $DEPOSIT_CHECK['DPWD_AMOUNT_SOURCE'];
 if($amountMargin <= 0) {
     JsonResponse([
         'success' => false,
