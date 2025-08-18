@@ -21,14 +21,14 @@
                     </div>
 
                     <div class="mb-3">
-                        <p class="text-white">*Foto Selfie</p>
+                        <p class="">*Foto Selfie</p>
                         <ul>
                             <li class="form-label">- Minimal ukuran file 100KB dan Maksimal 4MB</li>
                             <li class="form-label">- Minimal dimensi file 480x640 (p x l)</li>
                         </ul>
                     </div>
                     <div class="mb-3">
-                        <p class="text-white">*Foto KTP</p>
+                        <p class="">*Foto KTP</p>
                         <ul>
                             <li class="form-label">- Minimal ukuran file 100KB dan Maksimal 2MB</li>
                             <li class="form-label">- Minimal dimensi file 480x320 (p x l)</li>
