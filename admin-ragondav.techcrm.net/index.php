@@ -17,9 +17,9 @@ if(empty($authPage)) {
 	<head>
 		<meta charset="utf-8">
 		<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
-        <meta name="description" content="Gfsprime">
-        <meta name="author" content="Gfsprime">
-        <meta name="keywords" content="Gfsprime">
+        <meta name="description" content="<?= CompanyProfile::$name; ?>">
+        <meta name="author" content="<?= CompanyProfile::$name; ?>">
+        <meta name="keywords" content="<?= CompanyProfile::$name; ?>">
         
         <!-- TITLE -->
         <title><?= ucwords($authPage) ?> - <?= CompanyProfile::$name ?></title>
