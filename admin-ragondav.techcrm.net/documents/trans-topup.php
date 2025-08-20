@@ -12,7 +12,8 @@
 
     $amountIDR = ($depositData["DPWD_CURR_FROM"] == "IDR") ? $depositData['DPWD_AMOUNT_SOURCE'] : $depositData['DPWD_AMOUNT'];
     $amountUSD = ($depositData["DPWD_CURR_FROM"] == "USD") ? $depositData['DPWD_AMOUNT_SOURCE'] : $depositData['DPWD_AMOUNT'];
-    $rate = $depositData['DPWD_RATE'];
+    $rate = $realAccount['RTYPE_RATE'];
+    // $rate = $depositData['DPWD_RATE'];
 
     /** if IDR to IDR */
     // if($depositData['DPWD_CURR_FROM'] == "IDR") {

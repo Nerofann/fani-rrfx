@@ -38,7 +38,7 @@
                     <tr>
                         <th width="60%" class="text-center" style="background-color: #edebe0;">Detail</th>
                         <th width="2%"></th>
-                        <th class="text-center" style="background-color: #edebe0;">IB</th>
+                        <th class="text-center" style="background-color: #edebe0;">Product</th>
                     </tr> 
                     <tr>
                         <td class="v-align-top" style="font-size: 15px; text-align: left;">
@@ -47,7 +47,9 @@
                                     <tr>
                                         <td width="30%" class="v-align-top">Kondisi ini efektif mulai bulan</td>
                                         <td width="3%" class="v-align-top">:</td>
-                                        <td class="v-align-top"><?= Helper::bulan($realAccount['ACC_WPCHECK_DATE']) ?></td>
+                                        <td class="v-align-top">
+                                            <?= date('m', strtotime($realAccount['ACC_WPCHECK_DATE'])).' ('.Helper::bulan(date('m', strtotime($realAccount['ACC_WPCHECK_DATE']))).')'; ?>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td width="30%" class="v-align-top">No. Account</td>
@@ -97,22 +99,32 @@
                             <table class="table no-border">
                                 <tbody>
                                     <tr>
-                                        <td width="30%" class="v-align-top">Introducing Broker</td>
-                                        <td width="3%" class="v-align-top">:</td>
-                                        <td class="v-align-top"><?= $accnd['MBR_NAME'] ?></td>
-                                    </tr>
-                                    <tr>
                                         <td width="30%" class="v-align-top">Product</td>
                                         <td width="3%" class="v-align-top">:</td>
                                         <td class="v-align-top"><?= $realAccount['RTYPE_NAME'] ?></td>
                                     </tr>
+                                    <tr>
+                                        <td width="30%" class="v-align-top">Rate</td>
+                                        <td width="3%" class="v-align-top">:</td>
+                                        <td class="v-align-top"><?= ($realAccount['RTYPE_ISFLOATING'] == 1) ? 'Floating' : $realAccount['RTYPE_RATE'] ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="30%" class="v-align-top">Commision</td>
+                                        <td width="3%" class="v-align-top">:</td>
+                                        <td class="v-align-top">$ <?= Helper::formatCurrency($realAccount['RTYPE_KOMISI']) ?></td>
+                                    </tr>
+                                    <!-- <tr>
+                                        <td width="30%" class="v-align-top">Introducing Broker</td>
+                                        <td width="3%" class="v-align-top">:</td>
+                                        <td class="v-align-top"><?= $accnd['MBR_NAME'] ?></td>
+                                    </tr> -->
                                 </tbody>
                             </table>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <table class="table no-border" style="margin-top: 20px; border-bottom: 1px solid black !important;">
+            <!-- <table class="table no-border" style="margin-top: 20px; border-bottom: 1px solid black !important;">
                 <tbody>
                     <tr>
                         <th colspan="2" class="text-center" style="background-color: #edebe0;">Commission Charge</th>
@@ -162,7 +174,7 @@
                         </td>
                     </tr>
                 </tbody>
-            </table>
+            </table> -->
             <table class="table no-border" style="margin-top: 20px;">
                 <tbody>
                     <tr>
@@ -174,8 +186,8 @@
                         <td><div style="height: 50px;"></div></td>
                     </tr>
                     <tr>
-                        <td width="50%" class="text-center v-align-top">( Nama Accounting )</td>
-                        <td width="50%" class="text-center v-align-top">( Nama Direktur )</td>
+                        <td width="50%" class="text-center v-align-top">( &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )</td>
+                        <td width="50%" class="text-center v-align-top">( <?= $companyProfile['PROF_DEWAN_DIREKSI'] ?> )</td>
                     </tr>
                 </tbody>
             </table>
