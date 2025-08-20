@@ -52,10 +52,10 @@ $ibData = User::get_ib_data($user['MBR_ID']);
                             <ul>
                                 <?php foreach($isAllowToBecomeIb['requirements'] as $require) : ?>
                                     <li>
-                                        <?php if($require || $havePendingIb) : ?>
-                                            <i class="fas fa-check text-success"></i>
+                                        <?php if($require['status'] || $havePendingIb) : ?>
+                                            <i class="fas fa-check text-success me-1"></i>
                                         <?php else : ?> 
-                                            <i class="fas fa-x text-danger"></i>
+                                            <i class="fas fa-close text-danger me-1"></i>
                                         <?php endif; ?>
                                         <?= $require['text'] ?>
                                     </li>
