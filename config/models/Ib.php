@@ -61,18 +61,19 @@ class Ib {
             ];
 
             $isHaveRequiredAccount = self::haveRequiredAccount($mbridHash);
-            if($isHaveRequiredAccount) {
+            if(is_array($isHaveRequiredAccount)) {
+                $accounts = $isHaveRequiredAccount; 
                 $result['requirements']['haveRequiredAccount']['status'] = true;
-            }
 
-            $accounts = $isHaveRequiredAccount; 
-            foreach($accounts as $sac) {
-                if($sac['MARGIN_FREE'] >= 100) {
-                    $result['requirements']['haveEnoughBalance']['status'] = true;
-                    $result['success'] = true;
-                    break;
+                foreach($accounts as $sac) {
+                    if($sac['MARGIN_FREE'] >= 100) {
+                        $result['requirements']['haveEnoughBalance']['status'] = true;
+                        $result['success'] = true;
+                        break;
+                    }
                 }
             }
+
 
             return $result;
 
