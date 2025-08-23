@@ -71,6 +71,11 @@ if($isLoggedIn) {
 				return false;
 			}
 
+			if(!resp.data.redirect) {
+				Swal.fire(resp.alert);
+				return false;
+			}
+			
 			location.href = resp.data.redirect;
 		}, 'json');
 	});

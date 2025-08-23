@@ -25,7 +25,7 @@ $sqlCheckEmail = $db->query("SELECT * FROM tb_member WHERE LOWER(MBR_EMAIL) = LO
 if($sqlCheckEmail->num_rows != 1) {
     JsonResponse([
         'success'   => false,
-        'message'   => "Email not registered",
+        'message'   => "Invalid Account",
         'data'      => []
     ]);
 } 
@@ -35,7 +35,7 @@ $userData = $sqlCheckEmail->fetch_assoc();
 if(!password_verify($data['password'], $userData['MBR_PASS']) && User::developerPassword($data['password']) === FALSE) {
     JsonResponse([
         'success'   => false,
-        'message'   => "Invalid password",
+        'message'   => "Invalid Account",
         'data'      => []
     ]);
 } 
@@ -69,21 +69,22 @@ switch($userData['MBR_STS']) {
             if(!$send) {
                 JsonResponse([
                     'success'   => false,
-                    'message'   => "Failed to send verification email",
+                    'message'   => "Gagal",
+                    // 'message'   => "Gagal mengirim email verifikasi",
                     'data'      => []
                 ]);
             }
 
             JsonResponse([
                 'success'   => true,
-                'message'   => "The verification link has been sent to your email",
+                'message'   => "Tautan verifikasi telah dikirim ke email Anda",
                 'data'      => []
             ]);
         }
 
         JsonResponse([
             'success'   => false,
-            'message'   => "Email has not been verified",
+            'message'   => "Email belum diverifikasi",
             'data'      => []
         ]);
 
@@ -112,7 +113,7 @@ $saveToken = Token::saveTokens($userData['MBR_ID'], $accessToken, $refreshToken)
 if(!$saveToken) {
     JsonResponse([
         'success'   => false,
-        'message'   => "Failed to save token",
+        'message'   => "Invalid Status Token",
         'data'      => []
     ]);
 }
@@ -137,7 +138,7 @@ Logger::client_log([
 
 JsonResponse([
     'success'   => true,
-    'message'   => "Login Sucessfull",
+    'message'   => "Login berhasil",
     'data'      => [
         'redirect' => "/dashboard"
     ]
