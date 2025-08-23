@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Edit Bank</h5>
-                <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal">&times;</button>
+                <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"></button>
             </div>
             <form action="" method="post" id="form-edit-bank">
                 <div class="modal-body">
