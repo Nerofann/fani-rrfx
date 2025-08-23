@@ -25,11 +25,11 @@ foreach($required as $req => $text) {
 }
 
 /** Check Account */
-$account = Account::realAccountDetail($data['account']);
-if(!$account) {
+$account = Account::realAccountDetail_byLogin($data['account']);
+if(!$account || $account['ACC_MBR'] != $user['MBR_ID']) {
     JsonResponse([
         'success' => false,
-        'message' => "Akun tidak valid",
+        'message' => "Invalid Account",
         'data' => []
     ]);
 }
@@ -60,6 +60,16 @@ if($jumlah <= 0) {
     JsonResponse([
         'success' => false,
         'message' => "Jumlah withdrawal tidak valid",
+        'data' => []
+    ]);
+}
+
+/** check Balance */
+$balance = Account::marginBalance($account['ACC_LOGIN']);
+if(!$balance || $balance < $jumlah) {
+    JsonResponse([
+        'success' => false,
+        'message' => "Insufficient Balance",
         'data' => []
     ]);
 }
