@@ -58,7 +58,7 @@ switch($userData['MBR_STS']) {
             }
 
             $emailData = [
-                'subject'   => "Email Verification - Gwcofficial",
+                'subject'   => "Email Verification",
                 'code'  => md5(md5($userData['MBR_ID'].$otpCode)),
             ];
     
