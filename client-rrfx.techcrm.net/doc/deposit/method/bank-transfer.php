@@ -38,7 +38,7 @@
         </div>
         <div class="col-md-12 mb-2">
             <label for="image" class="form-label required">Bukti Transfer</label>
-            <input type="file" name="image" id="image" class="dropify" required>
+            <input type="file" name="image" id="image" class="dropify" accept="image/jpg, image/jpeg, iamge/png" data-allowed-file-extensions="png jpg jpeg" required>
         </div>
     </div>
 
