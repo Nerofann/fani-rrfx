@@ -29,6 +29,14 @@ foreach($required as $key => $text) {
 }
 
 /** check kodepos */
+if(is_numeric($data['zip']) === FALSE) {
+    JsonResponse([
+        'success' => false,
+        'message' => "Nomor kodepos harus berupa angka",
+        'data' => []
+    ]);
+}
+
 $kodepos = Wilayah::postalCode($data['province'], $data['city'], $data['district'], $data['villages'], $data['zip']);
 if(!$kodepos) {
     JsonResponse([
