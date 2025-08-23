@@ -2,17 +2,20 @@
 
 use App\Models\FileUpload;
 use App\Models\Helper;
+use App\Models\Wilayah;
 use Config\Core\Database;
 
 $data = Helper::getSafeInput($_POST);
 $required = [
-    'city' => "Kota",
     'zip' => "Kodepos",
     'tempat_lahir' => "Tempat Lahir",
     'tanggal_lahir' => "Tanggal Lahir",
+    'province' => "Provinsi",
+    'city' => "Kabupaten/Kota",
+    'district' => "Kecamatan",
+    'villages' => "Kelurahan/Desa",
     // 'identity_type' => "Tipe Identitas",
     // 'identity_number' => "Nomor Identitas",
-    'address' => "Alamat Lengkap"
 ];
 
 foreach($required as $key => $text) {
@@ -25,13 +28,29 @@ foreach($required as $key => $text) {
     }
 }
 
+/** check kodepos */
+$kodepos = Wilayah::postalCode($data['province'], $data['city'], $data['district'], $data['villages'], $data['zip']);
+if(!$kodepos) {
+    JsonResponse([
+        'success' => false,
+        'message' => "Nomor Kode Pos tidak valid / terdaftar",
+        'data' => []
+    ]);
+}
+
 /* Update **/
+$gender = empty($data['gender'])? "" : strtoupper($data['gender']);
+$address = empty($data['address'])? "" : $data['address'];
 $updateData = [
-    'MBR_CITY' => $data['city'],
-    'MBR_ZIP' => $data['zip'],
+    'MBR_PROVINCE' => $kodepos['KDP_PROV'],
+    'MBR_CITY' => $kodepos['KDP_KABKO'],
+    'MBR_DISTRICT' => $kodepos['KDP_KECAMATAN'],
+    'MBR_VILLAGES' => $kodepos['KDP_KELURAHAN'],
+    'MBR_ZIP' => $kodepos['KDP_POS'],
     'MBR_TMPTLAHIR' => $data['tempat_lahir'],
     'MBR_TGLLAHIR' => date("Y-m-d", strtotime($data['tanggal_lahir'])),
-    'MBR_ADDRESS' => $data['address']
+    'MBR_ADDRESS' => $address,
+    'MBR_JENIS_KELAMIN' => $gender
 ];
 
 /** check Avatar */

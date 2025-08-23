@@ -47,47 +47,65 @@ function is_disable($inp) {
                     </div>
                     <div class="col-md-9">
                         <div class="row g-3">
-                            <div class="col-sm-4 mb-3">
+                            <div class="col-sm-4 mb-1">
                                 <label for="basicInput" class="form-label">Full Name</label>
                                 <input disabled type="text" class="form-control" value="<?= $user['MBR_NAME'] ?>">
                             </div>
-                            <div class="col-sm-4 mb-3">
+                            <div class="col-sm-4 mb-1">
                                 <label for="basicInput" class="form-label">Email</label>
                                 <input disabled type="email" class="form-control" value="<?= $user['MBR_EMAIL'] ?>">
                             </div>
-                            <div class="col-sm-4 mb-3">
+                            <div class="col-sm-4 mb-1">
                                 <label for="basicInput" class="form-label">No. Telepon</label>
                                 <input disabled type="text" class="form-control" value="<?= $user['MBR_PHONE'] ?>">
                             </div>
-                            <div class="col-sm-4 mb-3">
-                                <label for="basicInput" class="form-label">Negara</label>
-                                <input type="text" class="form-control" value="<?= $user['MBR_COUNTRY'] ?>" disabled>
+                            <div class="col-sm-4 mb-1">
+                                <label for="province" class="form-label required">Province</label>
+                                <select name="province" id="province" class="form-control form-select select2" required>
+                                    <?php foreach(App\Models\Wilayah::provinces() as $province) : ?>
+                                        <option value="<?= $province ?>" <?= $user['MBR_PROVINCE'] == $province? "selected" : ""; ?>><?= $province ?></option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
-                            <div class="col-sm-4 mb-3">
-                                <label for="basicInput" class="form-label required">Kota</label>
-                                <input name="city" type="text" class="form-control" value="<?= $user['MBR_CITY'] ?>" placeholder="Kota" required>
+                            <div class="col-sm-4 mb-1">
+                                <label for="city" class="form-label required">Kabupaten/Kota</label>
+                                <select name="city" id="city" class="form-control form-select select2" required>
+                                    <option value="">Pilih</option>
+                                </select>
                             </div>
-                            <div class="col-sm-4 mb-3">
-                                <label for="basicInput" class="form-label required">Kode Pos</label>
-                                <input name="zip" type="number" class="form-control" value="<?= $user['MBR_ZIP'] ?>" required>
+                            <div class="col-sm-4 mb-1">
+                                <label for="district" class="form-label required">Kecamatan</label>
+                                <select name="district" id="district" class="form-control form-select select2" required>
+                                    <option value="">Pilih</option>
+                                </select>
                             </div>
-                            <div class="col-sm-5 mb-3">
+                            <div class="col-sm-4 mb-1">
+                                <label for="villages" class="form-label required">Kelurahan/Desa</label>
+                                <select name="villages" id="villages" class="form-control form-select select2" required>
+                                    <option value="">Pilih</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4 mb-1">
+                                <label for="zip" class="form-label required">Kode Pos</label>
+                                <input name="zip" type="number" id="zip" class="form-control" value="<?= $user['MBR_ZIP'] ?>" required>
+                            </div>
+                            <div class="col-sm-5 mb-1">
                                 <label for="tempat_lahir" class="form-label required">Place of birth</label>
                                 <input type="text" name="tempat_lahir" id="tempat_lahir" class="form-control" value="<?= $user['MBR_TMPTLAHIR'] ?>" placeholder="place of birth" required>
                             </div>
-                            <div class="col-sm-3 mb-3">
+                            <div class="col-sm-3 mb-1">
                                 <label for="tanggal_lahir" class="form-label required">Date of birth</label>
                                 <input type="date" name="tanggal_lahir" id="tanggal_lahir" max="<?php echo date("Y-01-01", strtotime("-18 year")); ?>" class="form-control" value="<?= $user['MBR_TGLLAHIR'] ?>" required>
                             </div>
-                            <div class="col-sm-4 mb-3">
+                            <div class="col-sm-4 mb-1">
                                 <label for="gender" class="form-label">Gender</label>
                                 <select name="gender" id="gender" class="form-control">
                                     <option value="">Select</option>
-                                    <option value="Laki-laki" <?= ($user['MBR_JENIS_KELAMIN'] == "Laki-laki")? "selected" : ""; ?>>Laki-laki</option>
-                                    <option value="Perempuan" <?= ($user['MBR_JENIS_KELAMIN'] == "Perempuan")? "selected" : ""; ?>>Perempuan</option>
+                                    <option value="Laki-laki" <?= (strtoupper($user['MBR_JENIS_KELAMIN']) == "LAKI-LAKI")? "selected" : ""; ?>>Laki-laki</option>
+                                    <option value="Perempuan" <?= (strtoupper($user['MBR_JENIS_KELAMIN']) == "PEREMPUAN")? "selected" : ""; ?>>Perempuan</option>
                                 </select>
                             </div>
-                            <div class="col-12 mb-3">
+                            <div class="col-12 mb-1">
                                 <label for="basicInput" class="form-label">Address</label>
                                 <textarea name="address" class="form-control h-150-p" placeholder="Address"><?= $user['MBR_ADDRESS'] ?></textarea>
                             </div>
@@ -128,6 +146,61 @@ function is_disable($inp) {
                     }
                 })
             })
+        })
+
+        const province = $('#province');
+        const city = $('#city');
+        const district = $('#district');
+        const villages = $('#villages');
+        const postalCode = $('#zip');
+        
+        province.on('change', function() {
+            city.empty();
+            $.post("/ajax/post/wilayah/regency", {province: this.value}, (resp) => {
+                if(resp.success) {
+                    $.each(resp.data, (i, val) => {
+                        city.append(`<option value="${val.name}" ${val.selected}>${val.name}</option>`);
+                    })
+
+                    if(city.find("option:selected").length) {
+                        city.change();
+                    }
+                }
+            }, "json")
+        }).change();
+
+        city.on('change', function() {
+            district.empty();
+            $.post("/ajax/post/wilayah/district", {regency: city.val()}, (resp) => {
+                if(resp.success) {
+                    $.each(resp.data, (i, val) => {
+                        district.append(`<option value="${val.name}" ${val.selected}>${val.name}</option>`);
+                    })
+
+                    if(district.find("option:selected").length) {
+                        district.change();
+                    }
+                }
+            }, "json")
+        });
+
+        district.on('change', function() {
+            villages.empty();
+            $.post("/ajax/post/wilayah/villages", {district: district.val()}, (resp) => {
+                if(resp.success) {
+                    $.each(resp.data, (i, val) => {
+                        villages.append(`<option value="${val.name}" ${val.selected} data-postalcode="${val.postalCode}">${val.name}</option>`);
+                    })
+
+                    if(villages.find("option:selected").length) {
+                        villages.change();
+                    }
+                }
+            }, "json")
+        });
+        
+        villages.on('change', function() {
+            postalCode.val(villages.find('option:selected')?.data('postalcode'))
         })
     })
 </script>
