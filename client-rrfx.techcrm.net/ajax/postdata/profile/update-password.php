@@ -3,6 +3,7 @@
 use App\Models\Helper;
 use App\Models\Logger;
 use App\Models\SendEmail;
+use App\Models\User;
 use Config\Core\Database;
 
 $data = Helper::getSafeInput($_POST);
@@ -27,6 +28,16 @@ if(!password_verify($data['current_pass'], $user['MBR_PASS'])) {
     JsonResponse([
         'success' => false,
         'message' => "Password Salah",
+        'data' => []
+    ]);
+}
+
+/** validasi password */
+$isValidate = User::validation_password($data['new_pass']);
+if($isValidate !== TRUE) {
+    JsonResponse([
+        'success' => false,
+        'message' => $isValidate ?? "Format password salah",
         'data' => []
     ]);
 }
