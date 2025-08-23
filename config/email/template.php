@@ -211,30 +211,31 @@
                                         <!--[if (!mso)&(!IE)]><!-->
                                         <div style="box-sizing: border-box; height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]-->
                                             <div style="margin: 5px 10px;"><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" width="600" style="background-color:#fff;border-radius:0;color:#000;width:600px;margin:0 auto">
+                                                
                                                 <?php require_once $content; ?>
+
+                                                <hr>
+                                                <p style="text-align: justify; margin-bottom: 30px;">Anda menerima email ini karena Anda mendaftar di <?= $profile['website'] ?> jika Anda memiliki pertanyaan, silahkan hubungi kami melalui email di <?= $profile['support'] ?>. Anda juga dapat menghubungi nomor <?= $profile['phone'] ?></p>
+                                                <hr>
+                                                <table>
+                                                    <tbody>
+                                                        <tr><td><b>Phone</b> : <?= $profile['name']; ?></td></tr>
+                                                        <tr><td><b>Support</b> : <?= $profile['support'] ?></td></tr>
+                                                        <tr><td><b>Website</b> : <?= $profile['website'] ?></td></tr>
+                                                        <tr><td><b>Address</b> : <?= $profile['address'] ?></td></tr>
+                                                    </tbody>
+                                                </table>
+                                                <p style="text-align: justify; margin-top: 20px;">Resmi dan diatur oleh Badan Pengawas Perdagangan Berjangka Komoditi. Nomor registrasi BAPPEBTI : <?= $profile['no_bappebti'] ?>.</p>
+                                                <p style="margin-top: 10px;">
+                                                    <img src="https://mobileibftraders.techcrm.net/assets/img/sosmed/ig.png" alt="Instagram">
+                                                    <img src="https://mobileibftraders.techcrm.net/assets/img/sosmed/fb.png" alt="Facebook">
+                                                    <img src="https://mobileibftraders.techcrm.net/assets/img/sosmed/linkedin.png" alt="Linkedin">
+                                                </p>
+                                                <hr>
+                                                <h4 style="margin-bottom: 2px;">PEMBERITAHUAN RESIKO:</h4>
+                                                <p style="text-align: justify;">Semua produk finansial yang ditransaksikan dalam sistem margin mempunyai resiko tinggi terhadap dana Anda. Produk finansial ini tidak diperuntukkan bagi semua investor dan Anda bisa saja kehilangan dana lebih dari deposit awal Anda. Pastikan bahwa Anda benar-benar mengerti resikonya, dan mintalah nasihat independen jika diperlukan. Lihat Pemberitahuan Resiko lengkap kami di Ketentuan Bisnis.</p>
                                             </div>
                                             <!--[if (!mso)&(!IE)]><!-->
-
-                                            <hr>
-                                            <p style="text-align: justify; margin-bottom: 30px;">Anda menerima email ini karena Anda mendaftar di <?= $profile['website'] ?> jika Anda memiliki pertanyaan, silahkan hubungi kami melalui email di <?= $profile['support'] ?>. Anda juga dapat menghubungi nomor <?= $profile['phone'] ?></p>
-                                            <hr>
-                                            <table>
-                                                <tbody>
-                                                    <tr><td><b>Phone</b> : <?= $profile['name']; ?></td></tr>
-                                                    <tr><td><b>Support</b> : <?= $profile['support'] ?></td></tr>
-                                                    <tr><td><b>Website</b> : <?= $profile['website'] ?></td></tr>
-                                                    <tr><td><b>Address</b> : <?= $profile['address'] ?></td></tr>
-                                                </tbody>
-                                            </table>
-                                            <p style="text-align: justify; margin-top: 20px;">Resmi dan diatur oleh Badan Pengawas Perdagangan Berjangka Komoditi. Nomor registrasi BAPPEBTI : <?= $profile['no_bappebti'] ?>.</p>
-                                            <p style="margin-top: 10px;">
-                                                <img src="https://mobileibftraders.techcrm.net/assets/img/sosmed/ig.png" alt="Instagram">
-                                                <img src="https://mobileibftraders.techcrm.net/assets/img/sosmed/fb.png" alt="Facebook">
-                                                <img src="https://mobileibftraders.techcrm.net/assets/img/sosmed/linkedin.png" alt="Linkedin">
-                                            </p>
-                                            <hr>
-                                            <h4 style="margin-bottom: 2px;">PEMBERITAHUAN RESIKO:</h4>
-                                            <p style="text-align: justify;">Semua produk finansial yang ditransaksikan dalam sistem margin mempunyai resiko tinggi terhadap dana Anda. Produk finansial ini tidak diperuntukkan bagi semua investor dan Anda bisa saja kehilangan dana lebih dari deposit awal Anda. Pastikan bahwa Anda benar-benar mengerti resikonya, dan mintalah nasihat independen jika diperlukan. Lihat Pemberitahuan Resiko lengkap kami di Ketentuan Bisnis.</p>
                                         </div><!--<![endif]-->
                                     </div>
                                 </div>
