@@ -95,17 +95,13 @@
     switch (strtolower($data["auth-act"])) {
         case 'accept':
             $UPDATE_DATA["DPWD_STS"]  = -1;
-            // $UPDATE_DATA["DPWD_VOUCHER"] = $data["voucher"];
-            $mt_act                   = true;
             break;
         
         case 'reject':
             $UPDATE_DATA["DPWD_STS"]    = 1;
-            $mt_act                     = false;
             break;
         
         default:
-            $mt_act                     = false;
             JsonResponse([
                 'code'      => 200,
                 'success'   => false,
@@ -135,16 +131,16 @@
         } 
 
         /** MetaTrader action if accept */
-        if($mt_act){
-            $apiManager = MetatraderFactory::apiManager();
+        if($UPDATE_DATA['DPWD_STS'] == -1){
             /** Proses isi balance MetaTrader */
+            $apiManager = MetatraderFactory::apiManager();
             $deposit = $apiManager->deposit($dpdt = [
                 'login' => $LOGIN_ACC['ACC_LOGIN'],
                 'amount' => $RSLT_CHECK["JMLH"],
                 'comment' => "deposit_".$RSLT_CHECK["ID_DPWD"]
             ]);
 
-            if(is_object($deposit) === FALSE || !property_exists($deposit, "ticket")) {
+            if(!is_object($deposit) || !property_exists($deposit, "ticket")) {
                 $db->rollback();
                 JsonResponse([
                     'success' => false,
