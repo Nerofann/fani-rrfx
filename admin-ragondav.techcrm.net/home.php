@@ -10,6 +10,7 @@ $queryParam = Helper::getSafeInput($_GET);
 $page = $queryParam['a'] ?? "";
 if($page == "logout") {
 	Admin::logout();
+    die("<script>location.href = '/';</script>");
 }
 
 /** Authentication */
