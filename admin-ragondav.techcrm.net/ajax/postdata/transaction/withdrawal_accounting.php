@@ -142,7 +142,7 @@
                 $db->rollback();
                 JsonResponse([
                     'success' => false,
-                    'message' => "Invalid Status Deposit",
+                    'message' => "Invalid Status Withdrawal",
                     'data' => []
                 ]);
             }
