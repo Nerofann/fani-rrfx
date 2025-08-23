@@ -22,6 +22,21 @@ class Dpwd {
         ]
     ];
 
+    public static array $type = [
+        "1" => [
+            'html' => '<span class="badge bg-info">Deposit</span>',
+            'text' => "Deposit"
+        ],
+        "2" => [
+            'html' => '<span class="badge bg-info">Withdrawal</span>',
+            'text' => "Withdrawal"
+        ],
+        "3" => [
+            'html' => '<span class="badge bg-info">Deposit New Account</span>',
+            'text' => "Deposit New Account"
+        ],
+    ];
+
     public static function findByCode(string $code): array|bool {
         try {
             $db = Database::connect();
