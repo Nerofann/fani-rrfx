@@ -61,6 +61,15 @@ if(!$bankName) {
     ]);
 }
 
+/** validasi bank name */
+if(!preg_match('/^[a-zA-Z\s]+$/', $data['name'])) {
+    JsonResponse([
+        'success' => false,
+        'message' => "Nama Pemilik Rekening tidak valid",
+        'data' => []
+    ]);
+}
+
 /** insert */
 $insert = Database::insert("tb_member_bank", [
     'MBANK_MBR' => $user['MBR_ID'],
