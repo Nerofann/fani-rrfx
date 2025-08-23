@@ -32,8 +32,10 @@
                                                 <p class="mb-0"><?= $bank['MBANK_NAME'] ?></p>
                                                 <p class="mb-0"><?= $bank['MBANK_ACCOUNT'] ?></p>
                                             </td>
-                                            <td class="d-flex justify-content-center gap-2">
-                                                <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#modal-edit-bank" data-id="<?= md5(md5($bank['ID_MBANK'])) ?>" data-holder="<?= $bank['MBANK_HOLDER'] ?>" data-name="<?= $bank['MBANK_NAME'] ?>" data-account="<?= $bank['MBANK_ACCOUNT']; ?>" class="btn btn-sm btn-success text-white"><i class="fas fa-edit"></i></a>
+                                            <td>
+                                                <div class="d-flex justify-content-center gap-2">
+                                                    <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#modal-edit-bank" data-id="<?= md5(md5($bank['ID_MBANK'])) ?>" data-holder="<?= $bank['MBANK_HOLDER'] ?>" data-name="<?= $bank['MBANK_NAME'] ?>" data-account="<?= $bank['MBANK_ACCOUNT']; ?>" class="btn btn-sm btn-success text-white"><i class="fas fa-edit"></i></a>
+                                                </div>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
