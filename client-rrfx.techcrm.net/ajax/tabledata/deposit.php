@@ -2,6 +2,7 @@
 $dt->query("
     SELECT 
         td.DPWD_DATETIME,
+        td.DPWD_TYPE,
         tr.ACC_LOGIN,
         td.DPWD_AMOUNT_SOURCE,
         td.DPWD_AMOUNT,
@@ -13,12 +14,13 @@ $dt->query("
         td.DPWD_NOTE1
     FROM tb_dpwd td
     JOIN tb_racc tr ON (tr.ID_ACC = td.DPWD_RACC) 
-    WHERE td.DPWD_TYPE = 1
+    WHERE td.DPWD_TYPE IN (1, 3)
     AND td.DPWD_MBR = ".$user['MBR_ID']."
 ");
 
 $dt->hide("DPWD_CURR_FROM");
 $dt->hide("DPWD_CURR_TO");
+$dt->edit("DPWD_TYPE", fn($col): string => App\Models\Dpwd::$type[ $col['DPWD_TYPE'] ]['text']);
 $dt->edit("DPWD_AMOUNT_SOURCE", fn($col): string => App\Models\Helper::formatCurrency($col['DPWD_AMOUNT_SOURCE']) . " " . $col['DPWD_CURR_FROM']);
 $dt->edit("DPWD_AMOUNT", fn($col): string => App\Models\Helper::formatCurrency($col['DPWD_AMOUNT']) . " " . $col['DPWD_CURR_TO']);
 $dt->edit("DPWD_PIC", fn($col): string => '<a target="_blank" href="'.App\Models\FileUpload::awsFile($col['DPWD_PIC']).'"><i>Lihat</i></a>');

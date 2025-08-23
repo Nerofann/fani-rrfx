@@ -18,6 +18,7 @@
                                 <thead>
                                     <tr>
                                         <th rowspan="2" class="text-center">Date</th>
+                                        <th rowspan="2" class="text-center">Type</th>
                                         <th rowspan="2" class="text-center">Account</th>
                                         <th colspan="2" class="text-center">Amount</th>
                                         <th rowspan="2" class="text-center">Rate</th>
