@@ -9,7 +9,6 @@ $listGrup = $adminPermissionCore->availableGroup();
 $adminRoles = Admin::adminRoles();
 if(!$adminPermissionCore->hasPermission($authorizedPermission, "/admin/create")) {
     JsonResponse([
-        'code'      => 200,
         'success'   => false,
         'message'   => "Authorization Failed",
         'data'      => []
@@ -21,7 +20,6 @@ foreach(['add-fullname', 'add-username', 'add-password', 'add-level', 'add-count
     if(empty($data[ $req ])) {
         $req = str_replace("add-", "", $req);
         JsonResponse([
-            'code'      => 402,
             'success'   => false,
             'message'   => "{$req} diperlukan",
             'data'      => []
@@ -40,7 +38,6 @@ $country        = $data['add-country'];
 $sql_check_username = $db->query("SELECT ADM_USER FROM tb_admin WHERE LOWER(ADM_USER) = LOWER('".$add_username."') LIMIT 1");
 if(!$sql_check_username || mysqli_num_rows($sql_check_username) != 0) {
     JsonResponse([
-        'code'      => 200,
         'success'   => false,
         'message'   => "Invalid Username",
         'data'      => []
@@ -59,7 +56,6 @@ if(!preg_match('/^[a-zA-Z0-9]+$/', $add_username)) {
 $check_password = Helper::validation_password($add_password);
 if($check_password !== TRUE) {
     JsonResponse([
-        'code'      => 200,
         'success'   => false,
         'message'   => $check_password,
         'data'      => []
@@ -69,7 +65,6 @@ if($check_password !== TRUE) {
 /** validasi role */
 if(!in_array($add_level, array_column($adminRoles, "ID_ADMROLE"))) {
     JsonResponse([
-        'code'      => 200,
         'success'   => false,
         'message'   => "Invalid level",
         'data'      => []
@@ -81,7 +76,6 @@ $countries = Country::countries();
 $search = array_search($country, array_column($countries, "COUNTRY_NAME"));
 if($search === FALSE) {
     JsonResponse([
-        'code'      => 200,
         'success'   => false,
         'message'   => "Invalid Country",
         'data'      => []
@@ -102,7 +96,6 @@ $insert = Database::insert("tb_admin", [
 
 if(!$insert) {
     JsonResponse([
-        'code'      => 200,
         'success'   => false,
         'message'   => "Failed create admin",
         'data'      => []
@@ -117,8 +110,9 @@ Logger::admin_log([
 ]);
 
 JsonResponse([
-    'code'      => 200,
     'success'   => true,
     'message'   => "create admin successfully",
-    'data'      => []
+    'data'      => [
+        'redirect' => "/admin/view"
+    ]
 ]);
