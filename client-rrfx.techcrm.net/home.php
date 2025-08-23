@@ -49,7 +49,6 @@ $userid = md5(md5($user['MBR_ID'])) ?? "";
         <link rel="stylesheet" href="/assets/vendor/css/dropzone.min.css">
         <link rel="stylesheet" href="/assets/vendor/css/OverlayScrollbars.min.css">
         <link rel="stylesheet" href="/assets/vendor/css/jquery.dataTables.min.css">
-        <link rel="stylesheet" href="/assets/vendor/css/select2.min.css">
         <link rel="stylesheet" href="/assets/vendor/css/sweetalert2.min.css">
         <link rel="stylesheet" href="/assets/vendor/css/bootstrap.min.css">
         <link rel="stylesheet" href="/assets/css/style.css">
@@ -63,6 +62,10 @@ $userid = md5(md5($user['MBR_ID'])) ?? "";
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js" integrity="sha512-8QFTrG0oeOiyWo/VM9Y8kgxdlCryqhIxVeRpWSezdRRAvarxVtwLnGroJgnVW9/XBRduxO/z1GblzPrMQoeuew==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="https://sdk.amazonaws.com/js/aws-sdk-2.179.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <!-- select2 -->
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     </head>
 
     <body class="body-padding body-p-top light-theme">
@@ -73,15 +76,19 @@ $userid = md5(md5($user['MBR_ID'])) ?? "";
         <script src="/assets/vendor/js/jquery-ui.min.js"></script>
         <script src="/assets/vendor/js/jquery.overlayScrollbars.min.js"></script>
         <script src="/assets/vendor/js/jquery.dataTables.min.js"></script>
-        <script src="/assets/vendor/js/select2.min.js"></script>
         <script src="/assets/vendor/js/jquery.uploader.min.js"></script>
         <script src="/assets/vendor/js/dropzone.min.js"></script>
         <script src="/assets/vendor/js/sweetalert2.all.min.js"></script>
         <script src="/assets/vendor/js/bootstrap.bundle.min.js"></script>
         <script src="/assets/js/main.js?v=<?= time(); ?>"></script>
         <script src="/assets/js/custom.js"></script>
-        <script src="/assets/js/select2-init.js?dt=<?php echo rand(1,100) . time(); ?>"></script>
         <script>
+            $(document).ready(function() {
+                $('.select2').select2({
+                    height: "resolve"
+                });
+            })
+
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', function() {
                 navigator.serviceWorker.register('/service-worker.js')

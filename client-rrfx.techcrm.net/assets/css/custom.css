@@ -65,3 +65,12 @@ input[type=number] {
 .edit-icon:hover {
     background-color: #052e60;
 }
+
+.select2-container .select2-selection--single {
+    /* padding: 0.130rem 0.75rem !important; */
+    height: 35px !important;
+}
+
+.select2-selection__rendered {
+    padding-top: 3px !important;
+}
