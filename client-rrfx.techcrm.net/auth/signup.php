@@ -93,13 +93,31 @@ $referral = Helper::form_input($_GET['referral'] ?? "");
 	$(document).ready(function() {
 		$('#resendCode').on('click', function () {
 			if (!resendText.hasClass('text-muted')) {
-				$.post("/ajax/auth/sendOtp", $('#form-signup').serialize(), function (resp) {
-					Swal.fire(resp.alert).then(() => {
-						if (resp.success) {
-							startCount(resp.data.delay);
-						}
-					});
-				}, 'json')
+				Swal.fire({
+					title: `Kirim Kode OTP`,
+					text: "Mohon untuk memastikan bahwa nomer ini benar-benar milik anda",
+					icon: "question",
+					showCancelButton: true,
+					reverseButtons: true,
+				}).then((result) => {
+					if(result.isConfirmed) {
+						Swal.fire({
+							text: "Mohon tunggu...",
+							allowOutsideClick: false,
+							didOpen: function() {
+								Swal.showLoading();
+							}
+						})
+						
+						$.post("/ajax/auth/sendOtp", $('#form-signup').serialize(), function (resp) {
+							Swal.fire(resp.alert).then(() => {
+								if (resp.success) {
+									startCount(resp.data.delay);
+								}
+							});
+						}, 'json')
+					}
+				})
 			}
 		})
 		
