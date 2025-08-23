@@ -18,7 +18,6 @@
                                         <th rowspan="2" class="text-center">Account</th>
                                         <th colspan="2" class="text-center">Amount</th>
                                         <th rowspan="2" class="text-center">Rate</th>
-                                        <th rowspan="2" class="text-center">Img</th>
                                         <th rowspan="2" class="text-center">Status</th>
                                         <th rowspan="2" class="text-center">Note</th>
                                     </tr>
@@ -44,7 +43,7 @@
                     url: "/ajax/datatable/withdrawal",
                 },
                 columnDefs: [
-                    { targets: 6, className: "text-center" }
+                    { targets: 5, className: "text-center" }
                 ]
             })
         })
