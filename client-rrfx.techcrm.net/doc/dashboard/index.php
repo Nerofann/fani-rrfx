@@ -79,11 +79,11 @@
         <div class="panel h-100 chart-panel-1">
             <div class="panel-header">
                 <h5>Net In Out</h5>
-                <div class="btn-box">
+                <!-- <div class="btn-box">
                     <button class="btn btn-sm btn-outline-primary">Week</button>
                     <button class="btn btn-sm btn-outline-primary">Month</button>
                     <button class="btn btn-sm btn-outline-primary">Year</button>
-                </div>
+                </div> -->
             </div>
             <div class="panel-body">
                 <div id="saleAnalytics" class="chart-dark"></div>

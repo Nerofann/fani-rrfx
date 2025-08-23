@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\Account;
 use App\Models\Helper;
+use App\Models\User;
 
 $sqlGet = $db->query("
     SELECT 
@@ -31,8 +33,7 @@ if($sqlGet) {
 }
 
 /** Summ Account */
-$sqlGetAccount = $db->query("SELECT ID_ACC FROM tb_racc WHERE ACC_DERE = 1 AND ACC_LOGIN != 0 AND ACC_WPCHECK = 6 AND MD5(MD5(ACC_MBR)) = '{$userid}'");
-$totalAccount = $sqlGetAccount->num_rows ?? 0;
+$totalAccount = count(Account::myAccount($user['MBR_ID']));
 
 JsonResponse([
     'success' => true,

@@ -28,26 +28,24 @@ for($i = 0; $i < $dateDiff->d; $i++) {
 
 $sql_get_dpwd = mysqli_query($db, "
     SELECT 
-        IFNULL(SUM(tb_dpwd.DPWD_AMOUNT), 0) as AMOUNT,
+        COALESCE(tb_dpwd.DPWD_AMOUNT_SOURCE, 0) as AMOUNT,
         tb_dpwd.DPWD_TYPE,
         tr.ACC_LOGIN,
-        trc.RTYPE_CURR,
+        tb_dpwd.DPWD_CURR_FROM,
         DATE(tb_dpwd.DPWD_DATETIME) as `DATE`
     FROM tb_dpwd
     JOIN tb_racc tr ON (tr.ACC_MBR = tb_dpwd.DPWD_MBR)
     JOIN tb_racctype trc ON (trc.ID_RTYPE = tr.ACC_TYPE)
     WHERE MD5(MD5(tb_dpwd.DPWD_MBR)) = '{$userid}'
     AND DATE(tb_dpwd.DPWD_DATETIME) BETWEEN '".date("Y-m-d", strtotime($dateFrom->format("Y-m-d")))."' AND '".date("Y-m-d", strtotime($dateTo->format("Y-m-d")))."'
+    AND ACC_DERE = 1
+    AND ACC_STS = -1
     AND (
-        (tb_dpwd.DPWD_TYPE = 1 AND tb_dpwd.DPWD_STS = -1)
+        (tb_dpwd.DPWD_TYPE IN (1, 3) AND tb_dpwd.DPWD_STS = -1)
         OR 
         (tb_dpwd.DPWD_TYPE = 2 AND tb_dpwd.DPWD_STS != 1)
     )
-    GROUP BY 
-        tb_dpwd.DPWD_TYPE, 
-        tr.ACC_LOGIN, 
-        trc.RTYPE_CURR,
-        DATE(tb_dpwd.DPWD_DATETIME)
+    GROUP BY ID_DPWD, DATE(tb_dpwd.DPWD_DATETIME)
 ");
 
 if($sql_get_dpwd && mysqli_num_rows($sql_get_dpwd) != 0) {
@@ -57,19 +55,19 @@ if($sql_get_dpwd && mysqli_num_rows($sql_get_dpwd) != 0) {
 
         if($getIndex !== FALSE) {
             switch(true) {
-                case ($row['DPWD_TYPE'] == 1 && $row['RTYPE_CURR'] == "IDR"): 
+                case (in_array($row['DPWD_TYPE'], [1, 3]) && $row['DPWD_CURR_FROM'] == "IDR"): 
                     $result['DP_IDR'][ $getIndex ] = $amount;
                     break;
 
-                case ($row['DPWD_TYPE'] == 1 && $row['RTYPE_CURR'] == "USD"): 
+                case (in_array($row['DPWD_TYPE'], [1, 3]) && $row['DPWD_CURR_FROM'] == "USD"): 
                     $result['DP_USD'][ $getIndex ] = $amount;
                     break;
 
-                case ($row['DPWD_TYPE'] == 2 && $row['RTYPE_CURR'] == "IDR"): 
+                case ($row['DPWD_TYPE'] == 2 && $row['DPWD_CURR_FROM'] == "IDR"): 
                     $result['WD_IDR'][ $getIndex ] = $amount;
                     break;
 
-                case ($row['DPWD_TYPE'] == 2 && $row['RTYPE_CURR'] == "USD"): 
+                case ($row['DPWD_TYPE'] == 2 && $row['DPWD_CURR_FROM'] == "USD"): 
                     $result['WD_USD'][ $getIndex ] = $amount;
                     break;
             }
