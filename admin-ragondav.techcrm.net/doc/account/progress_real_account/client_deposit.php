@@ -103,15 +103,15 @@
                             <?php else : ?>
                                 <tr>
                                     <td width="30%" class="fw-bold">Nilai IDR</td>
-                                    <td>IDR <?= Helper::formatCurrency($depositData['DPWD_AMOUNT']) ?></td>
+                                    <td>IDR <?= Helper::formatCurrency($depositData['DPWD_AMOUNT_SOURCE']) ?></td>
                                 </tr>
                                 <tr>
                                     <td width="30%" class="fw-bold">Nilai USD</td>
-                                    <td>USD <?= Helper::formatCurrency($depositData['DPWD_AMOUNT'] / $progressAccount['RTYPE_RATE']) ?></td>
+                                    <td>USD <?= Helper::formatCurrency($depositData['DPWD_AMOUNT']) ?></td>
                                 </tr>
                                 <tr>
                                     <td width="30%" class="fw-bold">Rate</td>
-                                    <td><?= Helper::formatCurrency($progressAccount['RTYPE_RATE']) ?></td>
+                                    <td><?= Helper::formatCurrency($depositData['DPWD_RATE']) ?></td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>
