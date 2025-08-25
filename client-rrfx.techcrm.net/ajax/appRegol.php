@@ -2724,7 +2724,7 @@ class AppPost {
         $amountSource = Helper::stringTonumber($data['dpnewacc_dpstval']);
         $amountFinal = 0;
         $currencyFrom = $progressAccount['RTYPE_CURR'];
-        $currencyTo = "IDR";
+        $currencyTo = "USD";
 
         /** Check Bank nasabah */
         $userBank = User::myBank($user['MBR_ID'], $data['dpnewacc_bankusr']);
