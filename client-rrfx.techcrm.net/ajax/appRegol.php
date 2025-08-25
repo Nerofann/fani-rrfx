@@ -2809,7 +2809,7 @@ class AppPost {
         }
 
         /** Set Amount Final */
-        $amountFinal = ($amountSource * $convert['rate']);
+        $amountFinal = ($amountSource / $convert['rate']);
         
         /** Upload File */
         $uploadFile = FileUpload::upload_myfile($_FILES['dpnewacc_tfprove'], "deposit_new_account");
