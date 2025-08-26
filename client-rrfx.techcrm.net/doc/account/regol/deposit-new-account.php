@@ -220,7 +220,7 @@ $depositHistory = Account::getDepositNewAccount_History($realAccount['ID_ACC']);
                                     <td class="top-align text-start"><?= $history['DPWD_BANKSRC'] ?></td>
                                     <td class="top-align text-start"><?= $history['DPWD_BANK'] ?></td>
                                     <td class="top-align text-start"><?= $history['DPWD_CURR_FROM'] ?> <?= Helper::formatCurrency($history['DPWD_AMOUNT_SOURCE']) ?></td>
-                                    <td width="20%" class="top-align text-start"><a target="_blank" href="<?= $aws_folder . $history['DPWD_PIC'] ?>"><i>Lihat disini</i></a></td>
+                                    <td width="20%" class="top-align text-start"><a target="_blank" href="<?= FileUpload::awsFile($history['DPWD_PIC']) ?>"><i>Lihat disini</i></a></td>
                                     <td width="10%" class="top-align text-start">
                                         <?php if($history['DPWD_STS'] == 0) : ?>
                                             <span class="badge bg-warning">Pending</span>
