@@ -47,7 +47,7 @@ if(!$sql_check_username || mysqli_num_rows($sql_check_username) != 0) {
 if(!preg_match('/^[a-zA-Z0-9]+$/', $add_username)) {
     JsonResponse([
         'success'   => false,
-        'message'   => "Username tidak valid, hanya boleh string",
+        'message'   => "Username tidak valid, hanya boleh string(tanpa spasi)",
         'data'      => []
     ]);
 }

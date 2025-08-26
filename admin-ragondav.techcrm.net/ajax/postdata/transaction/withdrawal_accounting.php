@@ -163,7 +163,7 @@
     
     Logger::admin_log([
         'admid' => $user['ADM_ID'],
-        'module' => "transaction/withdrawal/authorization",
+        'module' => "transaction/withdrawal/accounting",
         'message' => strtoupper($data["acc-act"])." Withdrawal",
         'data'  => $data
     ]);

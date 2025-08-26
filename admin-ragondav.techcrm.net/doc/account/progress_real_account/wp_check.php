@@ -80,7 +80,8 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <div class="row">
-                                <div class="col-md-3" id="forexdiv1">Forex</div>
+                                <!-- <div class="col-md-3" id="forexdiv1">Forex</div> -->
+                                <div class="col-md-3" id="forexdiv1">Komisi</div>
                                 <div class="col-md-9" id="forexinpt1">
                                     <input type="text" class="form-control text-center" name="forex" value="<?php echo number_format($progressAccount['RTYPE_KOMISI'], 0) ?>" readonly required>
                                     <!-- <select class="form-control text-center" name="forex" required>

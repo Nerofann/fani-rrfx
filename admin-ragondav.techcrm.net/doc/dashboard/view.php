@@ -19,14 +19,21 @@
             SELECT
                 SUM(1)
             FROM tb_racc
+            JOIN tb_member
+            ON(tb_member.MBR_ID = tb_racc.ACC_MBR)
             WHERE tb_racc.ACC_DERE = 1
-            AND tb_racc.ACC_STS != -1
+            AND tb_racc.ACC_STS = 1    
             LIMIT 1
         ), 0) AS TTL_UNRACC,
         IFNULL((
             SELECT
                 SUM(1)
             FROM tb_dpwd
+            JOIN tb_member
+            JOIN tb_racc
+            ON(tb_member.MBR_ID = tb_dpwd.DPWD_MBR
+            AND tb_member.MBR_ID = tb_racc.ACC_MBR
+            AND tb_racc.ID_ACC = tb_dpwd.DPWD_RACC)
             WHERE tb_dpwd.DPWD_TYPE = 1
             AND tb_dpwd.DPWD_STS = 0
             LIMIT 1
@@ -35,6 +42,11 @@
             SELECT
                 SUM(1)
             FROM tb_dpwd
+            JOIN tb_member
+            JOIN tb_racc
+            ON(tb_member.MBR_ID = tb_dpwd.DPWD_MBR
+            AND tb_member.MBR_ID = tb_racc.ACC_MBR
+            AND tb_racc.ID_ACC = tb_dpwd.DPWD_RACC)
             WHERE tb_dpwd.DPWD_TYPE = 2
             AND tb_dpwd.DPWD_STS = 0
             LIMIT 1

@@ -50,7 +50,7 @@
                     <p class="text-muted card-sub-title">A/N <?php echo $progressAccount["ACC_FULLNAME"].' ('.$progressAccount["MBR_EMAIL"].')' ?></p>
                 </div>
                 <div class="d-lg-flex">
-                    <h2 class="main-content-label mb-1">#<?php echo $depositData["DPWD_VOUCHER"] ?></h2>
+                    <!-- <h2 class="main-content-label mb-1">#<?php echo $depositData["DPWD_VOUCHER"] ?></h2> -->
                     <div class="ms-auto">
                         <p class="mb-1"><span class="font-weight-bold">Tanggal Upload Bukti Deposit</span> <?= empty($depositData['DPWD_DATETIME'])? "-" : date("d-m-Y H:i:s", strtotime($depositData["DPWD_DATETIME"])); ?></p>
                         <p class="mb-0"><span class="font-weight-bold">Tanggal Penetapan Ticket &nbsp;</span> <?= empty($depositData['DPWD_DATETIME'])? "-" : date("d-m-Y H:i:s", strtotime($depositData["DPWD_DATETIME"])) ?></p>

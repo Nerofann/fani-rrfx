@@ -24,14 +24,26 @@ if(!$adminPermissionCore->hasPermission($authorizedPermission, "/account/wp_chec
 
 $data = Helper::getSafeInput($_POST);
 foreach(["sbmt_id", "sbmt_act", "sbmt_note", "forex"] as $req) {
-    if(empty($data[ $req ])) {
-        $req = str_replace("add_", "", $req);
-        JsonResponse([
-            'code'      => 200,
-            'success'   => false,
-            'message'   => "{$req} diperlukan",
-            'data'      => []
-        ]);
+    if(in_array($req, ["forex"])){
+        if(!isset($data[ $req ])) {
+            $req = str_replace("add_", "", $req);
+            JsonResponse([
+                'code'      => 200,
+                'success'   => false,
+                'message'   => "{$req} diperlukan",
+                'data'      => []
+            ]);
+        }
+    }else{
+        if(empty($data[ $req ])) {
+            $req = str_replace("add_", "", $req);
+            JsonResponse([
+                'code'      => 200,
+                'success'   => false,
+                'message'   => "{$req} diperlukan",
+                'data'      => []
+            ]);
+        }
     }
 }
 

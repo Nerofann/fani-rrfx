@@ -7,7 +7,7 @@ use App\Models\Admin;
         <h2 class="main-content-title tx-24 mg-b-5">List Admin</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
-            <li class="breadcrumb-item"><a href="javascript:void(0);">Admin</a></li>
+            <li class="breadcrumb-item"><a href="./admin/view">Admin</a></li>
             <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">List</a></li>
         </ol>
     </div>
