@@ -78,7 +78,7 @@ $depositHistory = Account::getDepositNewAccount_History($realAccount['ID_ACC']);
                                         <div class="row g-3">
                                             <div class="col-12 mb-2">
                                                 <label for="dpnewacc_bankusr" class="form-label">Pilih Bank</label>
-                                                <select name="dpnewacc_bankusr" id="dpnewacc_bankusr" class="form-control form-control-sm text-center" required>
+                                                <select name="dpnewacc_bankusr" id="dpnewacc_bankusr" class="form-control form-select text-center" required>
                                                     <option disabled selected value>Pilih bank yang anda miliki</option>
                                                     <?php foreach($myBanks as $bank) : ?>
                                                         <option value="<?= md5(md5($bank['ID_MBANK'])) ?>" data-pemilik="<?= $bank['MBANK_HOLDER'] ?>" data-rekening="<?= $bank['MBANK_ACCOUNT'] ?>">
@@ -108,7 +108,7 @@ $depositHistory = Account::getDepositNewAccount_History($realAccount['ID_ACC']);
                                         <div class="row g-3">
                                             <div class="col-12 mb-2">
                                                 <label for="dpnewacc_bankcmpy" class="form-label">Pilihan Bank Perusahaan Yang Akan Dituju</label>
-                                                <select name="dpnewacc_bankcmpy" id="dpnewacc_bankcmpy" class="form-control form-control-sm text-center" required>
+                                                <select name="dpnewacc_bankcmpy" id="dpnewacc_bankcmpy" class="form-control form-select text-center" required>
                                                     <?php $sqlGetBankAdm = $db->query("SELECT * FROM tb_bankadm WHERE BKADM_CURR = '".($realAccount['RTYPE_CURR'] ?? "")."'"); ?>
                                                     <?php foreach($sqlGetBankAdm->fetch_all(MYSQLI_ASSOC) as $bank_admin) : ?>
                                                         <option data-curr="<?= $bank_admin['BKADM_CURR'] ?>" value="<?= md5(md5($bank_admin['ID_BKADM'])); ?>">
