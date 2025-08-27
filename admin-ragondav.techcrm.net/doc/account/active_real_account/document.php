@@ -157,7 +157,7 @@
                                             ?>
                                         </td>
 
-                                        <td class="text-start">Document Type</td>
+                                        <!-- <td class="text-start">Document Type</td>
                                         <td width="3%" class="text-start">:</td>
                                         <td class="text-start">
                                             <?php
@@ -166,6 +166,17 @@
                                                 } else {
                                                     echo $progressAccount['ACC_F_APP_FILE_TYPE'];
                                                 };
+                                            ?>
+                                        </td> -->
+                                        <td class="text-start"></td>
+                                        <td width="3%" class="text-start"></td>
+                                        <td class="text-start">
+                                            <?php
+                                                // if($progressAccount['ACC_F_APP_FILE_TYPE'] == '' ||$progressAccount['ACC_F_APP_FILE_TYPE'] == '-') {
+                                                //     echo '-';
+                                                // } else {
+                                                //     echo $progressAccount['ACC_F_APP_FILE_TYPE'];
+                                                // };
                                             ?>
                                         </td>
                                     </tr>

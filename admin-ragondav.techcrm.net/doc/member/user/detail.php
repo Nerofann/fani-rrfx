@@ -228,7 +228,7 @@
                         <?php if($RSLT_USER["ACC_F_APP_FILE_IMG"] == ''|| $RSLT_USER["ACC_F_APP_FILE_IMG"] == '-' ){ ?>
                             <img src="/assets/img/unknown-file.png" width="100%">
                         <?php } else { ?>
-                            <img src="<?php echo FileUpload::awsUrl($RSLT_USER["ACC_F_APP_FILE_IMG"]); ?>" width="100%">
+                            <img src="<?php echo FileUpload::awsFile($RSLT_USER["ACC_F_APP_FILE_IMG"]); ?>" width="100%">
                             <hr>
                         <?php }; ?>
                         <br>
@@ -238,7 +238,7 @@
                         <?php if($RSLT_USER["ACC_F_APP_FILE_FOTO"] == ''|| $RSLT_USER["ACC_F_APP_FILE_FOTO"] == '-' ){ ?>
                             <img src="/assets/img/unknown-file.png" width="100%">
                         <?php } else { ?>
-                            <img src="<?php echo FileUpload::awsUrl($RSLT_USER["ACC_F_APP_FILE_FOTO"]); ?>" width="100%">
+                            <img src="<?php echo FileUpload::awsFile($RSLT_USER["ACC_F_APP_FILE_FOTO"]); ?>" width="100%">
                             <hr>
                         <?php }; ?>
                         <br>
@@ -248,7 +248,7 @@
                         <?php if($RSLT_USER["ACC_F_APP_FILE_ID"] == ''|| $RSLT_USER["ACC_F_APP_FILE_ID"] == '-' ){ ?>
                             <img src="/assets/img/unknown-file.png" width="100%">
                         <?php } else { ?>
-                            <img src="<?php echo FileUpload::awsUrl($RSLT_USER["ACC_F_APP_FILE_ID"]); ?>" width="100%">
+                            <img src="<?php echo FileUpload::awsFile($RSLT_USER["ACC_F_APP_FILE_ID"]); ?>" width="100%">
                             <hr>
                         <?php }; ?>
                         <br>

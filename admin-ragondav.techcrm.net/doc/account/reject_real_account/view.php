@@ -39,7 +39,7 @@
                                 <th style="vertical-align: middle" class="text-center">Nama</th>
                                 <th style="vertical-align: middle" class="text-center">Email</th>
                                 <th style="vertical-align: middle" class="text-center">Status</th>
-                                <th style="vertical-align: middle" class="text-center">Note</th>
+                                <!-- <th style="vertical-align: middle" class="text-center">Note</th> -->
                                 <th style="vertical-align: middle" class="text-center">Action</th>
                             </tr>
                         </thead>

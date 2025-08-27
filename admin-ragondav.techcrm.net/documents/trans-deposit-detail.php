@@ -70,7 +70,7 @@
                     <tr>
                         <td width="30%" class="v-align-top">Terbilang</td>
                         <td width="3%" class="v-align-top">:</td>
-                        <td class="v-align-top" style="border-bottom: 1px solid black !important;"><?= Helper::penyebut(intval((($realAccount["RTYPE_ISFLOATING"]) ? $amountUSD : $amountIDR))) ?></td>
+                        <td class="v-align-top" style="border-bottom: 1px solid black !important;"><?= Helper::penyebut(intval((($realAccount["RTYPE_ISFLOATING"]) ? $amountUSD : $amountIDR))) ?> <?= (($realAccount["RTYPE_ISFLOATING"]) ? 'dolar' : 'rupiah') ?></td>
                     </tr>
                 </tbody>
             </table>
