@@ -18,17 +18,27 @@
                                     <th>Name</th>
                                     <th>Holder</th>
                                     <th>Account</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php $sql_get_bank_admin = mysqli_query($db, "SELECT * FROM tb_bankadm"); ?>
                                 <?php if($sql_get_bank_admin) : ?>
-                                    <?php while($bankadm = mysqli_fetch_assoc($sql_get_bank_admin)) : ?>
+                                    <?php 
+                                        while($bankadm = mysqli_fetch_assoc($sql_get_bank_admin)) : 
+
+                                    ?>
                                         <tr>
                                             <td><?php echo $bankadm['BKADM_CURR'] ?></td>
                                             <td><?php echo $bankadm['BKADM_NAME'] ?></td>
                                             <td><?php echo $bankadm['BKADM_HOLDER'] ?></td>
                                             <td><?php echo $bankadm['BKADM_ACCOUNT'] ?></td>
+                                            <td class="text-center">
+                                                <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#modalEdtBankadm" class="btn btn-sm btn-success btn-edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="javascript:void(0)" data-value="<?= md5(md5($office['ID_OFC'])); ?>" class="btn btn-sm btn-danger dltBtn"><i class="fas fa-trash"></i></a>
+                                            </td>
                                         </tr>
                                     <?php endwhile; ?>
                                 <?php endif; ?>
@@ -92,6 +102,67 @@
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success" name="add-bankadm">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" id="modalEdtBankadm" aria-labelledby="label-modalEdtBankadm">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Bank Admin</h5>
+                    <button class="btn-close" aria-label="Close" data-bs-dismiss="modal">&times;</button>
+                </div>
+
+                <form action="" method="post" id="form-bank-edt">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12 mb-2">
+                                <div class="form-group">
+                                    <label for="bkadm-name" class="form-label">Name</label>
+                                    <select name="bkadm-name" id="bkadm-name-edt" class="form-control" required>
+                                        <option value="">Select</option>
+                                        <?php $sql_get_bank_list = mysqli_query($db, "SELECT BANKLST_NAME FROM tb_banklist"); ?>
+                                        <?php if($sql_get_bank_list) : ?>
+                                            <?php while($banklst = mysqli_fetch_assoc($sql_get_bank_list)) : ?>
+                                                <option value="<?= $banklst['BANKLST_NAME'] ?>"><?= $banklst['BANKLST_NAME'] ?></option>
+                                            <?php endwhile; ?>
+                                        <?php endif; ?>
+                                    </select>
+                                </div>
+                            </div>
+        
+                            <div class="col-md-12 mb-2">
+                                <div class="form-group">
+                                    <label for="bkadm-curr" class="form-label">Currency</label>
+                                    <select name="bkadm-curr" id="bkadm-curr-edt" class="form-control" required>
+                                        <option value="IDR">IDR</option>
+                                        <option value="USD">USD</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 mb-2">
+                                <div class="form-group">
+                                    <label for="bkadm-holder" class="form-label">Holder</label>
+                                    <input type="text" class="form-control" name="bkadm-holder" id="bkadm-holder-edt" placeholder="Bank Holder" value="<?php echo $COMPANY_PRF["COMPANY_NAME"] ?>" required>
+                                </div>
+                            </div>
+        
+                            <div class="col-md-12 mb-2">
+                                <div class="form-group">
+                                    <label for="bkadm-account" class="form-label">Account</label>
+                                    <input type="number" class="form-control" name="bkadm-account" id="bkadm-account-edt" placeholder="Bank Account" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" name="idbk" id="idbk">
                         <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-success" name="add-bankadm">Submit</button>
                     </div>

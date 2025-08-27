@@ -25,6 +25,10 @@
 
     /** explode bank nasabah */
     $userBank = explode("/", $depositData['DPWD_BANKSRC']);
+
+    
+    $amountIDR = ($depositData["DPWD_CURR_FROM"] == "IDR") ? $depositData['DPWD_AMOUNT_SOURCE'] : $depositData['DPWD_AMOUNT'];
+    $amountUSD = ($depositData["DPWD_CURR_FROM"] == "USD") ? $depositData['DPWD_AMOUNT_SOURCE'] : $depositData['DPWD_AMOUNT'];
 ?>
 <div class="page-header">
 	<div>
@@ -102,7 +106,7 @@
                                 <div class="col-md-9">
                                     <div class="input-group">
                                         <span class="input-group-text"><?php echo $progressAccount['RTYPE_CURR'] ?></span>
-                                        <input type="text" class="form-control text-center" name="margin" value="<?php echo number_format($depositData['DPWD_AMOUNT_SOURCE'], 2) ?>" readonly required>
+                                        <input type="text" class="form-control text-center" name="margin" value="<?php echo number_format((($progressAccount["RTYPE_ISFLOATING"]) ? $amountUSD : $amountIDR), 2) ?>" readonly required>
                                     </div>
                                 </div>
                             </div>
