@@ -425,21 +425,21 @@
                                             <td width="8%" class="top-align fw-bold">Nilai NJOP<span class="text-danger">*</span></td>
                                             <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="number" autocomplete="off" placeholder="Nilai NJOP" name="app_nilai_njop" id="app_nilai_njop" value="<?= $realAccount['ACC_F_APP_KEKYAN_NJOP'] ?? 0 ?>" class="form-control" required>
+                                                <input type="number" autocomplete="off" placeholder="Nilai NJOP" name="app_nilai_njop" id="app_nilai_njop" value="<?= $realAccount['ACC_F_APP_KEKYAN_NJOP'] ?? "" ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td width="8%" class="top-align fw-bold">Deposit Bank<span class="text-danger">*</span></td>
                                             <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="number" autocomplete="off" placeholder="Deposit Bank" name="app_deposit_bank" id="app_deposit_bank" value="<?= $realAccount['ACC_F_APP_KEKYAN_DPST'] ?? 0 ?>" class="form-control" required>
+                                                <input type="number" autocomplete="off" placeholder="Deposit Bank" name="app_deposit_bank" id="app_deposit_bank" value="<?= $realAccount['ACC_F_APP_KEKYAN_DPST'] ?? "" ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td width="8%" class="top-align fw-bold">Lainnya<span class="text-danger">*</span></td>
                                             <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="number" autocomplete="off" placeholder="Lainnya" name="app_kekayaan_lainnya" value="<?= $realAccount['ACC_F_APP_KEKYAN_LAIN'] ?? 0 ?>" class="form-control" required>
+                                                <input type="number" autocomplete="off" placeholder="Lainnya" name="app_kekayaan_lainnya" id="app_kekayaan_lainnya" value="<?= $realAccount['ACC_F_APP_KEKYAN_LAIN'] ?? "" ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
@@ -527,12 +527,13 @@
     $(document).ready(function() {
         $('.dropify').dropify();
 
-        $.each(['#app_nilai_njop', '#app_deposit_bank'], (i, val) => {
+        $.each(['#app_nilai_njop', '#app_deposit_bank', '#app_kekayaan_lainnya'], (i, val) => {
             $(val).on('focus keyup', function() {
-                let njop = $('#app_nilai_njop').val();
-                let deposit = $('#app_deposit_bank').val();
+                let njop = $('#app_nilai_njop').val() || 0;
+                let deposit = $('#app_deposit_bank').val() || 0;
+                let kekayaan = $('#app_kekayaan_lainnya').val() || 0;
 
-                $('input[name="app_jumlah"]').val(new Intl.NumberFormat("id-ID", {style: "currency", currency: "IDR"}).format((parseFloat(njop) + parseFloat(deposit))))
+                $('input[name="app_jumlah"]').val(new Intl.NumberFormat("id-ID", {style: "currency", currency: "IDR"}).format((parseFloat(njop) + parseFloat(deposit) + parseFloat(kekayaan))))
             })
         })
 
