@@ -1,6 +1,6 @@
 <?php
 
-    $dt->query('
+    $old_query = '
         SELECT
             tb_racc.ACC_F_PROFILE_DATE,
             tb_racc.ACC_WPCHECK_DATE,
@@ -21,7 +21,22 @@
         ON(tb_racc.ACC_MBR = tb_member.MBR_ID)
         WHERE tb_racc.ACC_WPCHECK = 6
         AND tb_racc.ACC_STS = -1
-    ');
+    ';
+    $new_query = '
+        SELECT
+            tb_racc.ACC_F_PROFILE_DATE,
+            tb_racc.ACC_WPCHECK_DATE,
+            tb_racc.ACC_FULLNAME,
+            LOWER(tb_member.MBR_EMAIL) AS MBR_EMAIL,
+            "Rejected" AS ACC_STATUS,
+            MD5(MD5(tb_racc.ID_ACC)) AS ID_ACC
+        FROM tb_racc
+        JOIN tb_member
+        ON(tb_racc.ACC_MBR = tb_member.MBR_ID)
+        WHERE tb_racc.ACC_WPCHECK = 6
+        AND tb_racc.ACC_STS = -1
+    ';
+    $dt->query($new_query);
     $dt->edit('ACC_STATUS', function($data){ 
         if($data['ACC_STATUS'] == 'Rejected'){
             return "
@@ -130,7 +145,7 @@
         } else { 
             return "
                 <div class='text-center'>
-                    <a href='/account/progress_real_account/temporary_detail/".$data["ID_ACC"]."' class='btn btn-sm btn-info'>Detail</a>
+                    <a href='/account/reject_real_account/detail/".$data["ID_ACC"]."' class='btn btn-sm btn-info'>Detail</a>
                 </div>
             "; 
         }

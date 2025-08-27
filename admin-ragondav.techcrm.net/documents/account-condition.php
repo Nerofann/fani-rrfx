@@ -15,6 +15,10 @@
     $bankHolder = $bank[2] ?? "-";
     $companyProfile = CompanyProfile::profilePerusahaan();
     $mainOffice = CompanyProfile::getMainOffice();
+
+    
+    $amountIDR = ($depositData["DPWD_CURR_FROM"] == "IDR") ? $depositData['DPWD_AMOUNT_SOURCE'] : $depositData['DPWD_AMOUNT'];
+    $amountUSD = ($depositData["DPWD_CURR_FROM"] == "USD") ? $depositData['DPWD_AMOUNT_SOURCE'] : $depositData['DPWD_AMOUNT'];
 ?>
 
 <!DOCTYPE html>
@@ -79,7 +83,7 @@
                                     <tr>
                                         <td width="30%" class="v-align-top">Nilai Margin</td>
                                         <td width="3%" class="v-align-top">:</td>
-                                        <td class="v-align-top"><?= $realAccount['RTYPE_CURR'] ?> <?= Helper::formatCurrency($accnd['ACCCND_AMOUNTMARGIN']) ?></td>
+                                        <td class="v-align-top"><?= $realAccount['RTYPE_CURR'] ?> <?= Helper::formatCurrency((($realAccount["RTYPE_ISFLOATING"]) ? $amountUSD : $amountIDR)) ?></td>
                                     </tr>
                                     <tr>
                                         <td width="30%" class="v-align-top">Nama Bank</td>

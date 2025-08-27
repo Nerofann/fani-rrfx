@@ -29,6 +29,10 @@
 
     /** explode bank nasabah */
     $userBank = explode("/", $depositData['DPWD_BANKSRC']);
+
+    
+    $amountIDR = ($depositData["DPWD_CURR_FROM"] == "IDR") ? $depositData['DPWD_AMOUNT_SOURCE'] : $depositData['DPWD_AMOUNT'];
+    $amountUSD = ($depositData["DPWD_CURR_FROM"] == "USD") ? $depositData['DPWD_AMOUNT_SOURCE'] : $depositData['DPWD_AMOUNT'];
 ?>
 <div class="page-header">
 	<div>
@@ -92,7 +96,7 @@
                                     <td class="text-center">
                                         <div class="form-group">
                                             <label>Amount in USD</label>
-                                            <input class="form-control text-center" placeholder="" value="<?= Helper::formatCurrency($accountCondition['ACCCND_AMOUNTMARGIN']) ?>" readonly type="text">
+                                            <input class="form-control text-center" placeholder="" value="<?= Helper::formatCurrency($amountUSD) ?>" readonly type="text">
                                         </div>
                                     </td>
                                     <td class="text-center" colspan="2">
@@ -104,7 +108,7 @@
                                     <td class="text-center">
                                         <div class="form-group">
                                             <label>Amount in IDR</label>
-                                            <input class="form-control text-center" placeholder="" value="<?= Helper::formatCurrency($depositData["DPWD_AMOUNT_SOURCE"]) ?>" readonly type="text">
+                                            <input class="form-control text-center" placeholder="" value="<?= Helper::formatCurrency($amountIDR) ?>" readonly type="text">
                                         </div>
                                     </td>
                                 </tr>
@@ -114,7 +118,7 @@
                                     <td class="text-center">
                                         <div class="form-group">
                                             <label>Amount in USD</label>
-                                            <input class="form-control text-center" placeholder="" value="<?= Helper::formatCurrency($accountCondition['ACCCND_AMOUNTMARGIN']) ?>" readonly type="text">
+                                            <input class="form-control text-center" placeholder="" value="<?= Helper::formatCurrency($amountUSD) ?>" readonly type="text">
                                         </div>
                                     </td>
                                     <td class="text-center" colspan="2">

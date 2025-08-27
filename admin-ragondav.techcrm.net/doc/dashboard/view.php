@@ -86,7 +86,10 @@
                     CAST(FORMAT(tb_dpwd.DPWD_AMOUNT, 0) AS CHAR) AS AMNT
                 FROM tb_dpwd
                 JOIN tb_member
-                ON(tb_dpwd.DPWD_MBR = tb_member.MBR_ID)
+                JOIN tb_racc
+                ON(tb_member.MBR_ID = tb_dpwd.DPWD_MBR
+                AND tb_member.MBR_ID = tb_racc.ACC_MBR
+                AND tb_racc.ID_ACC = tb_dpwd.DPWD_RACC)
                 WHERE tb_dpwd.DPWD_TYPE = 1
                 AND tb_dpwd.DPWD_STS = 0
                 ORDER BY tb_dpwd.DPWD_DATETIME DESC
@@ -109,7 +112,10 @@
                     CAST(FORMAT(tb_dpwd.DPWD_AMOUNT, 0) AS CHAR) AS AMNT
                 FROM tb_dpwd
                 JOIN tb_member
-                ON(tb_dpwd.DPWD_MBR = tb_member.MBR_ID)
+                JOIN tb_racc
+                ON(tb_member.MBR_ID = tb_dpwd.DPWD_MBR
+                AND tb_member.MBR_ID = tb_racc.ACC_MBR
+                AND tb_racc.ID_ACC = tb_dpwd.DPWD_RACC)
                 WHERE tb_dpwd.DPWD_TYPE = 2
                 AND tb_dpwd.DPWD_STS = 0
                 ORDER BY tb_dpwd.DPWD_DATETIME DESC
