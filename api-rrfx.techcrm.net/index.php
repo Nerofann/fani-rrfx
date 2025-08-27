@@ -2,6 +2,7 @@
 
 use Allmedia\Shared\AdminPermission\Core\UrlParser;
 use App\Models\Helper;
+use App\Models\Token;
 use App\Models\TokenGenerator;
 use App\Models\User;
 
@@ -54,45 +55,39 @@ try {
             break;
 
         default: 
-            // // ApiResponse([
-            // //     'status' => false,
-            // //     'message' => "Invalid Token",
-            // //     'response' => []
-            // // ], 300);
-            
-            // $userToken = $headers['Authorization'] ?? "";
-            // $userToken = str_replace("Bearer ", "", $userToken);
-            // $isValid = TokenGenerator::verifyToken($userToken);
-            // if(!$isValid || !is_array($isValid)) {
-            //     ApiResponse([
-            //         'status' => false,
-            //         'message' => "Invalid Token",
-            //         'response' => []
-            //     ], 300);
-            // }
+            $userToken = $headers['Authorization'] ?? "";
+            $userToken = str_replace("Bearer ", "", $userToken);
+            $isValid = Token::verifyToken($userToken);
+            if(!$isValid || !is_array($isValid)) {
+                ApiResponse([
+                    'status' => false,
+                    'message' => "Invalid Token",
+                    'response' => []
+                ], 300);
+            }
 
-            // $userData = User::findById($isValid['user_id']);
-            // $userId = md5(md5($isValid['user_id']));
-            // if(empty($userData)) {
-            //     ApiResponse([
-            //         'status' => false,
-            //         'message' => "Invalid User",
-            //         'response' => []
-            //     ], 400);
-            // }
+            $userData = User::findByMemberId($isValid['user_id']);
+            $userId = md5(md5($isValid['user_id']));
+            if(empty($userData)) {
+                ApiResponse([
+                    'status' => false,
+                    'message' => "Invalid User",
+                    'response' => []
+                ], 400);
+            }
 
-            // if(!file_exists(__DIR__ . "/routes/{$a}/{$b}.php")) {
-            //     ApiResponse([
-            //         'status' => false,
-            //         'message' => "Path Unknown",
-            //         'response' => []
-            //     ], 400);
-            // }
+            if(!file_exists(__DIR__ . "/routes/{$filepath}.php")) {
+                ApiResponse([
+                    'status' => false,
+                    'message' => "Path Unknown",
+                    'response' => []
+                ], 400);
+            }
 
-            // /** Avatar */
-            // $avatar = mbr_avatar($userData['MBR_OAUTH_PIC'], $userData['MBR_AVATAR']);
+            /** Avatar */
+            $avatar = User::avatar($userData['MBR_AVATAR']);
 
-            // require __DIR__ . "/routes/{$a}/{$b}.php";
+            require __DIR__ . "/routes/{$filepath}.php";
             break;
     }
     
