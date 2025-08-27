@@ -29,6 +29,11 @@
 
     /** explode bank nasabah */
     $userBank = explode("/", $depositData['DPWD_BANKSRC']);
+
+    
+    
+    $amountIDR = ($depositData["DPWD_CURR_FROM"] == "IDR") ? $depositData['DPWD_AMOUNT_SOURCE'] : $depositData['DPWD_AMOUNT'];
+    $amountUSD = ($depositData["DPWD_CURR_FROM"] == "USD") ? $depositData['DPWD_AMOUNT_SOURCE'] : $depositData['DPWD_AMOUNT'];
 ?>
 <div class="page-header">
 	<div>
@@ -130,7 +135,7 @@
                         <div class="col-md-9 mb-2">
                             <div class="input-group">
                                 <span class="input-group-text">USD</span>
-                                <input type="text" class="form-control" value="<?= Helper::formatCurrency($accountCondition["ACCCND_AMOUNTMARGIN"]); ?>" readonly required>
+                                <input type="text" class="form-control" value="<?= Helper::formatCurrency($amountUSD); ?>" readonly required>
                             </div>
                         </div>
                     </div>
