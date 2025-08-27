@@ -46,7 +46,15 @@ class Account {
                         FROM tb_member_bank
                         WHERE tb_member_bank.MBANK_MBR = tm.MBR_ID
                         LIMIT 1
-                    ) AS MBR_BKJSN
+                    ) AS MBR_BKJSN,
+                    (
+                        SELECT
+                            tb_note.NOTE_NOTE
+                        FROM tb_note
+                        WHERE tb_note.NOTE_RACC = tr.ID_ACC
+                        AND tb_note.NOTE_TYPE = 'WP VER REJECT'
+                        LIMIT 1
+                    ) AS RJCT_NOTE
                 FROM tb_racc tr 
                 JOIN tb_member tm ON (tm.MBR_ID = tr.ACC_MBR)
                 JOIN tb_racctype tra ON (tra.ID_RTYPE = tr.ACC_TYPE)
