@@ -55,6 +55,14 @@ if(!$admin) {
     ]);
 }
 
+if(!preg_match('/^[a-zA-Z0-9]+$/', $username)) {
+    JsonResponse([
+        'success'   => false,
+        'message'   => "Username tidak valid, hanya boleh string(tanpa spasi)",
+        'data'      => []
+    ]);
+}
+
 /** Check username */
 $db = Database::connect();
 $sql_check_username = $db->query("SELECT * FROM tb_admin WHERE LOWER(ADM_USER) = LOWER('{$username}') AND ID_ADM != {$admin_id} LIMIT 1");
