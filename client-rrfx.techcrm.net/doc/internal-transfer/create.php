@@ -91,6 +91,7 @@
                     })
 
                     $.post("/ajax/post/internal-transfer/create", data, (resp) => {
+                        button.removeClass('loading');
                         Swal.fire(resp.alert).then(() => {
                             if(resp.success) {
                                 location.href = '/internal-transfer'
