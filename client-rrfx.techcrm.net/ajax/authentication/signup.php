@@ -33,6 +33,15 @@ foreach($required as $req) {
     }
 }
 
+/** validasi nama lengkap */
+if(!preg_match('/^[a-zA-Z\s]+$/', $data['fullname'])) {
+    JsonResponse([
+        'success' => false,
+        'message' => "Nama Lengkap tidak valid",
+        'data' => []
+    ]);
+}
+
 /** Check email */
 $sqlCheckEmail = $db->query("SELECT * FROM tb_member WHERE LOWER(MBR_EMAIL) = LOWER('".$data['email']."') LIMIT 1");
 if($sqlCheckEmail->num_rows != 0) {
