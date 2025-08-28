@@ -8,7 +8,7 @@
     
     $listGrup = $adminPermissionCore->availableGroup();
     $adminRoles = Admin::adminRoles();
-    if(!$adminPermissionCore->hasPermission($authorizedPermission, "/tools/profile_perushaaan/create_bank")) {
+    if(!$adminPermissionCore->hasPermission($authorizedPermission, "/tools/profile_perushaaan/delete_bank")) {
         JsonResponse([
             'code'      => 200,
             'success'   => false,
@@ -18,10 +18,7 @@
     }
 
     $REQ_POST = [
-        "bkadm-name",
-        "bkadm-curr",
-        "bkadm-holder",
-        "bkadm-account"
+        "x"
     ];
     $data = Helper::getSafeInput($_POST);
     foreach($REQ_POST as $req) {
@@ -36,33 +33,27 @@
         }
     }
 
-    /** Check Bank id*/
-    $SQL_CHECK = mysqli_query($db, 'SELECT * FROM tb_bankadm WHERE tb_bankadm.BKADM_NAME = "'.$data["bkadm-name"].'" AND tb_bankadm.BKADM_ACCOUNT = "'.$data["bkadm-account"].'" LIMIT 1');
-    if(($SQL_CHECK) && $SQL_CHECK->num_rows != 0){
+    /** Check Kantor id*/
+    $SQL_CHECK = mysqli_query($db, 'SELECT tb_bankadm.ID_BKADM FROM tb_bankadm WHERE MD5(MD5(tb_bankadm.ID_BKADM)) = "'.$data["x"].'"');
+    if((!$SQL_CHECK) || $SQL_CHECK->num_rows == 0){
         JsonResponse([
             'code'      => 200,
             'success'   => false,
-            'message'   => "Bank already registered",
+            'message'   => "Cannot found bank id",
             'data'      => []
         ]);
     }
+    $RSLT_GETX = $SQL_CHECK->fetch_assoc();
+
 
     
-    $STORED_DATA = [
-        "BKADM_NAME"    => $data["bkadm-name"],
-        "BKADM_CURR"    => $data["bkadm-curr"],
-        "BKADM_HOLDER"  => $data["bkadm-holder"],
-        "BKADM_ACCOUNT" => $data["bkadm-account"]
-    ];
-
-    
-    /** Insert data */
-    $insert = Database::insert('tb_bankadm', $STORED_DATA);
-    if(!$insert){
+    /** Delete data */
+    $delete = Database::delete('tb_bankadm', ["ID_BKADM" => $RSLT_GETX["ID_BKADM"]]);
+    if(!$delete){
         JsonResponse([
             'code'      => 200,
             'success'   => false,
-            'message'   => "Failed to insert bank",
+            'message'   => "Failed to delete bank",
             'data'      => []
         ]);
     }
@@ -70,12 +61,12 @@
     Logger::admin_log([
         'admid' => $user['ADM_ID'],
         'module' => "/tools/profile_perushaaan/",
-        'message' => "Insert bank",
+        'message' => "Delete bank",
         'data'  => $data
     ]);
 
     JsonResponse([
         'success'   => true,
-        'message'   => "Berhasil insert bank",
+        'message'   => "Berhasil delete bank",
         'data'      => []
     ]);

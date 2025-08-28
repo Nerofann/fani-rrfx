@@ -8,7 +8,7 @@
     
     $listGrup = $adminPermissionCore->availableGroup();
     $adminRoles = Admin::adminRoles();
-    if(!$adminPermissionCore->hasPermission($authorizedPermission, "/tools/profile_perushaaan/update_kantor")) {
+    if(!$adminPermissionCore->hasPermission($authorizedPermission, "/tools/profile_perushaaan/delete_kantor")) {
         JsonResponse([
             'code'      => 200,
             'success'   => false,
@@ -39,7 +39,7 @@
         JsonResponse([
             'code'      => 200,
             'success'   => false,
-            'message'   => "Cannot found current dtc id",
+            'message'   => "Cannot found kantor id",
             'data'      => []
         ]);
     }

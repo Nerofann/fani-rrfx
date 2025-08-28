@@ -2,6 +2,18 @@
     <h2>Security</h2>
 </div>
 
+<style>
+	.password-show {
+		position: absolute;
+		top: 50%;
+		right: 10px;
+		color: #595959;
+		-webkit-transform: translateY(-50%);
+		transform: translateY(-50%);
+		cursor: pointer;
+		z-index: 5;
+	}
+</style>
 <div class="row">
     <div class="col-6">
         <div class="panel">
@@ -13,15 +25,27 @@
                     <div class="card-body">
                         <div class="mt-3">
                             <label for="basicInput" class="form-label">Current Password</label>
-                            <input type="password" name="current_pass" class="form-control" autocomplete="off" required>
+                            <div class="input-group mb-20">
+                                <span class="input-group-text"><i class="fa-regular fa-lock"></i></span>
+                                <input type="password" name="current_pass" class="form-control rounded-end" autocomplete="off" placeholder="Password" required>
+                                <a role="button" class="password-show"><i class="fa-duotone fa-eye"></i></a>
+                            </div>
                         </div>
                         <div class="mt-3">
                             <label for="basicInput" class="form-label">New Password</label>
-                            <input type="password" name="new_pass" class="form-control" autocomplete="off" required>
+                            <div class="input-group mb-20">
+                                <span class="input-group-text"><i class="fa-regular fa-lock"></i></span>
+                                <input type="password" name="new_pass" class="form-control rounded-end" autocomplete="off" placeholder="New Password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])\S{8,64}$" title="Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character, and be at least 8 characters long." required>
+                                <a role="button" class="password-show"><i class="fa-duotone fa-eye"></i></a>
+                            </div>
                         </div>
                         <div class="mt-3">
                             <label for="basicInput" class="form-label">Confirm New Password</label>
-                            <input type="password" name="confirm_new_pass" class="form-control" autocomplete="off" required>
+                            <div class="input-group mb-20">
+                                <span class="input-group-text"><i class="fa-regular fa-lock"></i></span>
+                                <input type="password" name="confirm_new_pass" class="form-control rounded-end" autocomplete="off" placeholder="Confirm New Password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])\S{8,64}$" title="Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character, and be at least 8 characters long." required>
+                                <a role="button" class="password-show"><i class="fa-duotone fa-eye"></i></a>
+                            </div>
                         </div>
                     </div>
                     <div class="card-footer">

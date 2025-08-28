@@ -6,7 +6,8 @@
         <a href="/account/create" class="btn btn-sm btn-primary"><i class="fas fa-plus"></i> Create Account</a>
     </div>
 </div>
-
+<style>
+</style>
 <div class="row">
     <div class="col-12">
         <div class="panel">
@@ -24,10 +25,10 @@
                                         <th class="text-center" rowspan="2" class="text-center">#</th>
                                     </tr>
                                     <tr>
-                                        <th width="10%">Login</th>
-                                        <th width="10%">Tipe</th>
-                                        <th width="10%">Currency</th>
-                                        <th width="10%">Rate</th>
+                                        <th class="text-center">Login</th>
+                                        <th class="text-center">Tipe</th>
+                                        <th class="text-center">Currency</th>
+                                        <th class="text-center">Rate</th>
                                     </tr>
                                 </thead>
                                 <tbody>
