@@ -128,5 +128,7 @@ JsonResponse([
     'code'      => 200,
     'success'   => true,
     'message'   => "update admin successfully",
-    'data'      => []
+    'data'      => [
+        'redirect' => "/admin/view"
+    ]
 ]);
