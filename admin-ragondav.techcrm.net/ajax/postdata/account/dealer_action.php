@@ -206,7 +206,7 @@ use App\Models\Account;
 
             case 'reject':
                 $updateRacc = Database::update('tb_racc', ['ACC_WPCHECK' => 4], ["ID_ACC" => $ACCOUNT_CHECK["ID_ACC"]]);
-                if($updateRacc) {
+                if(!$updateRacc) {
                     $db->rollback();
                     JsonResponse([
                         'success' => false,

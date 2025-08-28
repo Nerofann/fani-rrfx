@@ -19,7 +19,7 @@
                         <div class="col-12">
                             <div class="text-center">
                                 <h5>
-                                    Formulir Dokumen Resiko untuk Transaksi <span class="text-capitalize">Kontrak <span class="title">Derivatif Dalam Sistem Perdagangan Alternatif</span></span>
+                                    Formulir Dokumen Resiko untuk Transaksi <span class="text-capitalize">Kontrak <span class="title">Derivatif Dalam Sistem Perdagangan Alternatif.</span></span>
                                 </h5>
                             </div>
                             <hr>
