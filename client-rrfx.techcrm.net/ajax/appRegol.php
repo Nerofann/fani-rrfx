@@ -2597,9 +2597,7 @@ class AppPost {
                 'success'   => false,
                 'alert'     => [
                     'title' => "Gagal",
-                    'text'  => (ini_get("display_errors") == "1")
-                        ? $sendVerification['message']
-                        : "Verifikasi Gagal",
+                    'text'  => $sendVerification['message'] ?? "Verifikasi Gagal",
                     'icon'  => "error"
                 ]
             ])); 

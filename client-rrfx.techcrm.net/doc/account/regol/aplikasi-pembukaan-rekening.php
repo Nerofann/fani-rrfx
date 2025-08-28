@@ -418,7 +418,7 @@
                                             <td width="8%" class="top-align fw-bold">Lokasi Rumah<span class="text-danger">*</span></td>
                                             <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="text" autocomplete="off" placeholder="Lokasi Rumah" name="app_lokasi_rumah" value="<?= $realAccount['ACC_F_APP_KEKYAN_RMHLKS'] ?? 0 ?>" class="form-control" required>
+                                                <input type="text" autocomplete="off" placeholder="Lokasi Rumah" name="app_lokasi_rumah" value="<?= $realAccount['ACC_F_APP_KEKYAN_RMHLKS'] ?? "" ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
@@ -446,7 +446,7 @@
                                             <td width="8%" class="top-align fw-bold">Jumlah<span class="text-danger">*</span></td>
                                             <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="text" autocomplete="off" placeholder="Jumlah" name="app_jumlah" readonly value="<?= $realAccount['ACC_F_APP_KEKYAN_NILAI'] ?? 0 ?>" class="form-control" required>
+                                                <input type="text" autocomplete="off" placeholder="Jumlah" name="app_jumlah" readonly value="<?= $realAccount['ACC_F_APP_KEKYAN_NILAI'] ?? "" ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                     </tbody>
