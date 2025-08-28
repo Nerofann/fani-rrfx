@@ -43,7 +43,7 @@
                                             <td class="top-align text-start">
                                                 <select name="app_gender" id="app_gender" class="form-control">
                                                     <?php foreach(['Laki-laki', 'Perempuan'] as $gender) : ?>
-                                                        <option value="<?= $gender ?>" <?= (strtolower($realAccount['ACC_F_APP_PRIBADI_KELAMIN'] ?? "") == strtolower($gender))? "selected" : ""; ?>><?= $gender ?></option>
+                                                        <option value="<?= $gender ?>" <?= (strtolower($realAccount['ACC_F_APP_PRIBADI_KELAMIN'] ?? $user['MBR_JENIS_KELAMIN'] ?? "") == strtolower($gender))? "selected" : ""; ?>><?= $gender ?></option>
                                                     <?php endforeach; ?>
                                                 </select>
                                             </td>
