@@ -1,5 +1,5 @@
 <?php
-    use App\Models\FileUpload
+    use App\Models\FileUpload;
 ?>
 <div class="page-header">
     <div>
