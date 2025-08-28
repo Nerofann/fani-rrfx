@@ -1,3 +1,8 @@
+<?php
+
+$tanggalLahir = ($progressAccount['ACC_TANGGAL_LAHIR'] ?? $user['MBR_TGLLAHIR']);
+
+?>
 <div class="row">
     <div class="col-md-9 mx-auto mb-3">
         <form method="post" enctype="multipart/form-data" id="form-pernyataan-simulasi">
@@ -16,21 +21,21 @@
                                             <td width="20%" class="top-align fw-bold">Nama Lengkap</td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="text" autocomplete="off" placeholder="Nama Lengkap" name="smls_namleng" value="<?php echo $realAccount['ACC_FULLNAME'] ?>" class="form-control" required>
+                                                <input type="text" autocomplete="off" placeholder="Nama Lengkap" name="smls_namleng" value="<?php echo $realAccount['ACC_FULLNAME'] ?? $user['MBR_NAME']; ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td width="20%" class="top-align fw-bold">Tempat Lahir</td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="text" autocomplete="off" placeholder="Tempat Lahir" name="smls_tmptlhr" value="<?php echo $realAccount['ACC_TEMPAT_LAHIR'] ?>" class="form-control" required>
+                                                <input type="text" autocomplete="off" placeholder="Tempat Lahir" name="smls_tmptlhr" value="<?php echo $realAccount['ACC_TEMPAT_LAHIR'] ?? $user['MBR_TMPTLAHIR'] ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td width="20%" class="top-align fw-bold">Tanggal Lahir</td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="date" max="<?php echo date("Y-12-t", strtotime("-17 years")) ?>" name="smls_tgllhr" value="<?php echo (!empty($realAccount['ACC_TANGGAL_LAHIR'])) ? date("Y-m-d", strtotime($realAccount['ACC_TANGGAL_LAHIR'])) : NULL ?>" class="form-control" required>
+                                                <input type="date" max="<?php echo date("Y-12-t", strtotime("-17 years")) ?>" name="smls_tgllhr" value="<?php echo (!empty($tanggalLahir)) ? date("Y-m-d", strtotime($tanggalLahir)) : NULL ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
