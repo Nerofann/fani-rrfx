@@ -24,7 +24,7 @@ use App\Models\FileUpload;
                 </div>
                 <div class="logo-small">
                     <a href="/dashboard">
-                        <img src="/assets/images/logo-white-new.png" alt="Logo">
+                        <img src="/assets/images/favicon/ms-icon-144x144.png" alt="Logo">
                     </a>
                 </div>
             </div>
