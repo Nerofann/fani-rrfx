@@ -16,7 +16,7 @@
                     </div>
                     <div class="col-md-12 mb-2">
                         <label for="name" class="form-label">Nama Pemilik Rekening</label>
-                        <input type="text" class="form-control" name="name" value="<?= $user['MBR_NAME'] ?>" placeholder="Nama Pemilik Rekening">
+                        <input type="text" class="form-control" name="name" value="<?= $user['MBR_NAME'] ?>" readonly placeholder="Nama Pemilik Rekening">
                     </div>
                     <div class="col-md-12 mb-2">
                         <label for="bank-number" class="form-label">No. Rekening</label>
