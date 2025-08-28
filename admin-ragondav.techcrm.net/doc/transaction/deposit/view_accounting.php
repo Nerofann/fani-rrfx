@@ -11,7 +11,6 @@
                         <th style="vertical-align: middle" class="text-center">Date</th>
                         <th style="vertical-align: middle" class="text-center">Name</th>
                         <th style="vertical-align: middle" class="text-center">Email</th>
-                        <th style="vertical-align: middle" class="text-center">Phone</th>
                         <th style="vertical-align: middle" class="text-center">Login</th>
                         <th style="vertical-align: middle" class="text-center">Amount</th>
                         <th style="vertical-align: middle" class="text-center">Pic</th>
