@@ -7,7 +7,6 @@
             tb_dpwd.DPWD_DATETIME,
             tb_racc.ACC_FULLNAME,
             tb_member.MBR_EMAIL,
-            tb_racc.ACC_F_APP_KRJ_TLP,
             tb_racc.ACC_LOGIN,
             IF(tb_racctype.RTYPE_ISFLOATING = 0, tb_dpwd.DPWD_AMOUNT_SOURCE, tb_dpwd.DPWD_AMOUNT) AS DPWD_AMOUNT,
             tb_dpwd.DPWD_PIC,				

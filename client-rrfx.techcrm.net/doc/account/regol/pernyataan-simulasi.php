@@ -1,3 +1,8 @@
+<?php
+
+$tanggalLahir = ($progressAccount['ACC_TANGGAL_LAHIR'] ?? $user['MBR_TGLLAHIR']);
+
+?>
 <div class="row">
     <div class="col-md-9 mx-auto mb-3">
         <form method="post" enctype="multipart/form-data" id="form-pernyataan-simulasi">
@@ -16,28 +21,28 @@
                                             <td width="20%" class="top-align fw-bold">Nama Lengkap</td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="text" autocomplete="off" placeholder="Nama Lengkap" name="smls_namleng" value="<?php echo $realAccount['ACC_FULLNAME'] ?>" class="form-control" required>
+                                                <input type="text" autocomplete="off" placeholder="Nama Lengkap" name="smls_namleng" value="<?php echo $realAccount['ACC_FULLNAME'] ?? $user['MBR_NAME']; ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td width="20%" class="top-align fw-bold">Tempat Lahir</td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="text" autocomplete="off" placeholder="Tempat Lahir" name="smls_tmptlhr" value="<?php echo $realAccount['ACC_TEMPAT_LAHIR'] ?>" class="form-control" required>
+                                                <input type="text" autocomplete="off" placeholder="Tempat Lahir" name="smls_tmptlhr" value="<?php echo $realAccount['ACC_TEMPAT_LAHIR'] ?? $user['MBR_TMPTLAHIR'] ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td width="20%" class="top-align fw-bold">Tanggal Lahir</td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="date" max="<?php echo date("Y-12-t", strtotime("-17 years")) ?>" name="smls_tgllhr" value="<?php echo (!empty($realAccount['ACC_TANGGAL_LAHIR'])) ? date("Y-m-d", strtotime($realAccount['ACC_TANGGAL_LAHIR'])) : NULL ?>" class="form-control" required>
+                                                <input type="date" max="<?php echo date("Y-12-t", strtotime("-17 years")) ?>" name="smls_tgllhr" value="<?php echo (!empty($tanggalLahir)) ? date("Y-m-d", strtotime($tanggalLahir)) : NULL ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td width="20%" class="top-align fw-bold">Alamat Rumah</td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="text" autocomplete="off" placeholder="Alamat Rumah" name="smls_almtrmh" value="<?php echo $realAccount['ACC_ADDRESS'] ?>" class="form-control" required>
+                                                <input type="text" autocomplete="off" placeholder="Alamat Rumah" name="smls_almtrmh" value="<?php echo $realAccount['ACC_ADDRESS'] ?? $user['MBR_ADDRESS'] ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
@@ -57,7 +62,7 @@
                                                         if($SQL_PROVINCE && mysqli_num_rows($SQL_PROVINCE) > 0){
                                                             foreach(mysqli_fetch_all($SQL_PROVINCE, MYSQLI_ASSOC) as $RSLT_PROVINCE){
                                                     ?>
-                                                        <option value="<?= base64_encode($RSLT_PROVINCE["KDP_PROV"]) ?>" <?= ($realAccount['ACC_PROVINCE'] == $RSLT_PROVINCE["KDP_PROV"])? "selected" : ""; ?>><?= $RSLT_PROVINCE["KDP_PROV"] ?></option>
+                                                        <option value="<?= base64_encode($RSLT_PROVINCE["KDP_PROV"]) ?>" <?= (($realAccount['ACC_PROVINCE'] ?? $user['MBR_PROVINCE']) == $RSLT_PROVINCE["KDP_PROV"])? "selected" : ""; ?>><?= $RSLT_PROVINCE["KDP_PROV"] ?></option>
                                                     <?php
                                                             }
                                                         }
