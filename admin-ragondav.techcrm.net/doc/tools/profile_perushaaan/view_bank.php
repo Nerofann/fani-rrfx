@@ -1,3 +1,6 @@
+<?php
+    use App\Models\FileUpload;
+?>
 <?php if($permisCreate = $adminPermissionCore->isHavePermission($moduleId, "view_bank")){ ?>
     
     <div class="row row-sm">
@@ -26,7 +29,13 @@
                                 <?php if($sql_get_bank_admin) : ?>
                                     <?php 
                                         while($bankadm = mysqli_fetch_assoc($sql_get_bank_admin)) : 
-
+                                            $JSNDT = [
+                                                "bkadm-name-edt" => $bankadm['BKADM_NAME'],
+                                                "bkadm-curr-edt" => $bankadm['BKADM_CURR'],
+                                                "bkadm-holder-edt" => $bankadm['BKADM_HOLDER'],
+                                                "bkadm-account-edt" => $bankadm['BKADM_ACCOUNT'],
+                                                "idbk" => md5(md5($bankadm['ID_BKADM'])),
+                                            ];
                                     ?>
                                         <tr>
                                             <td><?php echo $bankadm['BKADM_CURR'] ?></td>
@@ -34,10 +43,10 @@
                                             <td><?php echo $bankadm['BKADM_HOLDER'] ?></td>
                                             <td><?php echo $bankadm['BKADM_ACCOUNT'] ?></td>
                                             <td class="text-center">
-                                                <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#modalEdtBankadm" class="btn btn-sm btn-success btn-edit">
+                                                <a href="javascript:void(0)" data-jsn="<?= base64_encode(json_encode($JSNDT)) ?>" data-bs-toggle="modal" data-bs-target="#modalEdtBankadm" class="btn btn-sm btn-success btn-edit-bkadm">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <a href="javascript:void(0)" data-value="<?= md5(md5($office['ID_OFC'])); ?>" class="btn btn-sm btn-danger dltBtn"><i class="fas fa-trash"></i></a>
+                                                <a href="javascript:void(0)" data-value="<?= md5(md5($bankadm['ID_BKADM'])); ?>" class="btn btn-sm btn-danger dltBtn"><i class="fas fa-trash"></i></a>
                                             </td>
                                         </tr>
                                     <?php endwhile; ?>
@@ -164,7 +173,7 @@
                     <div class="modal-footer">
                         <input type="hidden" name="idbk" id="idbk">
                         <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-success" name="add-bankadm">Submit</button>
+                        <button type="submit" class="btn btn-success" name="edt-bankadm">Submit</button>
                     </div>
                 </form>
             </div>
@@ -172,20 +181,109 @@
     </div>
 
     <script>
-        $('#form-bank').on('submit', function(ev){
-            ev.preventDefault();
-            $(this).find(':submit').addClass('loading');
-            let data = Object.fromEntries(new FormData(this));
+        $(document).ready(() => {
+            $('.btn-edit-bkadm').on('click', function(){
+                for(var [key, value] of Object.entries(JSON.parse(atob($(this).data('jsn'))))) {
+                    if($(`#${key}`)[0]?.tagName == 'INPUT'){
+                        if($(`#${key}`).attr('type') != 'file'){
+                            if($(`#${key}`).attr('type') == 'checkbox'){
+                                if((($(`#${key}`).prop('checked')) && $(`#${key}`).val() == value) || ((!$(`#${key}`).prop('checked')) && $(`#${key}`).val() != value)){
+                                    $(`#${key}`)[0].click();
+                                }
+                            }else if($(`#${key}`).attr('class')?.includes('frmtRph')){
+                                // console.log(value, $(`#${key}`));
+                                $(`#${key}`).val(formatRupiah(value.toString()));
+                            }else{ 
+                                if($(`#${key}`).attr('type') != 'checkbox'){
+                                    // console.log(key);
+                                    $(`#${key}`).val(value); 
+                                }
+                            }
+                        }else{
+                            fln = (value !== null) ? `<?= FileUpload::awsUrl().'/' ?>${value}` : 0;
+                            if($(`.dropify-render`).children().lenght){
+                                $(`.dropify-render`).children().attr('src', fln);
+                            }else{
+                                $(`.dropify-render`).html(`
+                                    <img src="${fln}">
+                                `);
+                            }
+                            $(`.dropify-filename-inner`).html(value);
+                            $(`.dropify-preview`).css('display', 'block');
+                        }
+                    }else if($(`#${key}`)[0]?.tagName == 'SELECT' || $(`#${key}`)[0]?.tagName == 'BUTTON'){
+                        $(`#${key}`).val(value);
+                        // if($(`#${key}`).attr('id') == 'edt_head'){
+                        //     $(`#${key}`)[0].dispatchEvent(new Event('change'));
+                        //     console.log('dispatched');
+                        // }
+                        // dsptch();
+                    }else if($(`#${key}`)[0]?.tagName == 'TEXTAREA'){
+                        let rgx = new RegExp(`(?:&nbsp;|\\\\r\\\\n|$)`, "g");  
+                        let val = htmlDecode(value.replaceAll(rgx, function(match, ett){
+                            if(match == '\\r\\n'){
+                                return '<br>';
+                            }else if(ett == 213){
+                                return ' ';
+                            }else{ return ''; }
+                        }));
+                        $(`#${key}`).html(val);
+                        $(`#${key}`).parent().find('.ql-editor').html(val);
+                    }
+                }
+            });
 
-            $.post("/ajax/post/tools/profile_perushaaan/create_bank", data, function(resp) {
-                $(this).find(':submit').removeClass('loading');
-                $('#modalAddBankadm').modal('hide');
-                Swal.fire(resp.alert).then(() => {
-                    if(resp.success) {
-                        location.reload();
+            $('#form-bank').on('submit', function(ev){
+                ev.preventDefault();
+                $(this).find(':submit').addClass('loading');
+                let data = Object.fromEntries(new FormData(this));
+    
+                $.post("/ajax/post/tools/profile_perushaaan/create_bank", data, function(resp) {
+                    $(this).find(':submit').removeClass('loading');
+                    $('#modalAddBankadm').modal('hide');
+                    Swal.fire(resp.alert).then(() => {
+                        if(resp.success) {
+                            location.reload();
+                        }
+                    });
+                }, 'json');
+            });
+
+            $('#form-bank-edt').on('submit', function(ev){
+                ev.preventDefault();
+                $(this).find(':submit').addClass('loading');
+                let data = Object.fromEntries(new FormData(this));
+    
+                $.post("/ajax/post/tools/profile_perushaaan/update_bank", data, function(resp) {
+                    $(this).find(':submit').removeClass('loading');
+                    $('#modalEdtBankadm').modal('hide');
+                    Swal.fire(resp.alert).then(() => {
+                        if(resp.success) {
+                            location.reload();
+                        }
+                    });
+                }, 'json');
+            });
+
+            $('.dltBtn').on('click', function(e){
+                Swal.fire({
+                    title: `Delete Bank`,
+                    text: `Are you sure to delete this Bank?`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    reverseButtons: true
+                }).then((result) => {
+                    if(result.isConfirmed) {
+                        $.post("/ajax/post/tools/profile_perushaaan/delete_bank", {x: $(this).data('value')}, function(resp) {
+                            Swal.fire(resp.alert).then(() => {
+                                if(resp.success) {
+                                    location.reload();
+                                }
+                            })
+                        }, 'json');
                     }
                 });
-            }, 'json');
+            });
         });
     </script>
 <?php } ?>
