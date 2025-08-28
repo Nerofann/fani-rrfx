@@ -37,7 +37,7 @@
                                             <td width="20%" class="top-align fw-bold">Alamat Rumah</td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="text" autocomplete="off" placeholder="Alamat Rumah" name="smls_almtrmh" value="<?php echo $realAccount['ACC_ADDRESS'] ?>" class="form-control" required>
+                                                <input type="text" autocomplete="off" placeholder="Alamat Rumah" name="smls_almtrmh" value="<?php echo $realAccount['ACC_ADDRESS'] ?? $user['MBR_ADDRESS'] ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
@@ -57,7 +57,7 @@
                                                         if($SQL_PROVINCE && mysqli_num_rows($SQL_PROVINCE) > 0){
                                                             foreach(mysqli_fetch_all($SQL_PROVINCE, MYSQLI_ASSOC) as $RSLT_PROVINCE){
                                                     ?>
-                                                        <option value="<?= base64_encode($RSLT_PROVINCE["KDP_PROV"]) ?>" <?= ($realAccount['ACC_PROVINCE'] == $RSLT_PROVINCE["KDP_PROV"])? "selected" : ""; ?>><?= $RSLT_PROVINCE["KDP_PROV"] ?></option>
+                                                        <option value="<?= base64_encode($RSLT_PROVINCE["KDP_PROV"]) ?>" <?= (($realAccount['ACC_PROVINCE'] ?? $user['MBR_PROVINCE']) == $RSLT_PROVINCE["KDP_PROV"])? "selected" : ""; ?>><?= $RSLT_PROVINCE["KDP_PROV"] ?></option>
                                                     <?php
                                                             }
                                                         }

@@ -143,7 +143,7 @@ class AppPost {
         foreach($sqlGet->fetch_all(MYSQLI_ASSOC) as $prov) {
             $list[] = [
                 'name' => $prov['KDP_KABKO'],
-                'selected' => ($progressAccount['ACC_REGENCY'] == $prov['KDP_KABKO'])
+                'selected' => (($progressAccount['ACC_REGENCY'] ?? $user['MBR_CITY']) == $prov['KDP_KABKO'])
             ];
         }
 
@@ -188,7 +188,7 @@ class AppPost {
         foreach($sqlGet->fetch_all(MYSQLI_ASSOC) as $prov) {
             $list[] = [
                 'name' => $prov['KDP_KECAMATAN'],
-                'selected' => ($progressAccount['ACC_DISTRICT'] == $prov['KDP_KECAMATAN'])
+                'selected' => (($progressAccount['ACC_DISTRICT'] ?? $user['MBR_DISTRICT']) == $prov['KDP_KECAMATAN'])
             ];
         }
 
@@ -233,7 +233,7 @@ class AppPost {
         foreach($sqlGet->fetch_all(MYSQLI_ASSOC) as $vil) {
             $list[] = [
                 'village'   => $vil['KDP_KELURAHAN'],
-                'selected'  => ($progressAccount['ACC_VILLAGE'] == $vil['KDP_KELURAHAN']),
+                'selected'  => (($progressAccount['ACC_VILLAGE'] ?? $user['MBR_VILLAGES']) == $vil['KDP_KELURAHAN']),
                 'postalCode'=> $vil['KDP_POS'] 
             ];
         }
