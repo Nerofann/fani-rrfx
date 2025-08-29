@@ -27,35 +27,28 @@ $referral = Helper::form_input($_GET['referral'] ?? "");
 					<input type="email" required name="email" class="form-control" autocomplete="off"
 						placeholder="Email">
 				</div>
-				<div class="input-group mb-20">
+				<div class="input-group mb-25">
 					<span class="input-group-text"><i class="fa-regular fa-lock"></i></span>
 					<input type="password" required name="password" class="form-control rounded-end"
 						autocomplete="off" placeholder="Password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])\S{8,64}$" title="Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character, and be at least 8 characters long." >
 					<a role="button" class="password-show"><i class="fa-duotone fa-eye"></i></a>
 				</div>
 				<div class="input-group mb-25">
+					<select name="phone_code" class="input-group-text" style="width: fit-content;">
+						<?php foreach (Country::countries() as $country): ?>
+							<?php if ($country['COUNTRY_PHONE_CODE'] == "+62"): ?>
+								<option value="<?= $country['COUNTRY_PHONE_CODE'] ?>">
+									<?= $country['COUNTRY_PHONE_CODE'] ?></option>
+							<?php endif; ?>
+						<?php endforeach; ?>
+					</select>
+					<input type="number" name="phone" required data-parsley-required class="form-control" min="0" autocomplete="off" placeholder="Phone Number">
+				</div>
+				<div class="input-group mb-25">
 					<span class="input-group-text"><i class="fa-regular fa-at"></i></span>
 					<input type="text" name="refferal" class="form-control" autocomplete="off" placeholder="Referal" value="<?= $referral ?>">
 				</div>
-				<hr>
-				<div class="mb-25">
-					<div class="input-group mb-0">
-						<select name="phone_code" class="input-group-text" style="width: fit-content;">
-							<?php foreach (Country::countries() as $country): ?>
-								<?php if ($country['COUNTRY_PHONE_CODE'] == "+62"): ?>
-									<option value="<?= $country['COUNTRY_PHONE_CODE'] ?>">
-										<?= $country['COUNTRY_PHONE_CODE'] ?></option>
-								<?php endif; ?>
-							<?php endforeach; ?>
-						</select>
-						<input type="number" name="phone" required data-parsley-required class="form-control" min="0" autocomplete="off" placeholder="Phone Number">
-					</div>
-				</div>
-				<div class="input-group mb-25" style="margin-top: 2rem !important;">
-					<span class="input-group-text"><i class="fa-regular fa-key"></i></span>
-					<input type="number" name="otp" class="form-control" autocomplete="off" placeholder="OTP Code"
-						value="">
-				</div>
+				
 				<div class="d-flex justify-content-between mb-25">
 					<div class="form-check">
 						<input class="form-check-input" name="terms" type="checkbox" required 
