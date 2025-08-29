@@ -12,7 +12,7 @@ if(empty($verificationCode)) {
     die("<script>alert('Invalid code'); location.href = '/';</script>");
 }
 
-$sqlGet = $db->query("SELECT MBR_ID, MBR_OTP_EXPIRED FROM tb_member WHERE MD5(MD5(CONCAT(MBR_ID, MBR_OTP))) = '$verificationCode' AND MBR_STS = 2 AND MBR_VERIF != -1 LIMIT 1");
+$sqlGet = $db->query("SELECT MBR_ID, MBR_OTP_EXPIRED FROM tb_member WHERE MD5(MD5(CONCAT(MBR_ID, MBR_OTP))) = '$verificationCode' AND MBR_STS = 0 LIMIT 1");
 $userData = $sqlGet->fetch_assoc();
 if($sqlGet->num_rows != 1) {
     die("<script>alert('Invalid verification code'); location.href = '/';</script>");
