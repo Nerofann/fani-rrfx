@@ -270,78 +270,39 @@ class AppPost {
             ]);
         }
 
-        /** Get Demo Type */
-        $sqlGetType = $this->db->query("SELECT ID_RTYPE, RTYPE_GROUP, RTYPE_LEVERAGE FROM tb_racctype WHERE UPPER(RTYPE_TYPE) = 'DEMO' LIMIT 1");
-        $demoType = $sqlGetType->fetch_assoc() ?? [];
-        if($sqlGetType->num_rows == 0 || empty($demoType)) {
+        /** create demo account */
+        $createDemo = MetatraderFactory::createDemo($user['MBR_NAME'], $user['MBR_EMAIL']);
+        if(!$createDemo['success']) {
             JsonResponse([
-                'success' => false,
-                'message' => "Gagal membuat akun demo, Jenis akun tidak valid",
-                'data' => []
-            ]);
-
-            exit(json_encode([
                 'success'   => false,
-                'error'     => ""
-            ]));
-        }
-
-        /** check type */
-        $init_margin = 10000;
-        $meta_pass = Account::generatePassword();
-        $meta_investor = Account::generatePassword();
-        $meta_phone = Account::generatePassword();
-
-        /** Create Demo */
-        $apiManager = MetatraderFactory::apiManager();
-        $apiData = [
-            'master_pass' => $meta_pass, 
-            'investor_pass' => $meta_investor, 
-            'group' => "demo\MandiriInvestindo\MMUSD", 
-            'fullname' => $user['MBR_NAME'], 
-            'email' => $user['MBR_EMAIL'], 
-            'leverage' => $demoType['RTYPE_LEVERAGE'],
-            'comment' => "metaapi"
-        ];
-
-        $createDemo = $apiManager->createAccount($apiData);
-        if(!is_object($createDemo) || !property_exists($createDemo, "Login")) {
-            JsonResponse([
-                'success' => false,
-                'message' => "Gagal membuat akun demo",
-                'data' => []
+                'message'   => $createDemo['message'] ?? "Gagal",
+                'data'      => []
             ]);
         }
-
-        /** Insert Balance **/
-        $deposit = $apiManager->deposit([
-            'login' => $createDemo->Login,
-            'amount' => $init_margin,
-            'comment' => "metaapi"
-        ]);
 
         /** Insert Demo */
+        $demoData = $createDemo['data'];
         $insertDemo = Database::insert("tb_racc", [
             'ACC_MBR' => $user['MBR_ID'],
             'ACC_DERE' => 2,
-            'ACC_TYPE' => $demoType['ID_RTYPE'],
-            'ACC_LOGIN' => $createDemo->Login,
-            'ACC_PASS' => $meta_pass,
-            'ACC_INVESTOR' => $meta_investor,
-            'ACC_PASSPHONE' => $meta_phone,
-            'ACC_INITIALMARGIN' => $init_margin,
+            'ACC_TYPE' => $demoData['type'],
+            'ACC_LOGIN' => $demoData['login'],
+            'ACC_PASS' => $demoData['password'],
+            'ACC_INVESTOR' => $demoData['investor'],
+            'ACC_PASSPHONE' => $demoData['passphone'],
+            'ACC_INITIALMARGIN' => MetatraderFactory::$initMarginDemo,
             'ACC_FULLNAME' => $user['MBR_NAME'],
             'ACC_DATETIME' => date("Y-m-d H:i:s"),
         ]);
 
         /** Send Notification Email */
         $emailData = [
-            "subject"       => "Demo Account Information {$web_name_full} ".date('Y-m-d H:i:s'),
+            "subject"       => "Demo Account Information ". ProfilePerusahaan::get()['PROF_COMPANY_NAME'] ." ".date('Y-m-d H:i:s'),
             "name"          => $user["MBR_NAME"],
-            "login"         => $createDemo->Login,
-            "metaPassword"  => $meta_pass,
-            "metaInvestor"  => $meta_investor,
-            "metaPassPhone" => $meta_phone,
+            "login"         => $demoData['login'],
+            "metaPassword"  => $demoData['password'],
+            "metaInvestor"  => $demoData['investor'],
+            "metaPassPhone" => $demoData['passphone'],
         ];
 
         $emailSender = EmailSender::init(['email' => $user['MBR_EMAIL'], 'name' => $user['MBR_NAME']]);
@@ -351,7 +312,7 @@ class AppPost {
         Logger::client_log([
             'mbrid' => $mbrid,
             'module' => "create-demo",
-            'message' => "Create Demo Account {$createDemo->Login}",
+            'message' => "Create Demo Account ".$demoData['login'],
             'data'  => json_encode($_POST)
         ]);
 
@@ -360,10 +321,10 @@ class AppPost {
             'error'     => "",
             'message'   => "Buat akun demo berhasil",
             'data'      => [
-                'login' => $createDemo->Login,
-                'passw' => $meta_pass,
-                'invst' => $meta_investor,
-                'phone' => $meta_phone,
+                'login' => $demoData['login'],
+                'passw' => $demoData['password'],
+                'invst' => $demoData['investor'],
+                'phone' => $demoData['passphone'],
                 'mails' => "Silakan periksa email Anda.Dan jangan beri tahu password, investor, passphone Anda kepada siapa pun!"
             ]
         ]));
