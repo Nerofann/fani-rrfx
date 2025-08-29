@@ -1,84 +1,109 @@
 <?php
-$rangeDate  = [];
-$result     = [
-    'DP_IDR' => [],
-    'DP_USD' => [],
-    'WD_IDR' => [],
-    'WD_USD' => []
-];
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-$dateFrom = date_create(date("Y-m-d", strtotime("-7 days")));
-$dateTo   = date_create(date("Y-m-d"));
-$dateDiff = date_diff($dateFrom, $dateTo);
-
-/** Get Range Date */
-for($i = 0; $i < $dateDiff->d; $i++) {
-    // Fill Default Value
-    $result['DP_IDR'][$i] = 0;
-    $result['DP_USD'][$i] = 0;
-    $result['WD_IDR'][$i] = 0;
-    $result['WD_USD'][$i] = 0;
-    
-
-    $index_name = date("Y-m-d", strtotime("-{$i} day"));
-    if(!in_array($index_name, $rangeDate)) {
-        array_push($rangeDate, $index_name);
-    }
+function jres(bool $ok, string $msg, array $extra = []): void {
+    echo json_encode(array_merge([
+        'success' => $ok,
+        'message' => $msg,
+    ], $extra), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    exit;
 }
 
-$sql_get_dpwd = mysqli_query($db, "
-    SELECT 
-        COALESCE(tb_dpwd.DPWD_AMOUNT_SOURCE, 0) as AMOUNT,
-        tb_dpwd.DPWD_TYPE,
-        tr.ACC_LOGIN,
-        tb_dpwd.DPWD_CURR_FROM,
-        DATE(tb_dpwd.DPWD_DATETIME) as `DATE`
-    FROM tb_dpwd
-    JOIN tb_racc tr ON (tr.ACC_MBR = tb_dpwd.DPWD_MBR)
-    JOIN tb_racctype trc ON (trc.ID_RTYPE = tr.ACC_TYPE)
-    WHERE MD5(MD5(tb_dpwd.DPWD_MBR)) = '{$userid}'
-    AND DATE(tb_dpwd.DPWD_DATETIME) BETWEEN '".date("Y-m-d", strtotime($dateFrom->format("Y-m-d")))."' AND '".date("Y-m-d", strtotime($dateTo->format("Y-m-d")))."'
-    AND ACC_DERE = 1
-    AND ACC_STS = -1
-    AND (
-        (tb_dpwd.DPWD_TYPE IN (1, 3) AND tb_dpwd.DPWD_STS = -1)
-        OR 
-        (tb_dpwd.DPWD_TYPE = 2 AND tb_dpwd.DPWD_STS != 1)
-    )
-    GROUP BY ID_DPWD, DATE(tb_dpwd.DPWD_DATETIME)
-");
+$range = isset($_GET['range']) ? strtolower(trim($_GET['range'])) : '7d';
+if (!in_array($range, ['7d','1m','1y'], true)) $range = '7d';
 
-if($sql_get_dpwd && mysqli_num_rows($sql_get_dpwd) != 0) {
-    while($row = mysqli_fetch_assoc($sql_get_dpwd)) {
-        $amount     = floatVal($row['AMOUNT']);
-        $getIndex   = array_search($row['DATE'], $rangeDate);
+$daysMap = ['7d'=>7, '1m'=>30, '1y'=>365];
+$days    = $daysMap[$range];
 
-        if($getIndex !== FALSE) {
-            switch(true) {
-                case (in_array($row['DPWD_TYPE'], [1, 3]) && $row['DPWD_CURR_FROM'] == "IDR"): 
-                    $result['DP_IDR'][ $getIndex ] = $amount;
-                    break;
+$todayMid = strtotime(date('Y-m-d 00:00:00'));
+$datesYmd = [];
+$catISO   = [];
+for ($i = $days - 1; $i >= 0; $i--) {
+    $ts   = strtotime("-{$i} day", $todayMid);
+    $ymd  = date('Y-m-d', $ts);
+    $iso  = date(DATE_ATOM, $ts);
+    $datesYmd[] = $ymd;
+    $catISO[]   = $iso;
+}
+$idxByDate = array_flip($datesYmd);
 
-                case (in_array($row['DPWD_TYPE'], [1, 3]) && $row['DPWD_CURR_FROM'] == "USD"): 
-                    $result['DP_USD'][ $getIndex ] = $amount;
-                    break;
+$DP_IDR = array_fill(0, $days, 0.0);
+$DP_USD = array_fill(0, $days, 0.0);
+$WD_IDR = array_fill(0, $days, 0.0);
+$WD_USD = array_fill(0, $days, 0.0);
 
-                case ($row['DPWD_TYPE'] == 2 && $row['DPWD_CURR_FROM'] == "IDR"): 
-                    $result['WD_IDR'][ $getIndex ] = $amount;
-                    break;
+$from = date('Y-m-d 00:00:00', strtotime('-'.($days-1).' day', $todayMid));
+$to   = date('Y-m-d 00:00:00', strtotime('+1 day', $todayMid));
 
-                case ($row['DPWD_TYPE'] == 2 && $row['DPWD_CURR_FROM'] == "USD"): 
-                    $result['WD_USD'][ $getIndex ] = $amount;
-                    break;
+try {
+    $sql_get_dpwd = mysqli_query($db, "
+        SELECT
+            SUM(tb_dpwd.DPWD_AMOUNT_SOURCE) AS total,
+            IF(tb_dpwd.DPWD_TYPE = 1 OR tb_dpwd.DPWD_TYPE = 3, 'DP', 'WD') AS `type`,
+            tb_racc.ACC_LOGIN,
+            tb_dpwd.DPWD_CURR_FROM AS currency,
+            DATE(tb_dpwd.DPWD_DATETIME) as `d`
+        FROM tb_dpwd
+        JOIN tb_racc ON(tb_dpwd.DPWD_RACC = tb_racc.ID_ACC AND tb_dpwd.DPWD_MBR = tb_racc.ACC_MBR)
+        JOIN tb_racctype ON(tb_racc.ACC_TYPE = tb_racctype.ID_RTYPE)
+        WHERE MD5(MD5(tb_dpwd.DPWD_MBR)) = '{$userid}'
+        AND DATE(tb_dpwd.DPWD_DATETIME) BETWEEN '".$from."' AND '".$to."'
+        AND tb_racc.ACC_DERE = 1
+        AND tb_racc.ACC_STS = -1
+        AND (
+            (tb_dpwd.DPWD_TYPE IN (1, 3) AND tb_dpwd.DPWD_STS = -1)
+            OR 
+            (tb_dpwd.DPWD_TYPE = 2 AND tb_dpwd.DPWD_STS != 1)
+        )
+        GROUP BY 
+            DATE(tb_dpwd.DPWD_DATETIME),
+            tb_dpwd.DPWD_CURR_FROM
+    ");
+
+    if($sql_get_dpwd && mysqli_num_rows($sql_get_dpwd) != 0) {
+        while($row = mysqli_fetch_assoc($sql_get_dpwd)) {
+            $dayKey   = $row['d'];
+            $type     = strtoupper($row['type'] ?? '');
+            $currency = strtoupper($row['currency'] ?? '');
+            $total    = (float)$row['total'];
+
+            if (!isset($idxByDate[$dayKey])) {
+                continue;
+            }
+            $i = $idxByDate[$dayKey];
+
+            if ($type === 'DP' && $currency === 'IDR') {
+                $DP_IDR[$i] = $total;
+            } elseif ($type === 'DP' && $currency === 'USD') {
+                $DP_USD[$i] = $total;
+            } elseif ($type === 'WD' && $currency === 'IDR') {
+                $WD_IDR[$i] = $total;
+            } elseif ($type === 'WD' && $currency === 'USD') {
+                $WD_USD[$i] = $total;
             }
         }
     }
+} catch (Throwable $e) {
+    jres(false, 'Query failed '.$from, ['error' => $e->getMessage()]);
 }
 
-JsonResponse([
-    'success' => true,
-    'message' => "Success",
+jres(true, 'Success', [
+    'alert' => [
+        'title' => 'Success',
+        'text'  => 'Success',
+        'icon'  => 'success',
+    ],
     'data' => [
-        'chart' => $result
-    ]
+        'range'       => $range,
+        'granularity' => 'day',
+        'categories'  => $catISO,
+        'chart' => [
+            'DP_IDR' => $DP_IDR,
+            'DP_USD' => $DP_USD,
+            'WD_IDR' => $WD_IDR,
+            'WD_USD' => $WD_USD,
+        ],
+    ],
 ]);

@@ -79,11 +79,11 @@
         <div class="panel h-100 chart-panel-1">
             <div class="panel-header">
                 <h5>Net In Out</h5>
-                <!-- <div class="btn-box">
-                    <button class="btn btn-sm btn-outline-primary">Week</button>
-                    <button class="btn btn-sm btn-outline-primary">Month</button>
-                    <button class="btn btn-sm btn-outline-primary">Year</button>
-                </div> -->
+                <div class="btn-box" id="rangeFilters" class="mb-3">
+                    <button type="button" class="btn btn-sm btn-primary" data-range="7d">1 Minggu</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-range="1m">1 Bulan</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-range="1y">1 Tahun</button>
+                </div>
             </div>
             <div class="panel-body">
                 <div id="saleAnalytics" class="chart-dark"></div>
@@ -137,120 +137,132 @@
 <!-- <script src="/assets/vendor/js/apexcharts.js"></script> -->
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
-    (function($) {
-    'use strict';
-    $(document).ready(function() {
-        $.get("/ajax/post/dashboard/summary", (resp) => {
-            if(resp.success) {
-                $('.account').text(resp.data.account);
-                $('.dp-idr').text(resp.data.deposit.idr);
-                $('.dp-usd').text(resp.data.deposit.usd);
-                $('.wd-idr').text(resp.data.withdrawal.idr);
-                $('.wd-usd').text(resp.data.withdrawal.usd);
-            }
-        }, 'json')
+(function($){
+'use strict';
 
-        /** Chart */
-        if($('#saleAnalytics').length) {
-            $.get("/ajax/post/dashboard/history_dpwd", async (resp) => {
-                if(!resp.success) {
-                    $('#saleAnalytics').html(`${resp?.message || "Gagal memuat history"}`)
-                    return false;
-                }
+$(document).ready(function(){
+  // summary tetap
+  $.get("/ajax/post/dashboard/summary", (resp) => {
+    if(resp.success) {
+      $('.account').text(resp.data.account);
+      $('.dp-idr').text(resp.data.deposit.idr);
+      $('.dp-usd').text(resp.data.deposit.usd);
+      $('.wd-idr').text(resp.data.withdrawal.idr);
+      $('.wd-usd').text(resp.data.withdrawal.usd);
+    }
+  }, 'json');
 
-                if(!resp.data.chart) {
-                    $('#saleAnalytics').html(`${resp?.message || "Gagal memuat data"}`)
-                    return false
-                }
+  // ====== CONFIG ======
+  const RANGES = {
+    '7d': { days: 7,  label: '1 Minggu' },
+    '1m': { days: 30, label: '1 Bulan'  },
+    '1y': { days: 365,label: '1 Tahun'  },
+  };
 
-                let listDate = await function() {
-                    let list = [];
-                    for(let i = 0; i < 7; i++) {
-                        list.push( new Date((Date.now() - (i * 24 * 60 * 60 * 1000))).toISOString() )
-                    }
-                    return list
-                }
+  // generator list tanggal ISO (urut dari lama -> terbaru)
+  const generateDates = (nDays) => {
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // strip time
+    const arr = [];
+    for (let i = nDays - 1; i >= 0; i--) {
+      const d = new Date(start);
+      d.setDate(d.getDate() - i);
+      arr.push(d.toISOString());
+    }
+    return arr;
+  };
 
-                let defaultValue = [0, 0, 0, 0, 0, 0, 0];
-                let data = resp.data.chart;
-                var saleAnalyticsoptions = {
-                    series: [
-                        {   
-                            name: 'Deposit (IDR)',
-                            color: '#a0c0ff',
-                            data: data.DP_IDR || defaultValue
-                        }, 
-                        {
-                            name: 'Deposit (USD)',
-                            color: '#1a5ddb',
-                            data: data.DP_USD || defaultValue
-                        },
-                        {
-                            name: 'Withdrawal (IDR)',
-                            color: '#ff8080',
-                            data: data.WD_IDR || defaultValue
-                        },
-                        {
-                            name: 'Withdrawal (USD)',
-                            color: '#ff1414',
-                            data: data.WD_USD || defaultValue
-                        },
-                    ],
-                    chart: {
-                        height: 354,
-                        type: 'area',
-                        toolbar: {
-                            show: false
-                        },
-                    },
-                    dataLabels: {
-                        enabled: false
-                    },
-                    stroke: {
-                        width: 1,
-                        curve: 'smooth'
-                    },
-                    xaxis: {
-                        fill: '#FFFFFF',
-                        type: 'datetime',
-                        categories: await listDate(),
-                        labels: {
-                            format: 'dddd',
-                        },
-                        axisBorder: {
-                            show: false,
-                        },
-                        axisTicks: {
-                            show: false,
-                        },
-                    },
-                    grid: {
-                        borderColor: '#334652',
-                        strokeDashArray: 3,
-                        xaxis: {
-                            lines: {
-                                show: true,
-                            }
-                        },
-                        padding: {
-                            bottom: 15
-                        }
-                    },
-                    responsive: [{
-                        breakpoint: 479,
-                        options: {
-                            chart: {
-                                height: 250,
-                            },
-                        },
-                    }]
-                };
-
-                var saleAnalytics = new ApexCharts(document.querySelector("#saleAnalytics"), saleAnalyticsoptions);
-                saleAnalytics.render();
-
-            }, 'json')
-        }
+  // formatter angka 2 desimal + thousand separator
+  const numFmt = (val) => {
+    const v = Number(val) || 0;
+    return v.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
     });
+  };
+
+  let chart = null;
+
+  const baseOptions = (categories, series) => ({
+    series,
+    chart: { height: 354, type: 'area', toolbar: { show: false } },
+    dataLabels: { enabled: false },
+    stroke: { width: 1, curve: 'smooth' },
+    xaxis: {
+      type: 'datetime',
+      categories,
+      labels: { format: 'dd/MM' }, // tampil tanggal singkat; bebas diganti 'dddd' kalau mau nama hari
+      axisBorder: { show: false }, axisTicks: { show: false }
+    },
+    yaxis: {
+      labels: { formatter: numFmt }
+    },
+    tooltip: {
+      x: { format: 'dd MMM yyyy' },
+      y: { formatter: numFmt }
+    },
+    grid: {
+      borderColor: '#334652', strokeDashArray: 3,
+      xaxis: { lines: { show: true } }, padding: { bottom: 15 }
+    },
+    responsive: [{ breakpoint: 479, options: { chart: { height: 250 } } }]
+  });
+
+  // normalisasi panjang data: kalau server kirim kurang dari nDays, pad 0 di depan
+  const normalize = (arr, n) => {
+    const a = Array.isArray(arr) ? arr.slice(-n) : [];
+    if (a.length < n) {
+      return Array(n - a.length).fill(0).concat(a);
+    }
+    return a;
+  };
+
+  // fetch + render/update chart
+  const fetchAndRender = (rangeKey='7d') => {
+    const { days } = RANGES[rangeKey] || RANGES['7d'];
+    const categories = generateDates(days);
+    const url = `/ajax/post/dashboard/history_dpwd?range=${encodeURIComponent(rangeKey)}`;
+
+    $.get(url, (resp) => {
+      if (!resp?.success || !resp?.data?.chart) {
+        $('#saleAnalytics').html(`${resp?.message || "Gagal memuat data"}`);
+        return;
+      }
+
+      const data = resp.data.chart;
+      const series = [
+        { name: 'Deposit (IDR)',    color: '#a0c0ff', data: normalize(data.DP_IDR, days) },
+        { name: 'Deposit (USD)',    color: '#1a5ddb', data: normalize(data.DP_USD, days) },
+        { name: 'Withdrawal (IDR)', color: '#ff8080', data: normalize(data.WD_IDR, days) },
+        { name: 'Withdrawal (USD)', color: '#ff1414', data: normalize(data.WD_USD, days) },
+      ];
+
+      if (!chart) {
+        chart = new ApexCharts(document.querySelector("#saleAnalytics"), baseOptions(categories, series));
+        chart.render();
+      } else {
+        chart.updateOptions({ xaxis: { categories } }, false, true);
+        chart.updateSeries(series, true);
+      }
+    }, 'json').fail(() => {
+      $('#saleAnalytics').html("Gagal memuat history");
+    });
+  };
+
+  // inisialisasi default 1 minggu
+  if ($('#saleAnalytics').length) {
+    fetchAndRender('7d');
+  }
+
+  // handler tombol filter
+  $('#rangeFilters').on('click', 'button[data-range]', function(){
+    const range = $(this).data('range');
+    // styling active button (opsional)
+    $('#rangeFilters button').removeClass('btn-primary').addClass('btn-outline-primary');
+    $(this).removeClass('btn-outline-primary').addClass('btn-primary');
+    fetchAndRender(range);
+  });
+
+});
 })(jQuery);
 </script>

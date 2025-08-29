@@ -11,7 +11,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-dashed table-hover table-bordered digi-dataTable table-striped" id="withdrawal-table">
+                            <table class="table table-bordered table-dashed table-hover digi-dataTable dataTable-resize table-striped" id="withdrawal-table">
                                 <thead>
                                     <tr>
                                         <th rowspan="2" class="text-center">Date</th>
@@ -36,6 +36,7 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('#withdrawal-table').DataTable({
+                scrollX: true,
                 processing: true,
                 serverSide: true,
                 order: [[0, 'desc']],
