@@ -1,4 +1,8 @@
-<?php $myBanks = App\Models\User::myBank($user['MBR_ID']); ?>
+<?php 
+$myBanks = App\Models\User::myBank($user['MBR_ID']);
+$_SESSION['modal'] = ['create-bank'];
+?>
+
 <form method="post" enctype="multipart/form-data" id="form-aplikasi-pembukaan-rekening">
     <input type="hidden" name="csrf_token" value="<?= uniqid(); ?>">
     <div class="card">
@@ -226,7 +230,7 @@
                             <div class="row">
                                 <?php if(empty($myBanks)) : ?>
                                     <div class="col-md-6">
-                                        <a target="_blank" href="/bank" class="btn btn-outline-primary" style="min-width: 10px;"><i class="fas fa-plus"></i> Tambah Bank</a>
+                                        <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#modal-create-bank" class="btn btn-outline-primary" style="min-width: 10px;"><i class="fas fa-plus"></i> Tambah Bank</a>
                                     </div>
                                 <?php else : ?>
                                     <?php foreach($myBanks as $mbank) : ?>
