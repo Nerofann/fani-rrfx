@@ -144,13 +144,6 @@ $tanggalLahir = ($progressAccount['ACC_TANGGAL_LAHIR'] ?? $user['MBR_TGLLAHIR'])
                                                 <input type="text" autocomplete="off" value="<?= $demoAccount['ACC_LOGIN'] ?>" class="form-control" readonly>
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <td width="20%" class="top-align fw-bold">Demo Account File Upload</td>
-                                            <td width="3%" class="top-align"> : </td>
-                                            <td class="top-align text-start">
-                                                <input type="file" class="dropify" id="smls_demofile" name="smls_demofile" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_SIMULASI_IMG'] ?? "") ?>">
-                                            </td>
-                                        </tr>
                                     </tbody>
                                 </table>
                             </div>

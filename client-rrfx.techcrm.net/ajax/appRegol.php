@@ -639,46 +639,45 @@ class AppPost {
             ]));  
         }
 
-        
         /** Upload File */
-        if(empty($progressAccount['ACC_F_SIMULASI_IMG'])) {
-            /** Check file */
-            if(empty($_FILES['smls_demofile']) || $_FILES['smls_demofile']['error'] != 0) {
-                exit(json_encode([
-                    'success'   => false,
-                    'alert'     => [
-                        'title' => "Gagal",
-                        'text'  => "Mohon upload file demo account",
-                        'icon'  => "error"
-                    ]
-                ]));
-            }
+        // if(empty($progressAccount['ACC_F_SIMULASI_IMG'])) {
+        //     /** Check file */
+        //     if(empty($_FILES['smls_demofile']) || $_FILES['smls_demofile']['error'] != 0) {
+        //         exit(json_encode([
+        //             'success'   => false,
+        //             'alert'     => [
+        //                 'title' => "Gagal",
+        //                 'text'  => "Mohon upload file demo account",
+        //                 'icon'  => "error"
+        //             ]
+        //         ]));
+        //     }
 
-            $uploadFile = FileUpload::upload_myfile($_FILES['smls_demofile'], "demo_img_");
-            if(!is_array($uploadFile) || !array_key_exists("filename", $uploadFile)) {
-                exit(json_encode([
-                    'success'   => false,
-                    'alert'     => [
-                        'title' => "Gagal",
-                        'text'  => "Gagal mengunggah file, {$uploadFile}",
-                        'icon'  => "error"
-                    ]
-                ]));
-            }
+        //     $uploadFile = FileUpload::upload_myfile($_FILES['smls_demofile'], "demo_img_");
+        //     if(!is_array($uploadFile) || !array_key_exists("filename", $uploadFile)) {
+        //         exit(json_encode([
+        //             'success'   => false,
+        //             'alert'     => [
+        //                 'title' => "Gagal",
+        //                 'text'  => "Gagal mengunggah file, {$uploadFile}",
+        //                 'icon'  => "error"
+        //             ]
+        //         ]));
+        //     }
 
-            /** Update Image */
-            $updateImage = Database::update("tb_racc", ['ACC_F_SIMULASI_IMG' => $uploadFile['filename']], ['ID_ACC' => $progressAccount['ID_ACC']]);
-            if($updateImage !== TRUE) {
-                exit(json_encode([
-                    'success'   => false,
-                    'alert'     => [
-                        'title' => "Gagal",
-                        'text'  => "Gagal menyimpan file, {$updateImage}",
-                        'icon'  => "error"
-                    ]
-                ]));
-            }
-        }
+        //     /** Update Image */
+        //     $updateImage = Database::update("tb_racc", ['ACC_F_SIMULASI_IMG' => $uploadFile['filename']], ['ID_ACC' => $progressAccount['ID_ACC']]);
+        //     if($updateImage !== TRUE) {
+        //         exit(json_encode([
+        //             'success'   => false,
+        //             'alert'     => [
+        //                 'title' => "Gagal",
+        //                 'text'  => "Gagal menyimpan file, {$updateImage}",
+        //                 'icon'  => "error"
+        //             ]
+        //         ]));
+        //     }
+        // }
 
         /** Check Alamat */
         $province = base64_decode($data['smls_almtrmh_prov']);
