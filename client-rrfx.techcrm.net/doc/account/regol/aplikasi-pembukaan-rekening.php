@@ -464,19 +464,23 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-md-3 mb-3">
-                                    <label for="" class="form-control-label required text-sm" style="font-size: 14px;">Rekening Koran Bank / Tagihan Kartu Kredit</label>
+                                <div class="col-md-4 mb-3">
+                                    <label for="" class="form-label required text-sm" style="font-size: 14px;">Rekening Koran Bank / Tagihan Kartu Kredit</label>
                                     <input type="file" class="dropify" id="app_image_1" name="app_image_1" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_IMG'] ?? "") ?>">
                                 </div>
-                                <div class="col-md-3 mb-3">
+                                <div class="col-md-4 mb-3">
                                     <label for="" class="form-label required">Rekening Listrik / Telepon</label>
                                     <input type="file" class="dropify" id="app_image_2" name="app_image_2" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_IMG2'] ?? "") ?>">
                                 </div>
-                                <div class="col-md-3 mb-3">
+                                <div class="col-md-4 mb-3">
+                                    <label for="" class="form-label required">NPWP</label>
+                                    <input type="file" class="dropify" id="app_image_npwp" name="app_image_npwp" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_NPWP'] ?? "") ?>">
+                                </div>
+                                <div class="col-md-4 mb-3">
                                     <label for="" class="form-label">Dokumen Lainnya</label>
                                     <input type="file" class="dropify" id="app_image_3" name="app_image_3" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_IMG3'] ?? "") ?>">
                                 </div>
-                                <div class="col-md-3 mb-3">
+                                <div class="col-md-4 mb-3">
                                     <label for="" class="form-label">Dokumen Lainnya</label>
                                     <input type="file" class="dropify" id="app_image_4" name="app_image_4" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_IMG4'] ?? "") ?>">
                                 </div>

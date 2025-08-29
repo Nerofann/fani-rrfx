@@ -1750,6 +1750,45 @@ class AppPost {
             }
         }
 
+        /** Upload Dokumen NPWP */
+        if(empty($_FILES['app_image_npwp']) || $_FILES['app_image_npwp']['error'] != 0) {
+            if(empty($progressAccount['ACC_F_APP_FILE_NPWP'])) {
+                exit(json_encode([
+                    'success' => false,
+                    'alert' => [
+                        'title' => "Gagal",
+                        'text'  => "Mohon upload dokumen pendukung",
+                        'icon'  => "error"
+                    ] 
+                ]));
+            }
+        
+        }else {
+            $uploadDokumenPendukung = FileUpload::upload_myfile($_FILES['app_image_npwp'], "regol");
+            if(!is_array($uploadDokumenPendukung) || !array_key_exists("filename", $uploadDokumenPendukung)) {
+                exit(json_encode([
+                    'success' => false,
+                    'alert' => [
+                        'title' => "Gagal",
+                        'text'  => $uploadDokumenPendukung ?? "Gagal mengunggah file dokumen pendukung",
+                        'icon'  => "error"
+                    ] 
+                ]));
+            }
+    
+            $updateImage = Database::update("tb_racc", ['ACC_F_APP_FILE_NPWP' => $uploadDokumenPendukung['filename']], ['ID_ACC' => $progressAccount['ID_ACC']]);
+            if($updateImage !== TRUE) {
+                exit(json_encode([
+                    'success' => false,
+                    'alert' => [
+                        'title' => "Gagal",
+                        'text'  => $updateImage ?? "Gagal memperbarui dokumen pendukung, mohon coba lagi",
+                        'icon'  => "error"
+                    ] 
+                ]));
+            }
+        }
+
         /** Upload Dokumen 3 (Optional) */
         if(!empty($_FILES['app_image_3']) && $_FILES['app_image_3']['error'] == 0) {
             $uploadDokumenPendukung = FileUpload::upload_myfile($_FILES['app_image_3'], "regol");
