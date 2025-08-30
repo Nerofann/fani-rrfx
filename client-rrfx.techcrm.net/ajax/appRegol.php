@@ -639,6 +639,18 @@ class AppPost {
             ]));  
         }
 
+        /** check apakah sudah pernah transaksi dengan akun demo */
+        $sqlGet = $this->db->query("SELECT TICKET FROM mt5_trades WHERE `LOGIN` = " . $demoAccount['ACC_LOGIN']);
+        if($sqlGet->num_rows == 0) {
+            exit(json_encode([
+                'success'   => false,
+                'alert'     => [
+                    'title' => "Gagal",
+                    'text'  => "Anda belum melakukan transaksi dengan akun demo",
+                    'icon'  => "error"
+                ]
+            ]));  
+        }
         /** Upload File */
         // if(empty($progressAccount['ACC_F_SIMULASI_IMG'])) {
         //     /** Check file */
