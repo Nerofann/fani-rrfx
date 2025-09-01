@@ -132,10 +132,10 @@ $_SESSION['modal'] = ['create-bank'];
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td width="30%" class="top-align fw-bold">No. Telp Handphone</td>
+                                            <td width="30%" class="top-align fw-bold">No. Telp Handphone<span class="text-danger">*</span></td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="number" autocomplete="off" placeholder="No. Telp Handphone" name="app_no_handphone" value="<?= ($realAccount['ACC_F_APP_PRIBADI_HP'] == 0)? $user['MBR_PHONE'] : ($realAccount['ACC_F_APP_PRIBADI_HP'] ?? 0); ?>" class="form-control">
+                                                <input type="number" autocomplete="off" placeholder="62xxxxxxxxx" name="app_no_handphone" value="<?= ($realAccount['ACC_F_APP_PRIBADI_HP'] == 0)? $user['MBR_PHONE'] : ($realAccount['ACC_F_APP_PRIBADI_HP'] ?? 0); ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
