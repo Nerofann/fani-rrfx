@@ -651,6 +651,7 @@ class AppPost {
                 ]
             ]));  
         }
+        
         /** Upload File */
         // if(empty($progressAccount['ACC_F_SIMULASI_IMG'])) {
         //     /** Check file */
@@ -1267,6 +1268,7 @@ class AppPost {
     private function aplikasiPembukaanRekening_DataPribadi($data, $user, $progressAccount) {
         $required = [
             'app_npwp'  => "Nomor NPWP",
+            'app_no_handphone' => "Nomor Telepon",
             'app_gender' => "Jenis Kelamin",
             'app_nama_ibu' => "Nama Ibu Kandung",
             'app_status_perkawinan' => "Status Perkawinan",
@@ -1314,9 +1316,22 @@ class AppPost {
             }
         }
 
+        /** check nomor telepon */
+        $verihub = VerihubFactory::init();
+        $app_no_handphone = $verihub->phoneValidation("", $data['app_no_handphone']);
+        if(!$app_no_handphone) {
+            exit(json_encode([
+                'success' => false,
+                'alert' => [
+                    'title' => "Gagal",
+                    'text'  => "Nomor Telepon tidak valid",
+                    'icon'  => "error"
+                ] 
+            ]));
+        }
+
         $app_telepon_rumah = $data['app_telepon_rumah'] ?? 0;
         $app_faksimili_rumah = $data['app_faksimili_rumah'] ?? 0;
-        $app_no_handphone = $data['app_no_handphone'] ?? 0;
         $acc_app_nama_istri = $data['acc_app_nama_istri'] ?? $progressAccount['ACC_F_APP_PRIBADI_NAMAISTRI'] ?? null;
         $bidang_investasi = null;
         
@@ -2597,7 +2612,7 @@ class AppPost {
             'name'  => $progressAccount['ACC_FULLNAME'],
             'birth_date' => $progressAccount['ACC_TANGGAL_LAHIR'],
             'email' => $user['MBR_EMAIL'], 
-            'phone' => "6285954536593", 
+            'phone' => $user['MBR_PHONE'], 
             'ktp_photo' => ("data:".$progressAccount['ACC_F_APP_FILE_ID_MIME'].";base64,".base64_encode($fileContentKTP)), 
             'selfie_photo' => ("data:".$progressAccount['ACC_F_APP_FILE_FOTO_MIME'].";base64,".base64_encode($fileContentSelfie)), 
             'reference_id' => $reference_id

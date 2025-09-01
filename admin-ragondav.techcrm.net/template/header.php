@@ -48,7 +48,7 @@
                         <!-- Profile -->
                         <div class="dropdown main-profile-menu">
                             <a class="d-flex" href="javascript:void(0);">
-                                <span class="main-img-user"><img alt="avatar" src="../../assets/img/icon-rrfx4.png"></span>
+                                <span class="main-img-user"><img alt="avatar" src="/assets/img/icon-rrfx4.png"></span>
                             </a>
                             <div class="dropdown-menu">
                                 <div class="header-navheading">

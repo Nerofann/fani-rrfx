@@ -67,27 +67,6 @@ use App\Models\Account;
         ]);
     }
 
-    /** Check Id Deposit */
-    $DEPOSIT_CHECK = Dpwd::findByRaccId($ACCOUNT_CHECK["ID_ACC"]);
-    if(!$DEPOSIT_CHECK){
-        JsonResponse([
-            'code'      => 200,
-            'success'   => false,
-            'message'   => "Deposit id not found",
-            'data'      => []
-        ]);
-    }
-
-    /** Check Valid Deposit New Account */
-    if(($DEPOSIT_CHECK["DPWD_TYPE"] != 3 || $DEPOSIT_CHECK["DPWD_STS"] != -1)){
-        JsonResponse([
-            'code'      => 200,
-            'success'   => false,
-            'message'   => "Invalid deposit new account",
-            'data'      => []
-        ]);
-    }
-
     /** Check Id Account Condition */
     $ACCOND_CHECK = Account::accoundCondition($ACCOUNT_CHECK["ID_ACC"]);
     if(!$ACCOND_CHECK){
@@ -119,50 +98,11 @@ use App\Models\Account;
         /**Accept || Reject Processing*/
         switch ($data["sbmt_act"]) {
             case 'accept':
-                /** create metatrader account */
-                $password = Helper::generatePassword();
-                $investor = Helper::generatePassword();
-                $accountData = [
-                    "master_pass" => $password, 
-                    "investor_pass" => $investor, 
-                    "group" => $ACCOUNT_CHECK['RTYPE_GROUP'], 
-                    "fullname" => $ACCOUNT_CHECK['ACC_FULLNAME'], 
-                    "email" => $ACCOUNT_CHECK['MBR_EMAIL'], 
-                    "leverage" => $ACCOUNT_CHECK['RTYPE_LEVERAGE'], 
-                    "comment" => "metaapi"
-                ];
-                
-                $accountCreate = $apiManager->createAccount($accountData);
-                if(!is_object($accountCreate) || !property_exists($accountCreate, "Login")) {
-                    $db->rollback();
-                    JsonResponse([
-                        'success'   => false,
-                        'message'   => "Gagal membuat akun metatrader",
-                        'data'      => []
-                    ]);
-                }
-
-                /** Test Connection */
-                $login = $accountCreate->Login; // Update Login
-                $connect = $apiTerminal->connect(['login' => $login, 'password' => $password]); // Test Connection
-                if($connect) {
-                    $UPDATE_RACC["ACC_TOKEN"] = $connect;
-                }
-
-                /** deposit margin */
-                $depositMargin = $apiManager->deposit([
-                    'login' => $login,
-                    'amount' => $ACCOND_CHECK['ACCCND_AMOUNTMARGIN'],
-                    'comment' => "acccnd-".$DEPOSIT_CHECK['ID_DPWD']
-                ]);
-                    
                 /** Update RACC */
                 $updateRaccData = [
                     'ACC_STS' => -1,
+                    'ACC_LOGIN' => $ACCOND_CHECK['ACCCND_LOGIN'],
                     'ACC_WPCHECK' => 6,
-                    'ACC_LOGIN' => $login,
-                    'ACC_PASS' => base64_encode($password),
-                    'ACC_INVESTOR' => base64_encode($investor)
                 ];
 
                 $updateRacc = Database::update('tb_racc', $updateRaccData, ["ID_ACC" => $ACCOUNT_CHECK["ID_ACC"]]);
@@ -176,12 +116,7 @@ use App\Models\Account;
                 }
 
                 /** Update Account condition */
-                $updateAccndData = [
-                    'ACCCND_STS' => -1,
-                    'ACCCND_LOGIN' => $login,
-                ];
-
-                $updateAccnd = Database::update('tb_acccond', $updateAccndData, ["ID_ACCCND" => $ACCOND_CHECK["ID_ACCCND"]]);
+                $updateAccnd = Database::update('tb_acccond', ['ACCCND_STS' => -1], ["ID_ACCCND" => $ACCOND_CHECK["ID_ACCCND"]]);
                 if(!$updateAccnd) {
                     $db->rollback();
                     JsonResponse([
@@ -190,22 +125,10 @@ use App\Models\Account;
                         'data'      => []
                     ]);
                 }
-
-                /** Send Email */
-                $emailData = [
-                    'subject'        => "Real Account Info",
-                    'name'           => $ACCOUNT_CHECK["ACC_FULLNAME"],
-                    'login'          => $login,
-                    'metaPassword'   => $password,
-                    'metaInvestor'   => $investor
-                ];
-                $emailSender = EmailSender::init(['email' => $ACCOUNT_CHECK['MBR_EMAIL'], 'name' => $ACCOUNT_CHECK['MBR_NAME']]);
-                $emailSender->useFile("dealer", $emailData);
-                $send = $emailSender->send();
                 break;
 
             case 'reject':
-                $updateRacc = Database::update('tb_racc', ['ACC_WPCHECK' => 4], ["ID_ACC" => $ACCOUNT_CHECK["ID_ACC"]]);
+                $updateRacc = Database::update('tb_racc', ['ACC_WPCHECK' => 0], ["ID_ACC" => $ACCOUNT_CHECK["ID_ACC"]]);
                 if(!$updateRacc) {
                     $db->rollback();
                     JsonResponse([
@@ -230,7 +153,6 @@ use App\Models\Account;
         Database::insert('tb_note', [
             "NOTE_MBR"   => $ACCOUNT_CHECK["ACC_MBR"],
             "NOTE_RACC"  => $ACCOUNT_CHECK["ID_ACC"],
-            "NOTE_DPWD"  => $DEPOSIT_CHECK["ID_DPWD"],
             "NOTE_ACCDN" => $ACCOND_CHECK["ID_ACCCND"],
             "NOTE_TYPE"  => 'DEALER '.strtoupper($data["sbmt_act"]),
             "NOTE_NOTE"  => $data["sbmt_note"],
@@ -260,7 +182,7 @@ use App\Models\Account;
         'code'      => 200,
         'success'   => true,
         'message'   => "Success ".$data["sbmt_act"],
-        'data'      => [
-            "reloc" => '/account/active_real_account/document/'.md5(md5($ACCOUNT_CHECK['ID_ACC']))
-        ]
+        'data'      => (strtoupper($data["sbmt_act"] ?? "") == "ACCEPT") 
+            ? ["reloc" => '/account/active_real_account/document/'.md5(md5($ACCOUNT_CHECK['ID_ACC']))]
+            : ["reloc" => '/account/progress_real_account/view']
     ]);

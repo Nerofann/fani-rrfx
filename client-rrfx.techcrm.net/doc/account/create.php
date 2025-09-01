@@ -136,12 +136,12 @@ try {
             'page' => "selesai",
             'show' => true
         ],
-        [
-            'title' => "Deposit New Account",
-            'success' => !empty($realAccount['ACC_F_CMPLT']),
-            'page' => "deposit-new-account",
-            'show' => ($realAccount && $realAccount['ACC_STS'] == 1 && $realAccount['ACC_WPCHECK'] >= 1)
-        ],
+        // [
+        //     'title' => "Deposit New Account",
+        //     'success' => !empty($realAccount['ACC_F_CMPLT']),
+        //     'page' => "deposit-new-account",
+        //     'show' => ($realAccount && $realAccount['ACC_STS'] == 1 && $realAccount['ACC_WPCHECK'] >= 1)
+        // ],
     ];
 
     /** Pengecekan step selesai / pernah diisi, dan belum pernah diisi */

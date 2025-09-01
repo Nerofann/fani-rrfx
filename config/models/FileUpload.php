@@ -60,7 +60,7 @@ class FileUpload {
         return $awsUrl;
     }
 
-    public static function awsFile(string $filename): string {
+    public static function awsFile(?string $filename): string {
         return Self::awsUrl() . "/" . $filename;
     }
 
