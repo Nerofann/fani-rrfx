@@ -1,4 +1,8 @@
-<?php $myBanks = App\Models\User::myBank($user['MBR_ID']); ?>
+<?php 
+$myBanks = App\Models\User::myBank($user['MBR_ID']);
+$_SESSION['modal'] = ['create-bank'];
+?>
+
 <form method="post" enctype="multipart/form-data" id="form-aplikasi-pembukaan-rekening">
     <input type="hidden" name="csrf_token" value="<?= uniqid(); ?>">
     <div class="card">
@@ -128,10 +132,10 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td width="30%" class="top-align fw-bold">No. Telp Handphone</td>
+                                            <td width="30%" class="top-align fw-bold">No. Telp Handphone<span class="text-danger">*</span></td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="number" autocomplete="off" placeholder="No. Telp Handphone" name="app_no_handphone" value="<?= ($realAccount['ACC_F_APP_PRIBADI_HP'] == 0)? $user['MBR_PHONE'] : ($realAccount['ACC_F_APP_PRIBADI_HP'] ?? 0); ?>" class="form-control">
+                                                <input type="number" autocomplete="off" placeholder="62xxxxxxxxx" name="app_no_handphone" value="<?= ($realAccount['ACC_F_APP_PRIBADI_HP'] == 0)? $user['MBR_PHONE'] : ($realAccount['ACC_F_APP_PRIBADI_HP'] ?? 0); ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
@@ -226,7 +230,7 @@
                             <div class="row">
                                 <?php if(empty($myBanks)) : ?>
                                     <div class="col-md-6">
-                                        <a target="_blank" href="/bank" class="btn btn-outline-primary" style="min-width: 10px;"><i class="fas fa-plus"></i> Tambah Bank</a>
+                                        <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#modal-create-bank" class="btn btn-outline-primary" style="min-width: 10px;"><i class="fas fa-plus"></i> Tambah Bank</a>
                                     </div>
                                 <?php else : ?>
                                     <?php foreach($myBanks as $mbank) : ?>
@@ -464,19 +468,23 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-md-3 mb-3">
-                                    <label for="" class="form-control-label required text-sm" style="font-size: 14px;">Rekening Koran Bank / Tagihan Kartu Kredit</label>
+                                <div class="col-md-4 mb-3">
+                                    <label for="" class="form-label required text-sm" style="font-size: 14px;">Rekening Koran Bank / Tagihan Kartu Kredit</label>
                                     <input type="file" class="dropify" id="app_image_1" name="app_image_1" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_IMG'] ?? "") ?>">
                                 </div>
-                                <div class="col-md-3 mb-3">
+                                <div class="col-md-4 mb-3">
                                     <label for="" class="form-label required">Rekening Listrik / Telepon</label>
                                     <input type="file" class="dropify" id="app_image_2" name="app_image_2" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_IMG2'] ?? "") ?>">
                                 </div>
-                                <div class="col-md-3 mb-3">
+                                <div class="col-md-4 mb-3">
+                                    <label for="" class="form-label required">NPWP</label>
+                                    <input type="file" class="dropify" id="app_image_npwp" name="app_image_npwp" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_NPWP'] ?? "") ?>">
+                                </div>
+                                <div class="col-md-4 mb-3">
                                     <label for="" class="form-label">Dokumen Lainnya</label>
                                     <input type="file" class="dropify" id="app_image_3" name="app_image_3" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_IMG3'] ?? "") ?>">
                                 </div>
-                                <div class="col-md-3 mb-3">
+                                <div class="col-md-4 mb-3">
                                     <label for="" class="form-label">Dokumen Lainnya</label>
                                     <input type="file" class="dropify" id="app_image_4" name="app_image_4" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_IMG4'] ?? "") ?>">
                                 </div>
