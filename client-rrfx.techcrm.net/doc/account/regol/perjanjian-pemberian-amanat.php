@@ -538,7 +538,8 @@ $profile = ProfilePerusahaan::get();
 <script type="text/javascript">
     $(document).ready(function(){
         $('#check_all').on('click', function () {
-            $('input[name="box[]"]').attr('checked', 'checked');
+            if($('#check_all').is(':checked')) $('input[name="box[]"]').attr('checked', 'checked');
+            else $('input[name="box[]"]').removeAttr('checked');
         })
 
         if($('#check_all').data('done')) {
