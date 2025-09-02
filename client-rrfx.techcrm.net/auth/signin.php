@@ -24,9 +24,9 @@ if($isLoggedIn) {
 					<input required name="email" type="email" class="form-control" autocomplete="off" required placeholder="Email address">
 					<span class="input-group-text"><i class="fa-regular fa-envelope"></i></span>
 				</div>
-				<div class="input-group mb-20">
-					<input type="password" required name="password" class="form-control" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])\S{8,64}$" title="Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character, and be at least 8 characters long." autocomplete="off" placeholder="Password">
-					<span class="password-show input-group-text" style="height: 100%;right: 0;"><i class="fa-duotone fa-eye"></i></span>
+				<div class="input-group mb-25">
+					<input required name="password" id="password" type="password" class="form-control" autocomplete="off" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])\S{8,64}$" title="Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character, and be at least 8 characters long." required placeholder="Password">
+					<span class="input-group-text" style="cursor: pointer;" onclick="togglePassword('password')"><i id="passwordIcon" class="fa-regular fa-eye"></i></span>
 				</div>
 				<div class="d-flex justify-content-between mb-25">
 					<div class="form-check">
@@ -56,6 +56,21 @@ if($isLoggedIn) {
 	<?php require_once __DIR__ . "/footer.php"; ?>
 	<!-- footer end -->
 </div>
+<script type="text/javascript">
+    function togglePassword(getid) {
+      	const input = document.getElementById(getid);
+      	const iconId = document.getElementById(getid+'Icon');
+      	if (input.type === "password") {
+        	input.type = "text";
+			iconId.classList.remove("fa-eye");
+			iconId.classList.add("fa-eye-slash");
+      	} else {
+        	input.type = "password";
+			iconId.classList.remove("fa-eye-slash");
+			iconId.classList.add("fa-eye");
+      	}
+    }
+</script>
 
 <script type="text/javascript">
 	$("#form-signin").on("submit", function(e) {
