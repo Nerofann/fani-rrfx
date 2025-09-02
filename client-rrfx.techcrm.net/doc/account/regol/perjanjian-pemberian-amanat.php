@@ -536,18 +536,32 @@ $profile = ProfilePerusahaan::get();
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function(){
-        $('#check_all').on('click', function () {
-            if($('#check_all').is(':checked')) $('input[name="box[]"]').attr('checked', 'checked');
-            else $('input[name="box[]"]').removeAttr('checked');
-        })
+    $(function () {
+        const $checkAll = $('#check_all');
+        const itemSelector = '.ck-item:not(:disabled)';
 
-        if($('#check_all').data('done')) {
-            $('#check_all').click();
-            $('#check_all').attr('checked', 'checked');
+        function syncMaster() {
+            const $items   = $(itemSelector);
+            const total    = $items.length;
+            const checked  = $items.filter(':checked').length;
+
+            $checkAll.prop('checked', checked === total);
+            $checkAll.prop('indeterminate', checked > 0 && checked < total);
         }
-        
-        
+
+        $checkAll.on('change', function () {
+            $(itemSelector).prop('checked', this.checked);
+            syncMaster();
+        });
+
+        $(document).on('change', itemSelector, syncMaster);
+
+        syncMaster();
+    });
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
         $('#form-perjanjian-amanat').on('submit', function(event) {
             event.preventDefault();
             Swal.fire({
