@@ -25,8 +25,8 @@ if($isLoggedIn) {
 					<span class="input-group-text"><i class="fa-regular fa-envelope"></i></span>
 				</div>
 				<div class="input-group mb-20">
-					<input type="password" required name="password" class="form-control rounded-end" autocomplete="off" placeholder="Password">
-					<a role="button" class="password-show"><i class="fa-duotone fa-eye"></i></a>
+					<input type="password" required name="password" class="form-control" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])\S{8,64}$" title="Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character, and be at least 8 characters long." autocomplete="off" placeholder="Password">
+					<span class="password-show input-group-text" style="height: 100%;right: 0;"><i class="fa-duotone fa-eye"></i></span>
 				</div>
 				<div class="d-flex justify-content-between mb-25">
 					<div class="form-check">
