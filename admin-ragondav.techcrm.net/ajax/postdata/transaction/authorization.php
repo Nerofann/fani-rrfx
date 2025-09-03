@@ -7,7 +7,9 @@
     use App\Models\FileUpload;
     use Config\Core\Database;
     use App\Factory\MetatraderFactory;
-    
+use App\Models\User;
+use Config\Core\EmailSender;
+
     $listGrup = $adminPermissionCore->availableGroup();
     $adminRoles = Admin::adminRoles();
     if(!$adminPermissionCore->hasPermission($authorizedPermission, "/transaction/authorization")) {
@@ -48,6 +50,8 @@
     $SQL_CHECK = mysqli_query($db, '
         SELECT 
             tb_dpwd.ID_DPWD,
+            tb_dpwd.DPWD_CURR_FROM,
+            tb_dpwd.DPWD_AMOUNT_SOURCE,
             CASE
                 WHEN tb_dpwd.DPWD_CURR_FROM = "USD" THEN tb_dpwd.DPWD_AMOUNT_SOURCE
                 WHEN tb_dpwd.DPWD_CURR_FROM = "IDR" THEN tb_dpwd.DPWD_AMOUNT
@@ -83,6 +87,16 @@
         JsonResponse([
             'success' => false,
             'message' => "Akun tidak ditemukan",
+            'data' => []
+        ]);
+    }
+
+    /** check user */
+    $userdata = User::findByMemberId($LOGIN_ACC['ACC_MBR']);
+    if(!$userdata) {
+        JsonResponse([
+            'success' => false,
+            'message' => "Invalid User",
             'data' => []
         ]);
     }
@@ -132,22 +146,53 @@
 
         /** MetaTrader action if accept */
         if($UPDATE_DATA['DPWD_STS'] == -1){
-            /** Proses isi balance MetaTrader */
-            $apiManager = MetatraderFactory::apiManager();
-            $deposit = $apiManager->deposit($dpdt = [
-                'login' => $LOGIN_ACC['ACC_LOGIN'],
-                'amount' => $RSLT_CHECK["JMLH"],
-                'comment' => "deposit_".$RSLT_CHECK["ID_DPWD"]
-            ]);
+            $comment = "deposit_".$RSLT_CHECK["ID_DPWD"];
+            sleep(3);
 
-            if(!is_object($deposit) || !property_exists($deposit, "ticket")) {
-                $db->rollback();
-                JsonResponse([
-                    'success' => false,
-                    'message' => "Invalid Status Deposit",
-                    'data' => [$dpdt]
+            /** Check apakah deposit sudah masuk */
+            $sqlGet = $db->query("SELECT TICKET FROM mt5_balance WHERE COMMENT = '{$comment}' LIMIT 1");
+            if($sqlGet->num_rows != 0) {
+                /** Proses isi balance MetaTrader */
+                $apiManager = MetatraderFactory::apiManager();
+                $deposit = $apiManager->deposit($dpdt = [
+                    'login' => $LOGIN_ACC['ACC_LOGIN'],
+                    'amount' => $RSLT_CHECK["JMLH"],
+                    'comment' => $comment
                 ]);
+    
+                if(!is_object($deposit) || !property_exists($deposit, "ticket")) {
+                    $db->rollback();
+                    JsonResponse([
+                        'success' => false,
+                        'message' => "Invalid Status Deposit",
+                        'data' => [$dpdt]
+                    ]);
+                }
             }
+
+            /** Notifikasi email deposit success */
+            $emailData = [
+                'subject' => "Konfirmasi Deposit Anda Telah Disetujui",
+                'jumlah' => $RSLT_CHECK['DPWD_CURR_FROM'] . " " . Helper::formatCurrency($RSLT_CHECK['DPWD_AMOUNT_SOURCE'])
+            ];
+
+            $emailSender = EmailSender::init(['email' => $userdata['MBR_EMAIL'], 'name' => $userdata['MBR_NAME']]);
+            $emailSender->useFile("deposit-success", $emailData);
+            $send = $emailSender->send();
+        
+            
+        } elseif ($UPDATE_DATA['DPWD_STS'] == 1) {
+
+            /** Notifikasi email deposit gagal */
+            $emailData = [
+                'subject' => "Konfirmasi Deposit Anda Telah Ditolak",
+                'jumlah' => $RSLT_CHECK['DPWD_CURR_FROM'] . " " . Helper::formatCurrency($RSLT_CHECK['DPWD_AMOUNT_SOURCE']),
+                'note' => $data["note"]
+            ];
+
+            $emailSender = EmailSender::init(['email' => $userdata['MBR_EMAIL'], 'name' => $userdata['MBR_NAME']]);
+            $emailSender->useFile("deposit-reject", $emailData);
+            $send = $emailSender->send();
         }
 
 
