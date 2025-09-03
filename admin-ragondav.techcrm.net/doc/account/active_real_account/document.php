@@ -7,7 +7,7 @@
     $data = Helper::getSafeInput($_GET);
 
     $COMPANY         = App\Models\CompanyProfile::$name;
-    $page_title      = 'Progress Real Account';
+    $page_title      = 'Active Real Account';
     $web_name_full   = $COMPANY;
     $progressAccount = Account::realAccountDetail($data["d"]);
     $progressAccount = array_merge((Account::accoundCondition($progressAccount["ID_ACC"]) ?? []), $progressAccount);
@@ -21,8 +21,9 @@
 	<div>
 		<h2 class="main-content-title tx-24 mg-b-5">Dokumen</h2>
 		<ol class="breadcrumb">
+			<li class="breadcrumb-item"><a href="<?= pathbreadcrumb(0) ?>/dashboard">Home</a></li>
 			<li class="breadcrumb-item"><a href="javascript:void(0);">Account</a></li>
-			<li class="breadcrumb-item"><a href="javascript:void(0);"><?php echo $page_title; ?></a></li>
+			<li class="breadcrumb-item"><a href="<?= pathbreadcrumb(2) ?>/view"><?php echo $page_title; ?></a></li>
 			<li class="breadcrumb-item active">Dokumen</li>
 		</ol>
 	</div>

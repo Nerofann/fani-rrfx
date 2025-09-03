@@ -15,9 +15,9 @@ if(!$product) {
     <div>
         <h2 class="main-content-title tx-24 mg-b-5">Update Product</h2>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
+            <li class="breadcrumb-item"><a href="<?= pathbreadcrumb(0) ?>/dashboard">Home</a></li>
             <li class="breadcrumb-item"><a href="javascript:void(0);">Tools</a></li>
-            <li class="breadcrumb-item"><a href="javascript:void(0);">Product</a></li>
+            <li class="breadcrumb-item"><a href="<?= pathbreadcrumb(2) ?>/view">Product</a></li>
             <li class="breadcrumb-item active" aria-current="page">Update #<?= $suffix; ?></li>
         </ol>
     </div>
