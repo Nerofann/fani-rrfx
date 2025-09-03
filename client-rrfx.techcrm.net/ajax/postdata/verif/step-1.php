@@ -44,7 +44,7 @@ if(!preg_match('/^[a-zA-Z\s]+$/', $fullname)) {
     ]);
 }
 
-if(!preg_match('/^[a-zA-Z0-9\s,.\-\/#]+$/', $address)) {
+if(!preg_match("/^[a-zA-Z0-9\s',.\-\/#]+$/", $address)) {
     JsonResponse([
         'success' => false,
         'message' => "Terdapat karakter yang tidak valid pada alamat lengkap",
