@@ -4,8 +4,10 @@
     use App\Models\Admin;
     use App\Models\Logger;
     use App\Models\FileUpload;
-    use Config\Core\Database;
-    
+use App\Models\User;
+use Config\Core\Database;
+use Config\Core\EmailSender;
+
     $listGrup = $adminPermissionCore->availableGroup();
     $adminRoles = Admin::adminRoles();
     if(!$adminPermissionCore->hasPermission($authorizedPermission, "/transaction/verificator")) {
@@ -43,7 +45,10 @@
     /** Check deposit id */
     $SQL_CHECK = mysqli_query($db, '
         SELECT 
-            tb_dpwd.ID_DPWD 
+            tb_dpwd.ID_DPWD,
+            DPWD_MBR,
+            DPWD_AMOUNT_SOURCE,
+            DPWD_CURR_FROM
         FROM tb_dpwd 
         WHERE MD5(MD5(tb_dpwd.ID_DPWD)) = "'.$data["ver-dpx"].'" 
         AND tb_dpwd.DPWD_STS = 0
@@ -59,6 +64,16 @@
         ]);
     }
     $RSLT_CHECK = $SQL_CHECK->fetch_assoc();
+
+    /** check user */
+    $userdata = User::findByMemberId($RSLT_CHECK['DPWD_MBR']);
+    if(!$userdata) {
+        JsonResponse([
+            'success' => false,
+            'message' => "Invalid User",
+            'data' => []
+        ]);
+    }
 
     $UPDATE_DATA = [
         "DPWD_NOTE1"     => $data["note"],
@@ -94,6 +109,19 @@
             'message'   => "Failed to ".$data["ver-act"],
             'data'      => []
         ]);
+    }
+
+    if($UPDATE_DATA['DPWD_STSVER'] == 1) {
+        /** Notifikasi email deposit gagal */
+        $emailData = [
+            'subject' => "Konfirmasi Deposit Anda Telah Ditolak",
+            'jumlah' => $RSLT_CHECK['DPWD_CURR_FROM'] . " " . Helper::formatCurrency($RSLT_CHECK['DPWD_AMOUNT_SOURCE']),
+            'note' => $data["note"]
+        ];
+
+        $emailSender = EmailSender::init(['email' => $userdata['MBR_EMAIL'], 'name' => $userdata['MBR_NAME']]);
+        $emailSender->useFile("deposit-reject", $emailData);
+        $send = $emailSender->send();
     }
     
     Logger::admin_log([
