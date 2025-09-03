@@ -2,7 +2,7 @@
     <div>
         <h2 class="main-content-title tx-24 mg-b-5">Product</h2>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
+            <li class="breadcrumb-item"><a href="<?= pathbreadcrumb(0) ?>/dashboard">Home</a></li>
             <li class="breadcrumb-item"><a href="javascript:void(0);">Tools</a></li>
             <li class="breadcrumb-item active" aria-current="page">Product</li>
         </ol>
@@ -41,11 +41,23 @@
     let table;
     $(document).ready(function() {
         table = $('#table-product').DataTable({
+            dom: 'Blfrtip',
+            scrollX: true,
             processing: true,
             serverSide: true,
             deferRender: true,
+			buttons: [
+				{
+					extend: 'excel',
+					text: 'Excel',
+				},
+				{
+					extend: 'copy',
+					text: 'Copy'
+				}
+			],
             order: [[0, 'asc']],
-            lengthMenu: [[50, 100, -1], [50, 100, "All"]],
+            lengthMenu: [[10, 50, 100, -1], [10, 50, 100, "All"]],
             buttons: [
                 { extend: 'excel', text: "Excel" },
                 { extend: 'csv', text: "CSV" },
@@ -53,9 +65,8 @@
             ],
             ajax: {
                 url: "/ajax/datatable".concat($('#table-product').data('url')),
-                data: function() {
-
-                }
+                contentType: "application/json",
+                type: "GET"
             },
             columnDefs: [
                 { targets: 4, className: "text-center" },

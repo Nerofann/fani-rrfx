@@ -22,9 +22,9 @@
     <div>
         <h2 class="main-content-title tx-24 mg-b-5">Ticket Detail</h2>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-            <li class="breadcrumb-item"><a href="/dashboard">Support</a></li>
-            <li class="breadcrumb-item"><a href="/dashboard">Ticket</a></li>
+            <li class="breadcrumb-item"><a href="<?= pathbreadcrumb(0) ?>/dashboard">Home</a></li>
+            <li class="breadcrumb-item"><a href="javascript:void(0);">Support</a></li>
+            <li class="breadcrumb-item"><a href="<?= pathbreadcrumb(2) ?>/view">Ticket</a></li>
             <li class="breadcrumb-item active" aria-current="page"><a href="#">Ticket Detail</a></li>
         </ol>
     </div>
