@@ -33,7 +33,7 @@ $fullname   = $data['fullname'] ?? $user['MBR_NAME'];
 $phone      = $data['phone'] ?? $user['MBR_PHONE'];
 $gender     = $data['gender'] ?? $user['MBR_JENIS_KELAMIN'];
 $country    = $data['country'] ?? $user['MBR_COUNTRY'];
-$address    = $_POST['address'] ?? $user['MBR_ADDRESS'];
+$address    = $data['address'] ?? $user['MBR_ADDRESS'];
 
 /** validasi nama lengkap */
 if(!preg_match('/^[a-zA-Z\s]+$/', $fullname)) {
@@ -44,13 +44,13 @@ if(!preg_match('/^[a-zA-Z\s]+$/', $fullname)) {
     ]);
 }
 
-if(!preg_match("/^[a-zA-Z0-9\s',.\-\/#]+$/", $address)) {
-    JsonResponse([
-        'success' => false,
-        'message' => "Terdapat karakter yang tidak valid pada alamat lengkap",
-        'data' => []
-    ]);
-}
+// if(!preg_match("/^[a-zA-Z0-9\s',.\-\/#]+$/", $address)) {
+//     JsonResponse([
+//         'success' => false,
+//         'message' => "Terdapat karakter yang tidak valid pada alamat lengkap",
+//         'data' => []
+//     ]);
+// }
 
 /** check Country */
 $d_country = Country::getByName($country);
