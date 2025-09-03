@@ -33,10 +33,10 @@ foreach($required as $req) {
 }
 
 /** validasi nama lengkap */
-if(!preg_match('/^[a-zA-Z\s]+$/', $data['fullname'])) {
+if(!preg_match("/^[a-zA-Z\s]+$/", $data['fullname'])) {
     JsonResponse([
         'success' => false,
-        'message' => "Nama Lengkap tidak valid",
+        'message' => "Nama Lengkap tidak valid, tidak boleh mengandung symbol dan angka",
         'data' => []
     ]);
 }

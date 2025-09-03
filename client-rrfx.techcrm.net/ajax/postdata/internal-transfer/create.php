@@ -102,22 +102,6 @@ if(!$insert) {
     ]);
 }
 
-/** Deposit ke akun penerima */
-$deposit = $apiManager->deposit([
-    'login' => $toAccount['ACC_LOGIN'],
-    'amount' => $jumlah,
-    'comment' => "IT-{$code}"
-]);
-
-if(is_object($deposit) === FALSE || !property_exists($deposit, "ticket")) {
-    $db->rollback();
-    JsonResponse([
-        'success' => false,
-        'message' => "Invalid Status Deposit",
-        'data' => []
-    ]);
-}
-
 /** Withdrawal dari akun pengirim */
 $withdrawal = $apiManager->deposit([
     'login' => $fromAccount['ACC_LOGIN'],
@@ -129,7 +113,23 @@ if(is_object($withdrawal) === FALSE || !property_exists($withdrawal, "ticket")) 
     $db->rollback();
     JsonResponse([
         'success' => false,
-        'message' => "Invalid Status Withdrawal",
+        'message' => "Invalid Status balance " . $fromAccount['ACC_LOGIN'],
+        'data' => []
+    ]);
+}
+
+/** Deposit ke akun penerima */
+$deposit = $apiManager->deposit([
+    'login' => $toAccount['ACC_LOGIN'],
+    'amount' => $jumlah,
+    'comment' => "IT-{$code}"
+]);
+
+if(is_object($deposit) === FALSE || !property_exists($deposit, "ticket")) {
+    $db->rollback();
+    JsonResponse([
+        'success' => false,
+        'message' => "Invalid Status balance " . $toAccount['ACC_LOGIN'],
         'data' => []
     ]);
 }
