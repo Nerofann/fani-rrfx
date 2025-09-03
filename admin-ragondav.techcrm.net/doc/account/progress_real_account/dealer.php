@@ -69,6 +69,13 @@
                             <input type="text" class="form-control" value="<?php echo $progressAccount['RTYPE_KOMISI']?>" readonly required>
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col-md-3 mb-2 mt-auto">Rate</div>
+                        <div class="col-md-4 mb-2">
+                            <input type="text" class="form-control" value="<?= $progressAccount['RTYPE_ISFLOATING']? "Floating" : Helper::formatCurrency($progressAccount['RTYPE_RATE']) ?>" readonly required>
+                        </div>
+                    </div>
     
                     <div class="row">
                         <div class="col-md-3 mb-2 mt-auto">Note</div>

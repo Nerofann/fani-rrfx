@@ -79,9 +79,9 @@
             <div class="card card-aside custom-card">
                 <a href="#" class="card-aside-column  cover-image rounded-start-11" data-image-src="<?= FileUpload::awsFile(($RSLT_NEWS["BLOG_IMG"] ?? '')) ?>" style="background: url(<?= FileUpload::awsFile(($RSLT_NEWS["BLOG_IMG"] ?? '')) ?>) center center;"></a>
                 <div class="card-body">
-                    <a href="#"><span class="main-content-label tx-16"><?= $RSLT_NEWS["BLOG_TITLE"] ?></span></a>
+                    <a href="#"><span class="main-content-label tx-16"><?= strip_tags(html_entity_decode($RSLT_NEWS["BLOG_TITLE"])) ?></span></a>
                     <div class="mt-3" style="overflow-wrap: anywhere;">
-                        <?= substr(html_entity_decode($RSLT_NEWS["BLOG_MESSAGE"]), 0, 200).'...'; ?>
+                        <?= substr(strip_tags(html_entity_decode($RSLT_NEWS["BLOG_MESSAGE"])), 0, 200).'...'; ?>
                     </div>
                     <div class="d-flex align-items-center pt-3 mt-auto">
                         <div>

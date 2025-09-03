@@ -166,7 +166,7 @@ class Helper {
         foreach($posts as $postKey => $val) {
             if(!is_array($val)) {
                 $val = is_null($val) ? '' : $val;
-                $result[ $postKey ] = htmlspecialchars(trim(addslashes(mysqli_real_escape_string($db, stripslashes(strip_tags($val))))));
+                $result[ $postKey ] = self::form_input($val);
             }
         }
     
@@ -200,8 +200,9 @@ class Helper {
     }
 
     public static function form_input($input_form){
-        global $db;
-        return htmlspecialchars(trim(addslashes(mysqli_real_escape_string($db, stripslashes(strip_tags($input_form))))));
+        // global $db;
+        // return htmlspecialchars(trim(addslashes(mysqli_real_escape_string($db, stripslashes(strip_tags($input_form))))));
+        return htmlspecialchars(trim($input_form), ENT_QUOTES, 'UTF-8');
     }
 
     public static function form_inputpass($input_form){
