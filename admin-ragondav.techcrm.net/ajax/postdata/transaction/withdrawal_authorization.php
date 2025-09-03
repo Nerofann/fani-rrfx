@@ -78,14 +78,27 @@
         "DPWD_NOTE1"     => $data["note"],
         "DPWD_DATETIME2" => date("Y-m-d H:i:s")
     ];
+
+    $emailData = [];
     switch (strtolower($data["auth-act"])) {
         case 'accept':
             $UPDATE_DATA["DPWD_STSVER"]  = -1;
+            $emailData = [
+                'file' => "withdrawal-process",
+                'subject' => "Konfirmasi Withdrawal Anda Sedang Diprosess",
+                'jumlah' => $RSLT_CHECK['DPWD_CURR_FROM'] . " " . Helper::formatCurrency($RSLT_CHECK['DPWD_AMOUNT_SOURCE']),
+            ];
             break;
         
         case 'reject':
             $UPDATE_DATA["DPWD_STSVER"]    = 1;
             $UPDATE_DATA["DPWD_STS"]       = 1;
+            $emailData = [
+                'file' => "withdrawal-reject",
+                'subject' => "Konfirmasi Withdrawal Anda Telah Ditolak",
+                'jumlah' => $RSLT_CHECK['DPWD_CURR_FROM'] . " " . Helper::formatCurrency($RSLT_CHECK['DPWD_AMOUNT_SOURCE']),
+                'note' => $data['note']
+            ];
             break;
         
         default:
@@ -109,16 +122,10 @@
         ]);
     }
 
-    if($UPDATE_DATA['DPWD_STSVER'] == 1) {
-        /** Notifikasi email withdrawal reject */
-        $emailData = [
-            'subject' => "Konfirmasi Withdrawal Anda Telah Ditolak",
-            'jumlah' => $RSLT_CHECK['DPWD_CURR_FROM'] . " " . Helper::formatCurrency($RSLT_CHECK['DPWD_AMOUNT_SOURCE']),
-            'note' => $data['note']
-        ];
-
+    if(!empty($emailData)) {
+        /** Notifikasi email */
         $emailSender = EmailSender::init(['email' => $userdata['MBR_EMAIL'], 'name' => $userdata['MBR_NAME']]);
-        $emailSender->useFile("withdrawal-reject", $emailData);
+        $emailSender->useFile($emailData['file'], $emailData);
         $send = $emailSender->send();
     }
     
