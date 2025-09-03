@@ -5,6 +5,11 @@
 
     switch($pageFile) {
         case "verif": 
+            if($user['MBR_STS'] == 0) {
+                $otpCode = md5(md5($user['MBR_ID'] . $user['ID_MBR']));
+                die("<script>location.href = '/otp/{$otpCode}'</script>");
+            }
+
             if($user['MBR_VERIF'] != -1) {
                 $stepPage = Helper::form_input($_GET['b']);
                 $user_step  = explode("-", $_GET['b'])[1] ?? $user['MBR_VERIF'];
