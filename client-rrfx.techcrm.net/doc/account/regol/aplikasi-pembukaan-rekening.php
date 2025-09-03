@@ -1,4 +1,7 @@
-<?php 
+<?php
+
+use App\Models\Helper;
+
 $myBanks = App\Models\User::myBank($user['MBR_ID']);
 $_SESSION['modal'] = ['create-bank'];
 ?>
@@ -450,7 +453,7 @@ $_SESSION['modal'] = ['create-bank'];
                                             <td width="8%" class="top-align fw-bold">Jumlah<span class="text-danger">*</span></td>
                                             <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="text" autocomplete="off" placeholder="Jumlah" name="app_jumlah" readonly value="<?= $realAccount['ACC_F_APP_KEKYAN_NILAI'] ?? "" ?>" class="form-control" required>
+                                                <input type="text" autocomplete="off" placeholder="Jumlah" name="app_jumlah" readonly value="Rp <?= Helper::formatCurrency(($realAccount['ACC_F_APP_KEKYAN_NILAI'] ?? 0), 0) ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -541,7 +544,7 @@ $_SESSION['modal'] = ['create-bank'];
                 let deposit = $('#app_deposit_bank').val() || 0;
                 let kekayaan = $('#app_kekayaan_lainnya').val() || 0;
 
-                $('input[name="app_jumlah"]').val(new Intl.NumberFormat("id-ID", {style: "currency", currency: "IDR"}).format((parseFloat(njop) + parseFloat(deposit) + parseFloat(kekayaan))))
+                $('input[name="app_jumlah"]').val(new Intl.NumberFormat("id-ID", {style: "currency", currency: "IDR", minimumFractionDigits: 0}).format((parseFloat(njop) + parseFloat(deposit) + parseFloat(kekayaan))))
             })
         })
 
