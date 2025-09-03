@@ -1631,9 +1631,9 @@ class AppPost {
             }
         }
 
-        $app_nilai_njop = $data['app_nilai_njop'] ?? 0;
-        $app_deposit_bank = $data['app_deposit_bank'] ?? 0;
-        $app_kekayaan_lainnya = $data['app_kekayaan_lainnya'] ?? 0;
+        $app_nilai_njop = Helper::stringTonumber($data['app_nilai_njop'] ?? 0);
+        $app_deposit_bank = Helper::stringTonumber($data['app_deposit_bank'] ?? 0);
+        $app_kekayaan_lainnya = Helper::stringTonumber($data['app_kekayaan_lainnya'] ?? 0);
 
         if(is_numeric($app_nilai_njop) === FALSE) {
             exit(json_encode([
