@@ -86,12 +86,12 @@
                     <td><?= $realAccount["ACC_LOGIN"] ?></td>
                 </tr>
             </table>
-            <p>
+            <p style="text-align: justify;">
                 Bahwa <?= $bapakatauibu ?> <?= $realAccount["MBR_NAME"] ?> telah resmi menjadi Nasabah <?= strtoupper($company) ?> sejak tanggal <?= date('d', strtotime($realAccount["ACC_F_DISC_DATE"])) ?> <?= Helper::bulan(date('m', strtotime($realAccount["ACC_F_DISC_DATE"]))) ?>  <?= date('Y', strtotime($realAccount["ACC_F_DISC_DATE"])) ?> dengan nomor account new account berdasarkan Perjanjian Pemberian Amanat yang <?= $bapakatauibu ?> <?= $realAccount["MBR_NAME"] ?> telah isi dan
                 setujui berdasarkan ketentuan Peraturan Kepala Bappebti Nomor 99/BAPPEBTI/PER/11/2012 Tentang Penerimaan Nasabah Secara Elektronik Online Di Bidang Perdagangan Berjangka Komoditi sebagaimana telah diubah dengan
                 Peraturan Kepala Bappebti Nomor 107/BAPPEBTI/PER/11/2013, serta telah mengisi dan menyetujui dokumen sebagai berikut:
             </p>
-            <ol>
+            <ol style="text-align: justify;">
                 <li>
                     Pernyataan Telah Melakukan Simulasi Perdagangan Berjangka atau Pernyataan Telah
                     Berpengalaman Dalam Melaksanakan Transaksi Perdagangan Berjangka;
@@ -104,7 +104,7 @@
             </ol>
             <br>
             <p>Dengan membaca, mengisi dan menyetujui dokumen sebagaimana dimaksud di atas, dengan demikian <?= $bapakatauibu ?> <?= $realAccount["MBR_NAME"] ?> telah:</p>
-            <ol class="style1">
+            <ol class="style1" style="text-align: justify;">
                 <li>memahami dan mengerti resiko-resiko yang ada, termasuk kerugian atas seluruh dana yang Disetor;</li>
                 <li>memahami kewajiban dan hak selaku Nasabah Pialang Berjangka;</li>
                 <li>memahami dan mengerti mekanisme dan dan cara Perdagangan Berjangka;</li>
@@ -129,7 +129,7 @@
             </ol>
             <table>
                 <tr>
-                    <p class="style1">
+                    <p class="style1" style="text-align: justify;">
                         Data yang kami terima dari <?= $bapakatauibu ?> <?= $realAccount["MBR_NAME"] ?> akan kami rekam dan catat, dan sepenuhnya menjadi milik <?= strtoupper($company) ?>. Kami bertanggung jawab untuk menjaga <br />
                         kerahasiaan data dan informasi <?= $bapakatauibu ?> <?= $realAccount["MBR_NAME"] ?> sesuai dengan peraturan perundang-Undangan.
                     </p>
