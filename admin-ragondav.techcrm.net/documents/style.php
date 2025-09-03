@@ -1,5 +1,10 @@
 <style>
-    @page { margin: 100px; }
+    @page { 
+        margin-top: 30px;
+        margin-bottom: 30px;
+        margin-right: 50px;
+        margin-left: 50px;
+    }
     body { 
         margin-top: 15px;
         font-family: sans-serif;
