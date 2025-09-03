@@ -151,7 +151,7 @@ use Config\Core\EmailSender;
 
             /** Check apakah deposit sudah masuk */
             $sqlGet = $db->query("SELECT TICKET FROM mt5_balance WHERE COMMENT = '{$comment}' LIMIT 1");
-            if($sqlGet->num_rows != 0) {
+            if($sqlGet->num_rows == 0) {
                 /** Proses isi balance MetaTrader */
                 $apiManager = MetatraderFactory::apiManager();
                 $deposit = $apiManager->deposit($dpdt = [
