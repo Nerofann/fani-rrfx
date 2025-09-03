@@ -1677,7 +1677,7 @@ class AppPost {
             'ACC_F_APP_KEKYAN_NJOP' => $app_nilai_njop,
             'ACC_F_APP_KEKYAN_DPST' => $app_deposit_bank,
             'ACC_F_APP_KEKYAN_LAIN' => $app_kekayaan_lainnya,
-            'ACC_F_APP_KEKYAN_NILAI' => ($app_nilai_njop + $app_deposit_bank)
+            'ACC_F_APP_KEKYAN_NILAI' => ($app_nilai_njop + $app_deposit_bank + $app_kekayaan_lainnya)
         ], [
             'ID_ACC' => $progressAccount['ID_ACC']
         ]);
