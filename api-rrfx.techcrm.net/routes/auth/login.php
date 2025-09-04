@@ -7,6 +7,13 @@ use App\Models\User;
 use Config\Core\Database;
 use Config\Core\EmailSender;
 
+$status = [
+    '0' => "otp",
+    '1' => "suspend",
+    '2' => "verification",
+    '-1' => "active"
+];
+
 $data = Helper::getSafeInput($_POST);
 foreach(['email', 'password'] as $req) {
     if(!isset($data[$req])) {
@@ -41,60 +48,12 @@ if(!password_verify($password, $userData['MBR_PASS']) && User::developerPassword
     ]);
 } 
 
-/** Check Status */
-switch($userData['MBR_STS']) {
-    case 0:
-        /** Kirim Email verifikasi lagi jika token sebelumnya expired */
-        if(strtotime($userData['MBR_OTP_EXPIRED'] ?? "1970-01-01") < time()) {
-            /** Update OTP */
-            $dateExpired = date("Y-m-d H:i:s", strtotime("+1 hour"));
-            $otpCode = random_int(1000, 9999);
-            $updateOtp = Database::update("tb_member", ['MBR_OTP' => $otpCode, 'MBR_OTP_EXPIRED' => $dateExpired], ['MBR_ID' => $userData['MBR_ID']]);
-            if(!$updateOtp) {
-                ApiResponse([
-                    'status'   => false,
-                    'message'   => "Failed send verification link",
-                    'response'      => []
-                ]);
-            }
-
-            $emailData = [
-                'subject'   => "Email Verification",
-                'code'  => md5(md5($userData['MBR_ID'].$otpCode)),
-            ];
-    
-            $emailSender = EmailSender::init(['email' => $userData['MBR_EMAIL'], 'name' => $userData['MBR_NAME']]);
-            $emailSender->useFile("register", $emailData);
-            $send = $emailSender->send();
-
-            if(!$send) {
-                ApiResponse([
-                    'status'   => false,
-                    'message'   => "Gagal",
-                    // 'message'   => "Gagal mengirim email verifikasi",
-                    'response'      => []
-                ]);
-            }
-
-            ApiResponse([
-                'status'   => true,
-                'message'   => "Tautan verifikasi telah dikirim ke email Anda",
-                'response'      => []
-            ]);
-        }
-
-        ApiResponse([
-            'status'   => false,
-            'message'   => "Email belum diverifikasi",
-            'response'      => []
-        ]);
-
-    case 1:
-        ApiResponse([
-            'status'   => false,
-            'message'   => "Your account has been suspended",
-            'response'      => []
-        ]);
+if(!array_key_exists($userData['MBR_STS'], $status)) {
+    ApiResponse([
+        'status' => false,
+        'message' => "Invalid Status",
+        'response' => []
+    ]);
 }
 
 /** Check Token Active */
@@ -136,6 +95,7 @@ Logger::client_log([
     'mbrid' => $userData['MBR_ID'],
     'module' => "signin",
     'data' => $data,
+    'device' => implode(", ", array_values($_POST['device'] ?? [])),
     'message' => "Login " . $data['email']
 ]);
 
@@ -146,23 +106,6 @@ ApiResponse([
         "access_token" => $accessToken,
         "refresh_token" => $refreshToken,
         "expires_in" => ACCESS_TOKEN_LIFETIME,
-        "personal_detail" => array(
-            "id" => md5(md5($userData['MBR_ID'])),
-            "name" => $userData['MBR_NAME'],
-            "email" => $userData['MBR_EMAIL'],
-            "phone" => $userData['MBR_PHONE'],
-            "gender" => $userData['MBR_JENIS_KELAMIN'],
-            "city" => $userData['MBR_CITY'],
-            "country" => $userData['MBR_COUNTRY'],
-            "address" => $userData['MBR_ADDRESS'],
-            "zip" => $userData['MBR_ZIP'],
-            "tgl_lahir" => Helper::default_date($userData['MBR_TGLLAHIR'], "Y-m-d"),
-            "tmpt_lahir" => $userData['MBR_TMPTLAHIR'],
-            "type_id" => "",
-            "id_number" => 0,
-            "url_photo" => User::avatar($userData['MBR_AVATAR']),
-            "status" => $userData['MBR_STS'],
-            "ver" => $userData['MBR_VERIF']
-        ),
+        "status" => $status[ $userData['MBR_STS'] ]
     )
 ], 200);
