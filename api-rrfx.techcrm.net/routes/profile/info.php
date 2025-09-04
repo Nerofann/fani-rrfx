@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Helper;
+
 exit(json_encode([
     'status' => true,
     'message' => 'Berhasil mengambil data profil',
@@ -12,7 +14,7 @@ exit(json_encode([
         "country" => $userData['MBR_COUNTRY'],
         "address" => $userData['MBR_ADDRESS'],
         "zip" => $userData['MBR_ZIP'],
-        "tgl_lahir" => default_date($userData['MBR_TGLLAHIR'], "Y-m-d"),
+        "tgl_lahir" => Helper::default_date($userData['MBR_TGLLAHIR'], "Y-m-d"),
         "tmpt_lahir" => $userData['MBR_TMPTLAHIR'],
         "type_id" => $userData['MBR_TYPE_IDT'],
         "id_number" => $userData['MBR_NO_IDT'],
