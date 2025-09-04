@@ -54,11 +54,11 @@ class MetatraderFactory {
             /** Create Demo */
             $apiManager = self::apiManagerDemo();
             $apiData = [
-                'master_pass' => $meta_pass, 
-                'investor_pass' => $meta_investor, 
+                'master_pass' => base64_encode($meta_pass), 
+                'investor_pass' => base64_encode($meta_investor), 
                 'group' => $demoType['RTYPE_GROUP'], 
-                'fullname' => ($fullname ?? "-"), 
-                'email' => ($email ?? "-"), 
+                'fullname' => (base64_encode($fullname) ?? "-"), 
+                'email' => (base64_encode($email) ?? "-"), 
                 'leverage' => $demoType['RTYPE_LEVERAGE'],
                 'comment' => "metaapi"
             ];
