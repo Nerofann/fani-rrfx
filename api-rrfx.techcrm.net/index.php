@@ -68,7 +68,7 @@ try {
 
             $user = User::findByMemberId($isValid['user_id']);
             $userId = md5(md5($isValid['user_id']));
-            if(empty($userData)) {
+            if(empty($user)) {
                 ApiResponse([
                     'status' => false,
                     'message' => "Invalid User",
