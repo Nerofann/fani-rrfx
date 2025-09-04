@@ -55,7 +55,7 @@ try {
             break;
 
         default: 
-            $userToken = $headers['Authorization'] ?? "";
+            $userToken = $_SERVER['HTTP_AUTHORIZATION'] ?? "";
             $userToken = str_replace("Bearer ", "", $userToken);
             $isValid = Token::verifyToken($userToken);
             if(!$isValid || !is_array($isValid)) {
