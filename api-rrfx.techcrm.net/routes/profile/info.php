@@ -2,7 +2,7 @@
 
 use App\Models\Helper;
 
-exit(json_encode([
+ApiResponse([
     'status' => true,
     'message' => 'Berhasil mengambil data profil',
     'response' => [
@@ -22,5 +22,4 @@ exit(json_encode([
         "status" => $userData['MBR_STS'],
         "ver" => $userData['MBR_VERIF']
     ]
-]));
-
+]);
