@@ -153,7 +153,7 @@ Logger::client_log([
     'mbrid' => $userData['MBR_ID'],
     'module' => "otp-verification",
     'message' => "OTP Verification",
-    'device' => implode(", ", array_values(json_decode($_POST['device'] ?? ""))),
+    'device' => implode(", ", array_values(json_decode($_POST['device'] ?? "", true))),
     'data' => array_merge($data, ($emailData ?? []))
 ]);
 
