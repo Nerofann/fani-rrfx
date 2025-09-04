@@ -24,7 +24,7 @@ use App\Models\FileUpload;
                 </div>
                 <div class="logo-small">
                     <a href="/dashboard">
-                        <img src="/assets/images/logo-white-new.png" alt="Logo">
+                        <img src="/assets/images/favicon/ms-icon-144x144.png" alt="Logo">
                     </a>
                 </div>
             </div>
@@ -97,8 +97,10 @@ use App\Models\FileUpload;
                 <button class="header-btn header-collapse-group-btn d-lg-none"><i class="fa-light fa-ellipsis-vertical"></i></button>
                 <button class="header-btn theme-settings-btn d-lg-none"><i class="fa-light fa-gear"></i></button>
                 <div class="header-btn-box profile-btn-box">
-                    <button class="profile-btn" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="<?= App\Models\User::avatar($user['MBR_AVATAR']); ?>" alt="image">
+                    <button class="" data-bs-toggle="dropdown" aria-expanded="false" style="border: 0px; background: transparent;">
+                        <div class="custom-avatar-container" style="width: 40px; height: 40px;">
+                            <img class="custom-avatar" style="width: 40px; height: 40px;" src="<?= App\Models\User::avatar($user['MBR_AVATAR']); ?>" alt="image">
+                        </div>
                     </button>
                     <ul class="dropdown-menu profile-dropdown-menu">
                         <li>

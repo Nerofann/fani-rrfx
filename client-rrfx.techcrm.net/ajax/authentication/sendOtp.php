@@ -6,6 +6,12 @@ use App\Factory\VerihubFactory;
 use Config\Core\ApiWapanel;
 use Config\Core\Database;
 
+JsonResponse([
+    'success' => false,
+    'message' => "Invalid Request",
+    'data' => []
+]);
+
 $verihub = VerihubFactory::init();
 $data = Helper::getSafeInput($_POST);
 $required = [

@@ -143,7 +143,7 @@ class AppPost {
         foreach($sqlGet->fetch_all(MYSQLI_ASSOC) as $prov) {
             $list[] = [
                 'name' => $prov['KDP_KABKO'],
-                'selected' => ($progressAccount['ACC_REGENCY'] == $prov['KDP_KABKO'])
+                'selected' => (($progressAccount['ACC_REGENCY'] ?? $user['MBR_CITY']) == $prov['KDP_KABKO'])
             ];
         }
 
@@ -188,7 +188,7 @@ class AppPost {
         foreach($sqlGet->fetch_all(MYSQLI_ASSOC) as $prov) {
             $list[] = [
                 'name' => $prov['KDP_KECAMATAN'],
-                'selected' => ($progressAccount['ACC_DISTRICT'] == $prov['KDP_KECAMATAN'])
+                'selected' => (($progressAccount['ACC_DISTRICT'] ?? $user['MBR_DISTRICT']) == $prov['KDP_KECAMATAN'])
             ];
         }
 
@@ -233,7 +233,7 @@ class AppPost {
         foreach($sqlGet->fetch_all(MYSQLI_ASSOC) as $vil) {
             $list[] = [
                 'village'   => $vil['KDP_KELURAHAN'],
-                'selected'  => ($progressAccount['ACC_VILLAGE'] == $vil['KDP_KELURAHAN']),
+                'selected'  => (($progressAccount['ACC_VILLAGE'] ?? $user['MBR_VILLAGES']) == $vil['KDP_KELURAHAN']),
                 'postalCode'=> $vil['KDP_POS'] 
             ];
         }
@@ -270,78 +270,39 @@ class AppPost {
             ]);
         }
 
-        /** Get Demo Type */
-        $sqlGetType = $this->db->query("SELECT ID_RTYPE, RTYPE_GROUP, RTYPE_LEVERAGE FROM tb_racctype WHERE UPPER(RTYPE_TYPE) = 'DEMO' LIMIT 1");
-        $demoType = $sqlGetType->fetch_assoc() ?? [];
-        if($sqlGetType->num_rows == 0 || empty($demoType)) {
+        /** create demo account */
+        $createDemo = MetatraderFactory::createDemo($user['MBR_NAME'], $user['MBR_EMAIL']);
+        if(!$createDemo['success']) {
             JsonResponse([
-                'success' => false,
-                'message' => "Gagal membuat akun demo, Jenis akun tidak valid",
-                'data' => []
-            ]);
-
-            exit(json_encode([
                 'success'   => false,
-                'error'     => ""
-            ]));
-        }
-
-        /** check type */
-        $init_margin = 10000;
-        $meta_pass = Account::generatePassword();
-        $meta_investor = Account::generatePassword();
-        $meta_phone = Account::generatePassword();
-
-        /** Create Demo */
-        $apiManager = MetatraderFactory::apiManager();
-        $apiData = [
-            'master_pass' => $meta_pass, 
-            'investor_pass' => $meta_investor, 
-            'group' => "demo\MandiriInvestindo\MMUSD", 
-            'fullname' => $user['MBR_NAME'], 
-            'email' => $user['MBR_EMAIL'], 
-            'leverage' => $demoType['RTYPE_LEVERAGE'],
-            'comment' => "metaapi"
-        ];
-
-        $createDemo = $apiManager->createAccount($apiData);
-        if(!is_object($createDemo) || !property_exists($createDemo, "Login")) {
-            JsonResponse([
-                'success' => false,
-                'message' => "Gagal membuat akun demo",
-                'data' => []
+                'message'   => $createDemo['message'] ?? "Gagal",
+                'data'      => []
             ]);
         }
-
-        /** Insert Balance **/
-        $deposit = $apiManager->deposit([
-            'login' => $createDemo->Login,
-            'amount' => $init_margin,
-            'comment' => "metaapi"
-        ]);
 
         /** Insert Demo */
+        $demoData = $createDemo['data'];
         $insertDemo = Database::insert("tb_racc", [
             'ACC_MBR' => $user['MBR_ID'],
             'ACC_DERE' => 2,
-            'ACC_TYPE' => $demoType['ID_RTYPE'],
-            'ACC_LOGIN' => $createDemo->Login,
-            'ACC_PASS' => $meta_pass,
-            'ACC_INVESTOR' => $meta_investor,
-            'ACC_PASSPHONE' => $meta_phone,
-            'ACC_INITIALMARGIN' => $init_margin,
+            'ACC_TYPE' => $demoData['type'],
+            'ACC_LOGIN' => $demoData['login'],
+            'ACC_PASS' => $demoData['password'],
+            'ACC_INVESTOR' => $demoData['investor'],
+            'ACC_PASSPHONE' => $demoData['passphone'],
+            'ACC_INITIALMARGIN' => MetatraderFactory::$initMarginDemo,
             'ACC_FULLNAME' => $user['MBR_NAME'],
             'ACC_DATETIME' => date("Y-m-d H:i:s"),
         ]);
 
         /** Send Notification Email */
         $emailData = [
-            "subject"       => "Demo Account Information {$web_name_full} ".date('Y-m-d H:i:s'),
+            "subject"       => "Demo Account Information ". ProfilePerusahaan::get()['PROF_COMPANY_NAME'] ." ".date('Y-m-d H:i:s'),
             "name"          => $user["MBR_NAME"],
-            "login"         => $createDemo->Login,
-            "metaPassword"  => $meta_pass,
-            "metaInvestor"  => $meta_investor,
-            "metaPassPhone" => $meta_phone,
+            "login"         => $demoData['login'],
+            "metaPassword"  => $demoData['password'],
+            "metaInvestor"  => $demoData['investor'],
+            "metaPassPhone" => $demoData['passphone'],
         ];
 
         $emailSender = EmailSender::init(['email' => $user['MBR_EMAIL'], 'name' => $user['MBR_NAME']]);
@@ -351,7 +312,7 @@ class AppPost {
         Logger::client_log([
             'mbrid' => $mbrid,
             'module' => "create-demo",
-            'message' => "Create Demo Account {$createDemo->Login}",
+            'message' => "Create Demo Account ".$demoData['login'],
             'data'  => json_encode($_POST)
         ]);
 
@@ -360,10 +321,10 @@ class AppPost {
             'error'     => "",
             'message'   => "Buat akun demo berhasil",
             'data'      => [
-                'login' => $createDemo->Login,
-                'passw' => $meta_pass,
-                'invst' => $meta_investor,
-                'phone' => $meta_phone,
+                'login' => $demoData['login'],
+                'passw' => $demoData['password'],
+                'invst' => $demoData['investor'],
+                'phone' => $demoData['passphone'],
                 'mails' => "Silakan periksa email Anda.Dan jangan beri tahu password, investor, passphone Anda kepada siapa pun!"
             ]
         ]));
@@ -678,46 +639,58 @@ class AppPost {
             ]));  
         }
 
+        /** check apakah sudah pernah transaksi dengan akun demo */
+        $sqlGet = $this->db->query("SELECT TICKET FROM mt5_trades WHERE `LOGIN` = " . $demoAccount['ACC_LOGIN']);
+        if($sqlGet->num_rows == 0) {
+            exit(json_encode([
+                'success'   => false,
+                'alert'     => [
+                    'title' => "Gagal",
+                    'text'  => "Anda belum melakukan transaksi dengan akun demo",
+                    'icon'  => "error"
+                ]
+            ]));  
+        }
         
         /** Upload File */
-        if(empty($progressAccount['ACC_F_SIMULASI_IMG'])) {
-            /** Check file */
-            if(empty($_FILES['smls_demofile']) || $_FILES['smls_demofile']['error'] != 0) {
-                exit(json_encode([
-                    'success'   => false,
-                    'alert'     => [
-                        'title' => "Gagal",
-                        'text'  => "Mohon upload file demo account",
-                        'icon'  => "error"
-                    ]
-                ]));
-            }
+        // if(empty($progressAccount['ACC_F_SIMULASI_IMG'])) {
+        //     /** Check file */
+        //     if(empty($_FILES['smls_demofile']) || $_FILES['smls_demofile']['error'] != 0) {
+        //         exit(json_encode([
+        //             'success'   => false,
+        //             'alert'     => [
+        //                 'title' => "Gagal",
+        //                 'text'  => "Mohon upload file demo account",
+        //                 'icon'  => "error"
+        //             ]
+        //         ]));
+        //     }
 
-            $uploadFile = FileUpload::upload_myfile($_FILES['smls_demofile'], "demo_img_");
-            if(!is_array($uploadFile) || !array_key_exists("filename", $uploadFile)) {
-                exit(json_encode([
-                    'success'   => false,
-                    'alert'     => [
-                        'title' => "Gagal",
-                        'text'  => "Gagal mengunggah file, {$uploadFile}",
-                        'icon'  => "error"
-                    ]
-                ]));
-            }
+        //     $uploadFile = FileUpload::upload_myfile($_FILES['smls_demofile'], "demo_img_");
+        //     if(!is_array($uploadFile) || !array_key_exists("filename", $uploadFile)) {
+        //         exit(json_encode([
+        //             'success'   => false,
+        //             'alert'     => [
+        //                 'title' => "Gagal",
+        //                 'text'  => "Gagal mengunggah file, {$uploadFile}",
+        //                 'icon'  => "error"
+        //             ]
+        //         ]));
+        //     }
 
-            /** Update Image */
-            $updateImage = Database::update("tb_racc", ['ACC_F_SIMULASI_IMG' => $uploadFile['filename']], ['ID_ACC' => $progressAccount['ID_ACC']]);
-            if($updateImage !== TRUE) {
-                exit(json_encode([
-                    'success'   => false,
-                    'alert'     => [
-                        'title' => "Gagal",
-                        'text'  => "Gagal menyimpan file, {$updateImage}",
-                        'icon'  => "error"
-                    ]
-                ]));
-            }
-        }
+        //     /** Update Image */
+        //     $updateImage = Database::update("tb_racc", ['ACC_F_SIMULASI_IMG' => $uploadFile['filename']], ['ID_ACC' => $progressAccount['ID_ACC']]);
+        //     if($updateImage !== TRUE) {
+        //         exit(json_encode([
+        //             'success'   => false,
+        //             'alert'     => [
+        //                 'title' => "Gagal",
+        //                 'text'  => "Gagal menyimpan file, {$updateImage}",
+        //                 'icon'  => "error"
+        //             ]
+        //         ]));
+        //     }
+        // }
 
         /** Check Alamat */
         $province = base64_decode($data['smls_almtrmh_prov']);
@@ -1295,6 +1268,7 @@ class AppPost {
     private function aplikasiPembukaanRekening_DataPribadi($data, $user, $progressAccount) {
         $required = [
             'app_npwp'  => "Nomor NPWP",
+            'app_no_handphone' => "Nomor Telepon",
             'app_gender' => "Jenis Kelamin",
             'app_nama_ibu' => "Nama Ibu Kandung",
             'app_status_perkawinan' => "Status Perkawinan",
@@ -1342,9 +1316,22 @@ class AppPost {
             }
         }
 
+        /** check nomor telepon */
+        $verihub = VerihubFactory::init();
+        $app_no_handphone = $verihub->phoneValidation("", $data['app_no_handphone']);
+        if(!$app_no_handphone) {
+            exit(json_encode([
+                'success' => false,
+                'alert' => [
+                    'title' => "Gagal",
+                    'text'  => "Nomor Telepon tidak valid",
+                    'icon'  => "error"
+                ] 
+            ]));
+        }
+
         $app_telepon_rumah = $data['app_telepon_rumah'] ?? 0;
         $app_faksimili_rumah = $data['app_faksimili_rumah'] ?? 0;
-        $app_no_handphone = $data['app_no_handphone'] ?? 0;
         $acc_app_nama_istri = $data['acc_app_nama_istri'] ?? $progressAccount['ACC_F_APP_PRIBADI_NAMAISTRI'] ?? null;
         $bidang_investasi = null;
         
@@ -1644,9 +1631,9 @@ class AppPost {
             }
         }
 
-        $app_nilai_njop = $data['app_nilai_njop'] ?? 0;
-        $app_deposit_bank = $data['app_deposit_bank'] ?? 0;
-        $app_kekayaan_lainnya = $data['app_kekayaan_lainnya'] ?? 0;
+        $app_nilai_njop = Helper::stringTonumber($data['app_nilai_njop'] ?? 0);
+        $app_deposit_bank = Helper::stringTonumber($data['app_deposit_bank'] ?? 0);
+        $app_kekayaan_lainnya = Helper::stringTonumber($data['app_kekayaan_lainnya'] ?? 0);
 
         if(is_numeric($app_nilai_njop) === FALSE) {
             exit(json_encode([
@@ -1690,7 +1677,7 @@ class AppPost {
             'ACC_F_APP_KEKYAN_NJOP' => $app_nilai_njop,
             'ACC_F_APP_KEKYAN_DPST' => $app_deposit_bank,
             'ACC_F_APP_KEKYAN_LAIN' => $app_kekayaan_lainnya,
-            'ACC_F_APP_KEKYAN_NILAI' => ($app_nilai_njop + $app_deposit_bank)
+            'ACC_F_APP_KEKYAN_NILAI' => ($app_nilai_njop + $app_deposit_bank + $app_kekayaan_lainnya)
         ], [
             'ID_ACC' => $progressAccount['ID_ACC']
         ]);
@@ -1778,6 +1765,45 @@ class AppPost {
             }
     
             $updateImage = Database::update("tb_racc", ['ACC_F_APP_FILE_IMG2' => $uploadDokumenPendukung['filename']], ['ID_ACC' => $progressAccount['ID_ACC']]);
+            if($updateImage !== TRUE) {
+                exit(json_encode([
+                    'success' => false,
+                    'alert' => [
+                        'title' => "Gagal",
+                        'text'  => $updateImage ?? "Gagal memperbarui dokumen pendukung, mohon coba lagi",
+                        'icon'  => "error"
+                    ] 
+                ]));
+            }
+        }
+
+        /** Upload Dokumen NPWP */
+        if(empty($_FILES['app_image_npwp']) || $_FILES['app_image_npwp']['error'] != 0) {
+            if(empty($progressAccount['ACC_F_APP_FILE_NPWP'])) {
+                exit(json_encode([
+                    'success' => false,
+                    'alert' => [
+                        'title' => "Gagal",
+                        'text'  => "Mohon upload dokumen pendukung",
+                        'icon'  => "error"
+                    ] 
+                ]));
+            }
+        
+        }else {
+            $uploadDokumenPendukung = FileUpload::upload_myfile($_FILES['app_image_npwp'], "regol");
+            if(!is_array($uploadDokumenPendukung) || !array_key_exists("filename", $uploadDokumenPendukung)) {
+                exit(json_encode([
+                    'success' => false,
+                    'alert' => [
+                        'title' => "Gagal",
+                        'text'  => $uploadDokumenPendukung ?? "Gagal mengunggah file dokumen pendukung",
+                        'icon'  => "error"
+                    ] 
+                ]));
+            }
+    
+            $updateImage = Database::update("tb_racc", ['ACC_F_APP_FILE_NPWP' => $uploadDokumenPendukung['filename']], ['ID_ACC' => $progressAccount['ID_ACC']]);
             if($updateImage !== TRUE) {
                 exit(json_encode([
                     'success' => false,
@@ -2529,8 +2555,8 @@ class AppPost {
         /** Verifikasi ke Verihub (Jika belum pernah berhasil) */
         $statusVerifikasiVerihub = $progressAccount['ACC_DOC_VERIF'] ?? 0;
         if($statusVerifikasiVerihub == 0) {
-            // $verif = 1;
-            $verif = $this->verifikasiVerihub($data, $user, $progressAccount);
+            $verif = 1;
+            // $verif = $this->verifikasiVerihub($data, $user, $progressAccount);
             $statusVerifikasiVerihub = -1;
             $data['reference_id'] = $verif;
         }
@@ -2586,7 +2612,7 @@ class AppPost {
             'name'  => $progressAccount['ACC_FULLNAME'],
             'birth_date' => $progressAccount['ACC_TANGGAL_LAHIR'],
             'email' => $user['MBR_EMAIL'], 
-            'phone' => "6285954536593", 
+            'phone' => $user['MBR_PHONE'], 
             'ktp_photo' => ("data:".$progressAccount['ACC_F_APP_FILE_ID_MIME'].";base64,".base64_encode($fileContentKTP)), 
             'selfie_photo' => ("data:".$progressAccount['ACC_F_APP_FILE_FOTO_MIME'].";base64,".base64_encode($fileContentSelfie)), 
             'reference_id' => $reference_id
@@ -2597,9 +2623,7 @@ class AppPost {
                 'success'   => false,
                 'alert'     => [
                     'title' => "Gagal",
-                    'text'  => (ini_get("display_errors") == "1")
-                        ? $sendVerification['message']
-                        : "Verifikasi Gagal",
+                    'text'  => $sendVerification['message'] ?? "Verifikasi Gagal",
                     'icon'  => "error"
                 ]
             ])); 

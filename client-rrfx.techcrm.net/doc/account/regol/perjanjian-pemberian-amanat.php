@@ -88,7 +88,7 @@ $profile = ProfilePerusahaan::get();
                                 </ol>
                                 <div class="text-left">
                                     <label style="cursor:pointer;">
-                                        <input type="checkbox" <?= retnull('ACC_F_PERJ', 0)? 'checked' : NULL ?> name="box[]" class="form-check-input" style="1.5px solid #fff5f5 !important;" value="YA" required=""> Saya sudah membaca dan memahami
+                                        <input type="checkbox"  name="box[]" class="form-check-input ck-item" style="border: 1.5px solid #fff5f5 !important;" value="YA" required=""> Saya sudah membaca dan memahami
                                     </label>
                                 </div> 
                             </li>
@@ -102,7 +102,7 @@ $profile = ProfilePerusahaan::get();
                                 </ol>
                                 <div class="text-left">
                                     <label style="cursor:pointer;">
-                                        <input type="checkbox" <?= retnull('ACC_F_PERJ', 0)? 'checked' : NULL ?> name="box[]" class="form-check-input" style="1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
+                                        <input type="checkbox"  name="box[]" class="form-check-input ck-item" style="border: 1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
                                     </label>
                                 </div> 
                             </li>
@@ -117,7 +117,7 @@ $profile = ProfilePerusahaan::get();
                                 </ol>
                                 <div class="text-left">
                                     <label style="cursor:pointer;">
-                                        <input type="checkbox" <?= retnull('ACC_F_PERJ', 0)? 'checked' : NULL ?> name="box[]" class="form-check-input" style="1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
+                                        <input type="checkbox"  name="box[]" class="form-check-input ck-item" style="border: 1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
                                     </label>
                                 </div> 
                             </li>
@@ -126,7 +126,7 @@ $profile = ProfilePerusahaan::get();
                                 <p style="padding-left:5px;">Nasabah bertanggung jawab memantau/mengetahui posisi terbukanya secara terus- menerus dan memenuhi kewajibannya. Apabila dalam jangka waktu tertentu dana pada rekening Nasabah kurang dari yang dipersyaratkan, Pialang Berjangka dapat menutup posisi terbuka Nasabah secara keseluruhan atau sebagian, membatasi transaksi, atau tindakan lain untuk melindungi diri dalam pemenuhan Margin tersebut dengan terlebih dahulu memberitahu atau tanpa memberitahu Nasabah dan Pialang Berjangka tidak bertanggung jawab atas kerugian yang timbul akibat tindakan tersebut.<br>
                                 </p><div class="text-left">
                                     <label style="cursor:pointer;">
-                                        <input type="checkbox" <?= retnull('ACC_F_PERJ', 0)? 'checked' : NULL ?> name="box[]" class="form-check-input" style="1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
+                                        <input type="checkbox"  name="box[]" class="form-check-input ck-item" style="border: 1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
                                     </label>
                                 </div> 
                             </li>
@@ -135,7 +135,7 @@ $profile = ProfilePerusahaan::get();
                                 <p style="padding-left:5px;">Apabila Nasabah tidak mampu melakukan penutupan atas transaksi yang jatuh tempo, Pialang Berjangka dapat melakukan penutupan atas transaksi Nasabah yang terjadi. Nasabah wajib membayar biaya-biaya, termasuk biaya kerugian dan premi yang telah dibayarkan oleh Pialang Berjangka, dan apabila Nasabah lalai untuk membayar biaya-biaya tersebut, Pialang Berjangka berhak untuk mengambil pembayaran dari dana Nasabah.<br>
                                 </p><div class="text-left">
                                     <label style="cursor:pointer;">
-                                        <input type="checkbox" <?= retnull('ACC_F_PERJ', 0)? 'checked' : NULL ?> name="box[]" class="form-check-input" style="1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
+                                        <input type="checkbox"  name="box[]" class="form-check-input ck-item" style="border: 1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
                                     </label>
                                 </div> 
                             </li>
@@ -144,7 +144,7 @@ $profile = ProfilePerusahaan::get();
                                 <p style="padding-left:5px;">Nasabah mengakui hak Pialang Berjangka untuk membatasi posisi terbuka Kontrak dan Nasabah tidak melakukan transaksi melebihi batas yang telah ditetapkan tersebut.<br>
                                 </p><div class="text-left">
                                     <label style="cursor:pointer;">
-                                        <input type="checkbox" <?= retnull('ACC_F_PERJ', 0)? 'checked' : NULL ?> name="box[]" class="form-check-input" style="1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
+                                        <input type="checkbox"  name="box[]" class="form-check-input ck-item" style="border: 1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
                                     </label>
                                 </div> 
                             </li>
@@ -158,7 +158,7 @@ $profile = ProfilePerusahaan::get();
                                 </ol>
                                 <div class="text-left">
                                     <label style="cursor:pointer;">
-                                        <input type="checkbox" <?= retnull('ACC_F_PERJ', 0)? 'checked' : NULL ?> name="box[]" class="form-check-input" style="1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
+                                        <input type="checkbox"  name="box[]" class="form-check-input ck-item" style="border: 1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
                                     </label>
                                 </div> 
                             </li>
@@ -170,7 +170,7 @@ $profile = ProfilePerusahaan::get();
                                 </ol>
                                 <div class="text-left">
                                     <label style="cursor:pointer;">
-                                        <input type="checkbox" <?= retnull('ACC_F_PERJ', 0)? 'checked' : NULL ?> name="box[]" class="form-check-input" style="1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
+                                        <input type="checkbox"  name="box[]" class="form-check-input ck-item" style="border: 1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
                                     </label>
                                 </div> 
                             </li>
@@ -183,7 +183,7 @@ $profile = ProfilePerusahaan::get();
                                 </p>
                                 <div class="text-left">
                                     <label style="cursor:pointer;">
-                                        <input type="checkbox" <?= retnull('ACC_F_PERJ', 0)? 'checked' : NULL ?> name="box[]" class="form-check-input" style="1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
+                                        <input type="checkbox"  name="box[]" class="form-check-input ck-item" style="border: 1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
                                     </label>
                                 </div> 
                             </li>
@@ -193,7 +193,7 @@ $profile = ProfilePerusahaan::get();
                                 </p>
                                 <div class="text-left">
                                     <label style="cursor:pointer;">
-                                        <input type="checkbox" <?= retnull('ACC_F_PERJ', 0)? 'checked' : NULL ?> name="box[]" class="form-check-input" style="1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
+                                        <input type="checkbox"  name="box[]" class="form-check-input ck-item" style="border: 1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
                                     </label>
                                 </div> 
                             </li>
@@ -208,7 +208,7 @@ $profile = ProfilePerusahaan::get();
                                 </ol>
                                 <div class="text-left">
                                     <label style="cursor:pointer;">
-                                        <input type="checkbox" <?= retnull('ACC_F_PERJ', 0)? 'checked' : NULL ?> name="box[]" class="form-check-input" style="1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
+                                        <input type="checkbox"  name="box[]" class="form-check-input ck-item" style="border: 1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
                                     </label>
                                 </div> 
                             </li>
@@ -217,7 +217,7 @@ $profile = ProfilePerusahaan::get();
                                 <p style="padding-left:5px;">Nasabah memberikan informasi yang benar dan akurat mengenai data Nasabah yang diminta oleh Pialang Berjangka dan akan memberitahukan paling lambat dalam waktu 3 (tiga) hari kerja setelah terjadi perubahan, termasuk perubahan kemampuan keuangannya untuk terus melaksanakan transaksi.<br>
                                 </p><div class="text-left">
                                     <label style="cursor:pointer;">
-                                        <input type="checkbox" <?= retnull('ACC_F_PERJ', 0)? 'checked' : NULL ?> name="box[]" class="form-check-input" style="1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
+                                        <input type="checkbox"  name="box[]" class="form-check-input ck-item" style="border: 1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
                                     </label>
                                 </div> 
                             </li>
@@ -226,7 +226,7 @@ $profile = ProfilePerusahaan::get();
                                 <p style="padding-left:5px;">Nasabah mengetahui dan menyetujui bahwa Pialang Berjangka berhak untuk memungut komisi atas transaksi yang telah dilaksanakan, dalam jumlah sebagaimana akan ditetapkan dari waktu ke waktu oleh Pialang Berjangka. Perubahan beban (fees) dan biaya lainnya harus disetujui secara tertulis oleh Para Pihak.<br>
                                 </p><div class="text-left">
                                     <label style="cursor:pointer;">
-                                        <input type="checkbox" <?= retnull('ACC_F_PERJ', 0)? 'checked' : NULL ?> name="box[]" class="form-check-input" style="1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
+                                        <input type="checkbox"  name="box[]" class="form-check-input ck-item" style="border: 1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
                                     </label>
                                 </div> 
                             </li>
@@ -235,7 +235,7 @@ $profile = ProfilePerusahaan::get();
                                 <p style="padding-left:5px;">Nasabah memberikan kuasa kepada Pialang Berjangka untuk menghubungi bank, lembaga keuangan, Pialang Berjangka lain, atau institusi lain yang terkait untuk memperoleh keterangan atau verifikasi mengenai informasi yang diterima dari Nasabah. Nasabah mengerti bahwa penelitian mengenai data hutang pribadi dan bisnis dapat dilakukan oleh Pialang Berjangka apabila diperlukan. Nasabah diberikan kesempatan untuk memberitahukan secara tertulis dalam jangka waktu yang telah disepakati untuk melengkapi persyaratan yang diperlukan.<br>
                                 </p><div class="text-left">
                                     <label style="cursor:pointer;">
-                                        <input type="checkbox" <?= retnull('ACC_F_PERJ', 0)? 'checked' : NULL ?> name="box[]" class="form-check-input" style="1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
+                                        <input type="checkbox"  name="box[]" class="form-check-input ck-item" style="border: 1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
                                     </label>
                                 </div> 
                             </li>
@@ -244,7 +244,7 @@ $profile = ProfilePerusahaan::get();
                                 <p style="padding-left:5px;">Pialang Berjangka dapat setiap saat mengalihkan dana dari satu rekening ke rekening lainnya berkaitan dengan kegiatan transaksi yang dilakukan Nasabah seperti pembayaran komisi, pembayaran biaya transaksi, kliring dan keterlambatan dalam memenuhi kewajibannya, tanpa terlebih dahulu memberitahukan kepada Nasabah. Transfer yang telah dilakukan akan segera diberitahukan secara tertulis kepada Nasabah<br>
                                 </p><div class="text-left">
                                     <label style="cursor:pointer;">
-                                        <input type="checkbox" <?= retnull('ACC_F_PERJ', 0)? 'checked' : NULL ?> name="box[]" class="form-check-input" style="1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
+                                        <input type="checkbox"  name="box[]" class="form-check-input ck-item" style="border: 1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
                                     </label>
                                 </div> 
                             </li>
@@ -333,7 +333,7 @@ $profile = ProfilePerusahaan::get();
                                 </ol>
                                 <div class="text-left">
                                     <label style="cursor:pointer;">
-                                        <input type="checkbox" <?= retnull('ACC_F_PERJ', 0)? 'checked' : NULL ?> name="box[]" class="form-check-input" style="1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
+                                        <input type="checkbox"  name="box[]" class="form-check-input ck-item" style="border: 1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
                                     </label>
                                 </div> 
                             </li>
@@ -342,7 +342,7 @@ $profile = ProfilePerusahaan::get();
                                 <p style="padding-left:5px;">Nasabah mengakui menerima dan mengerti Dokumen Pemberitahuan Adanya Risiko.<br>
                                 </p><div class="text-left">
                                     <label style="cursor:pointer;">
-                                        <input type="checkbox" <?= retnull('ACC_F_PERJ', 0)? 'checked' : NULL ?> name="box[]" class="form-check-input" style="1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
+                                        <input type="checkbox"  name="box[]" class="form-check-input ck-item" style="border: 1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
                                     </label>
                                 </div> 
                             </li>
@@ -355,7 +355,7 @@ $profile = ProfilePerusahaan::get();
                                 </ol>
                                 <div class="text-left">
                                     <label style="cursor:pointer;">
-                                        <input type="checkbox" <?= retnull('ACC_F_PERJ', 0)? 'checked' : NULL ?> name="box[]" class="form-check-input" style="1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
+                                        <input type="checkbox"  name="box[]" class="form-check-input ck-item" style="border: 1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
                                     </label>
                                 </div> 
                             </li>
@@ -376,7 +376,7 @@ $profile = ProfilePerusahaan::get();
                                 </ol>
                                 <div class="text-left">
                                     <label style="cursor:pointer;">
-                                        <input type="checkbox" <?= retnull('ACC_F_PERJ', 0)? 'checked' : NULL ?> name="box[]" class="form-check-input" style="1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
+                                        <input type="checkbox"  name="box[]" class="form-check-input ck-item" style="border: 1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
                                     </label>
                                 </div> 
                             </li>
@@ -388,7 +388,7 @@ $profile = ProfilePerusahaan::get();
                                 </p>
                                 <div class="text-left">
                                     <label style="cursor:pointer;">
-                                        <input type="checkbox" <?= retnull('ACC_F_PERJ', 0)? 'checked' : NULL ?> name="box[]" class="form-check-input" style="1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
+                                        <input type="checkbox"  name="box[]" class="form-check-input ck-item" style="border: 1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
                                     </label>
                                 </div> 
                             </li>
@@ -397,7 +397,7 @@ $profile = ProfilePerusahaan::get();
                                 <p style="padding-left:5px;">Perubahan atas isian dalam Perjanjian ini hanya dapat dilakukan atas persetujuan Para Pihak, atau Pialang Berjangka telah memberitahukan secara tertulis perubahan yang diinginkan, dan Nasabah tetap memberikan perintah untuk transaksi dengan tanpa memberikan tanggapan secara tertulis atas usul perubahan tersebut. Tindakan Nasabah tersebut dianggap setuju atas usul perubahan tersebut.<br>
                                 </p><div class="text-left">
                                     <label style="cursor:pointer;">
-                                        <input type="checkbox" <?= retnull('ACC_F_PERJ', 0)? 'checked' : NULL ?> name="box[]" class="form-check-input" style="1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
+                                        <input type="checkbox"  name="box[]" class="form-check-input ck-item" style="border: 1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
                                     </label>
                                 </div> 
                             </li>
@@ -425,7 +425,7 @@ $profile = ProfilePerusahaan::get();
                                 </ol>
                                 <div class="text-left">
                                     <label style="cursor:pointer;">
-                                        <input type="checkbox" <?php echo (!empty(retnull("ACC_F_PERJ", 1))) ? 'checked' : NULL ?> name="box[]" class="form-check-input" style="1.5px solid #fff5f5 !important;" value="YA" required/> 
+                                        <input type="checkbox" <?php echo (!empty(retnull("ACC_F_PERJ", 1))) ? 'checked' : NULL ?> name="box[]" class="form-check-input ck-item" style="border: 1.5px solid #fff5f5 !important;" value="YA" required/> 
                                         Saya sudah membaca dan memahami
                                     </label>
                                 </div> 
@@ -473,7 +473,7 @@ $profile = ProfilePerusahaan::get();
                                 </ol>
                                 <div class="text-left">
                                     <label style="cursor:pointer;">
-                                        <input type="checkbox" <?= retnull('ACC_F_PERJ', 0)? 'checked' : NULL ?> name="box[]" class="form-check-input" style="1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
+                                        <input type="checkbox"  name="box[]" class="form-check-input ck-item" style="border: 1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
                                     </label>
                                 </div> 
                             </li>
@@ -482,14 +482,14 @@ $profile = ProfilePerusahaan::get();
                                 <p style="padding-left:5px;">Perjanjian ini dibuat dalam Bahasa Indonesia.<br>
                                 </p><div class="text-left">
                                     <label style="cursor:pointer;">
-                                        <input type="checkbox" <?= retnull('ACC_F_PERJ', 0)? 'checked' : NULL ?> name="box[]" class="form-check-input" style="1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
+                                        <input type="checkbox"  name="box[]" class="form-check-input ck-item" style="border: 1.5px solid #fff5f5 !important;" value="YA" required> Saya sudah membaca dan memahami
                                     </label>
                                 </div> 
                             </li>
                         </ol>
     
                         <label style="cursor:pointer;">
-                            <input type="checkbox" id="check_all" class="form-check-input me-1" style="border: 1.5px solid #fff5f5 !important;" value="YA" /> 
+                            <input type="checkbox" id="check_all" data-done="<?= !empty($realAccount['ACC_F_PERJ']) ?>" class="form-check-input ck-item me-1" style="border: 1.5px solid #fff5f5 !important;" /> 
                             Setujui Semua
                         </label>
                         
@@ -534,14 +534,34 @@ $profile = ProfilePerusahaan::get();
         </form>
     </div>
 </div>
+
+<script type="text/javascript">
+    $(function () {
+        const $checkAll = $('#check_all');
+        const itemSelector = '.ck-item:not(:disabled)';
+
+        function syncMaster() {
+            const $items   = $(itemSelector);
+            const total    = $items.length;
+            const checked  = $items.filter(':checked').length;
+
+            $checkAll.prop('checked', checked === total);
+            $checkAll.prop('indeterminate', checked > 0 && checked < total);
+        }
+
+        $checkAll.on('change', function () {
+            $(itemSelector).prop('checked', this.checked);
+            syncMaster();
+        });
+
+        $(document).on('change', itemSelector, syncMaster);
+
+        syncMaster();
+    });
+</script>
+
 <script type="text/javascript">
     $(document).ready(function(){
-        $('#check_all').on('click', function() {
-            $(this).is(':checked')
-                ? $('input[name="box[]"]').attr('checked', 'checked')
-                : $('input[name="box[]"]').removeAttr('checked')
-        })
-
         $('#form-perjanjian-amanat').on('submit', function(event) {
             event.preventDefault();
             Swal.fire({

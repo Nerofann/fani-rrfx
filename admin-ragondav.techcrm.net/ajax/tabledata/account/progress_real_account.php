@@ -51,7 +51,6 @@
         JOIN tb_member
         ON (tb_racc.ACC_MBR = tb_member.MBR_ID)
         WHERE tb_racc.ACC_DERE = 1
-        #AND tb_racc.ACC_WPCHECK != 6
         AND tb_racc.ACC_STS = 1
         AND tb_racc.ACC_LOGIN = 0
         AND ACC_F_DISC = 1       

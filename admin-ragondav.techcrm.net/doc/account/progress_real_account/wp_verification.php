@@ -16,8 +16,9 @@
 	<div>
 		<h2 class="main-content-title tx-24 mg-b-5"><?php echo $page_title; ?></h2>
 		<ol class="breadcrumb">
+			<li class="breadcrumb-item"><a href="<?= pathbreadcrumb(0) ?>/dashboard">Home</a></li>
 			<li class="breadcrumb-item"><a href="javascript:void(0);">Account</a></li>
-			<li class="breadcrumb-item"><a href="javascript:void(0);"><?php echo $page_title; ?></a></li>
+			<li class="breadcrumb-item"><a href="<?= pathbreadcrumb(2) ?>/view"><?php echo $page_title; ?></a></li>
 			<li class="breadcrumb-item active">WP Verification</li>
 		</ol>
 	</div>
@@ -149,236 +150,88 @@
             <div class="card-header">
                 <div class="d-flex justify-content-between flex-wrap align-items-center mb-3">
                     <h5 class="card-title">Summary</h5>
-                    <!-- <div class="d-flex flex-start flex-wrap gap-2">
-                        <a target="_blank" href="/export/all-new?acc=<?php echo $id_acc; ?>" class="btn btn-primary"><i class="fa fa-eye"></i> All Documents</a>
-                    </div> -->
                 </div>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="table-responsive mb-3">
-                            <table class="table table-hover table-striped">
-                                <tbody>
-                                    <tr>
-                                        <td class="text-start">Email</td>
-                                        <td width="3%">:</td>
-                                        <td class="text-start"><?= $progressAccount['MBR_EMAIL'] ?? "-" ?></td>
+                <?php require_once __DIR__ . "/summary.php" ?>
+            </div>
+        </div>
 
-                                        <td width="10%" class="text-start">No. NPWP</td>
-                                        <td width="3%">:</td>
-                                        <td class="text-start"><?= $progressAccount['ACC_F_APP_PRIBADI_NPWP'] ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="10%" class="text-start">Type</td>
-                                        <td width="3%" class="text-start">:</td>
-                                        <td class="text-start">
-                                            <strong>
-                                                <?= $progressAccount['RTYPE_NAME'].'/'.$progressAccount['RTYPE_KOMISI'].'/'.(($progressAccount['RTYPE_ISFLOATING'] == 1) ? 'Floating' : ($progressAccount['RTYPE_RATE']/1000)) ?>
-                                            </strong>
-                                        </td>
-
-                                        <td width="10%" class="text-start">Rate</td>
-                                        <td width="3%">:</td>
-                                        <td class="text-start">
-                                            <strong>
-                                                <?php
-                                                    if($progressAccount['RTYPE_ISFLOATING'] == 1){
-                                                        echo 'Floating';
-                                                    }else{ echo number_format($progressAccount['RTYPE_RATE'], 0); }
-                                                ?>
-                                            </strong>
-                                        </td>
-                                    </tr>
-        
-                                    <tr>
-                                        <td width="10%" class="text-start">Nama</td>
-                                        <td width="3%">:</td>
-                                        <td class="text-start"><?= $progressAccount['ACC_FULLNAME'] ?></td>
-
-                                        <td width="10%" class="text-start">Charge</td>
-                                        <td width="3%" class="text-start">:</td>
-                                        <td class="text-start"><strong><?= $progressAccount['RTYPE_KOMISI'] ?? 0 ?></strong></td>
-                                    </tr>
-        
-                                    <tr>
-                                        <td width="10%" class="text-start">No. Telepon</td>
-                                        <td width="3%" class="text-start">:</td>
-                                        <td class="text-start"><?= $progressAccount['ACC_F_APP_PRIBADI_HP']; ?></td>
-        
-                                        <td width="10%" class="text-start">Tempat lahir</td>
-                                        <td width="3%">:</td>
-                                        <td class="text-start"><?= $progressAccount['ACC_TEMPAT_LAHIR'] ?></td>
-                                    </tr>
-        
-                                    <tr>
-                                        <td width="10%" class="text-start">Type Identitas</td>
-                                        <td width="3%">:</td>
-                                        <td class="text-start"><?= $progressAccount['ACC_TYPE_IDT'] ?></td>
-
-                                        <td width="10%" class="text-start">Ibu Kandung</td>
-                                        <td width="3%" class="text-start">:</td>
-                                        <td class="text-start"><?= $progressAccount['ACC_F_APP_PRIBADI_IBU'] ?></td>
-                                    </tr>
-
-                                    <tr>
-                                        <td width="10%" class="text-start">Tanggal lahir</td>
-                                        <td width="3%">:</td>
-                                        <td class="text-start"><?= $progressAccount['ACC_TANGGAL_LAHIR'] ?></td>
-
-                                        <td width="10%" class="text-start">No. Identitas</td>
-                                        <td width="3%">:</td>
-                                        <td class="text-start"><?= $progressAccount['ACC_NO_IDT'] ?></td>
-                                    </tr>
-                                   
-                                    <tr>
-                                        <td width="10%" class="text-start">Document Type</td>
-                                        <td width="3%" class="text-start">:</td>
-                                        <td class="text-start"><?= $progressAccount['ACC_F_APP_FILE_TYPE'] ?></td>
-
-                                        <td width="10%" class="text-start">Jenis Pekerjaan</td>
-                                        <td width="3%">:</td>
-                                        <td class="text-start"><?= $progressAccount['ACC_F_APP_KRJ_NAMA'] ?></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="table-responsive">
-                            <table class="table table-hover table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th colspan="3" class="bg-secondary text-muted">User Bank</th>
-                                    </tr>
-                                    <tr>
-                                        <th>Nama Bank</th>
-                                        <th>No. Rekening</th>
-                                        <th>Nama</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach($userBanks as $bank) : ?>
-                                        <tr>
-                                            <td><?= $bank['MBANK_NAME'] ?></td>
-                                            <td><?= $bank['MBANK_ACCOUNT'] ?></td>
-                                            <td><?= $bank['MBANK_HOLDER'] ?></td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <div class="card text-center h-100">
-                                    <a target="_blank" href="<?php echo FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_IMG']); ?>">
-                                        <img width="75%" src="<?php echo FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_IMG']); ?>">
-                                    </a>
-                                    <div class="card-body">
-                                        <a target="_blank" href="<?php echo FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_IMG']); ?>">
-                                            Dokumen Pendukung
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <div class="card text-center h-100">
-                                    <a target="_blank" href="<?php echo FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_IMG2']); ?>">
-                                        <img width="75%" src="<?php echo FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_IMG2']); ?>">
-                                    </a>
-                                    <div class="card-body">
-                                        <a target="_blank" href="<?php echo FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_IMG2']); ?>">
-                                            Dokumen Pendukung Lainnya
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <div class="card text-center h-100">
-                                    <a target="_blank" href="<?php echo FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_FOTO']); ?>">
-                                        <img width="75%" src="<?php echo FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_FOTO']); ?>">
-                                    </a>
-                                    <div class="card-body">
-                                        <a target="_blank" href="<?php echo FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_FOTO']); ?>">
-                                            Foto Terbaru (Selfie)
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <div class="card text-center h-100">
-                                    <a target="_blank" href="<?php echo FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_ID']); ?>">
-                                        <img width="75%" src="<?php echo FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_ID']); ?>">
-                                    </a>
-                                    <div class="card-body">
-                                        <a target="_blank" href="<?php echo FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_ID']); ?>">
-                                            Foto Identitas
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <div class="card text-center h-100">
-                                    <a target="_blank" href="<?php echo FileUpload::awsFile($progressAccount['ACC_F_SIMULASI_IMG']); ?>">
-                                        <img width="75%" src="<?php echo FileUpload::awsFile($progressAccount['ACC_F_SIMULASI_IMG']); ?>">
-                                    </a>
-                                    <div class="card-body">
-                                        <a target="_blank" href="<?php echo FileUpload::awsFile($progressAccount['ACC_F_SIMULASI_IMG']); ?>">
-                                            Demo Account
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-                                <div class="form-group mt-2 w-100">
-                                    <?php if($progressAccount['ACC_STS'] == 1 && $progressAccount['ACC_WPCHECK'] == 0) : ?>
-                                        <button type="button" data-act="reject" class="btnAct btn btn-danger btn-block">Reject</button>
-                                        <button type="button" data-act="accept" class="btnAct btn btn-success btn-block">Accept</button>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex flex-wrap justify-content-center align-items-center gap-3">
+                    <?php if($progressAccount['ACC_STS'] == 1 && $progressAccount['ACC_WPCHECK'] == 0) : ?>
+                        <button type="button" id="verif_verihub" class="btn btn-primary">Verifikasi Verihub</button>
+                        <button type="button" data-act="reject" class="btnAct btn btn-danger px-5">Reject</button>
+                        <button type="button" data-act="accept" class="btnAct btn btn-success px-5">Accept</button>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
 </div>
 <script>
-    $('.btnAct').on('click', function() {
-        let ARCBTN = {
-            title: `${$(this).data('act').toUpperCase()} DATA`,
-            text: `Berikan catatan sebelum ${$(this).data('act').toUpperCase()}`,
-            icon: 'warning',
-            showCancelButton: true,
-            reverseButtons: true,
-            input: "text",
-            inputLabel: `Masukan catatan`,
-            inputAttributes: {
-                required: true,
-            }
-        };
-        Swal.fire(ARCBTN).then((result) => {
-            if(result.isConfirmed) {
-                let id  = '<?= $data["d"] ?>';
-                let act = $(this).data('act');
-                $.post("/ajax/post/account/wp_verification_acion", {sbmt_id: id, sbmt_act: act, sbmt_note: result.value}, function(resp) {
-                    Swal.fire(resp.alert).then(() => {
-                        if(resp.success) {
-                            if(resp?.data?.reloc?.length){
-                                location.href = resp?.data?.reloc;
-                            }else{ location.reload(); }
+    $(document).ready(function() {
+        $('#verif_verihub').on('click', function() {
+            Swal.fire({
+                title: "Verifikasi Verihub",
+                text: "Mohon konfirmasi untuk melanjutkan",
+                icon: "info",
+                showCancelButton: true,
+                reverseButtons: true
+            }).then((result) => {
+                if(result.isConfirmed) {
+                    Swal.fire({
+                        text: "Please wait...",
+                        allowOutsideClick: false,
+                        didOpen: function() {
+                            Swal.showLoading();
                         }
                     })
-                }, 'json');
-            }
+
+                    $.post("/ajax/post/account/verifikasi_verihub", {account: '<?= $data['d']; ?>'}, (resp) => {
+                        Swal.fire(resp.alert)
+                    }, 'json')
+                }
+            })
+        })
+
+        $('.btnAct').on('click', function() {
+            let ARCBTN = {
+                title: `${$(this).data('act').toUpperCase()} DATA`,
+                text: `Berikan catatan sebelum ${$(this).data('act').toUpperCase()}`,
+                icon: 'warning',
+                showCancelButton: true,
+                reverseButtons: true,
+                input: "text",
+                inputLabel: `Masukan catatan`,
+                inputAttributes: {
+                    required: true,
+                }
+            };
+            Swal.fire(ARCBTN).then((result) => {
+                if(result.isConfirmed) {
+                    Swal.fire({
+                        text: "Please wait...",
+                        allowOutsideClick: false,
+                        didOpen: function() {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    let id  = '<?= $data["d"] ?>';
+                    let act = $(this).data('act');
+                    $.post("/ajax/post/account/wp_verification_acion", {sbmt_id: id, sbmt_act: act, sbmt_note: result.value}, function(resp) {
+                        Swal.fire(resp.alert).then(() => {
+                            if(resp.success) {
+                                if(resp?.data?.reloc?.length){
+                                    location.href = resp?.data?.reloc;
+                                }else{ location.reload(); }
+                            }
+                        })
+                    }, 'json');
+                }
+            });
         });
-    });
+    })
 </script>

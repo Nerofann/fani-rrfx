@@ -7,7 +7,10 @@
     use App\Models\FileUpload;
     use Config\Core\Database;
     use App\Factory\MetatraderFactory;
-    
+    use App\Models\User;
+use Config\Core\EmailSender;
+
+    $apiManager = MetatraderFactory::apiManager();
     $listGrup = $adminPermissionCore->availableGroup();
     $adminRoles = Admin::adminRoles();
     if(!$adminPermissionCore->hasPermission($authorizedPermission, "/transaction/withdrawal_accounting")) {
@@ -46,6 +49,9 @@
     $SQL_CHECK = mysqli_query($db, '
         SELECT 
             tb_dpwd.ID_DPWD,
+            DPWD_MBR,
+            DPWD_CURR_FROM,
+            DPWD_AMOUNT_SOURCE,
             CASE
                 WHEN tb_dpwd.DPWD_CURR_FROM = "USD" THEN tb_dpwd.DPWD_AMOUNT_SOURCE
                 WHEN tb_dpwd.DPWD_CURR_FROM = "IDR" THEN tb_dpwd.DPWD_AMOUNT
@@ -73,6 +79,16 @@
         ]);
     }
     $RSLT_CHECK = $SQL_CHECK->fetch_assoc();
+
+    /** check user */
+    $userdata = User::findByMemberId($RSLT_CHECK['DPWD_MBR']);
+    if(!$userdata) {
+        JsonResponse([
+            'success' => false,
+            'message' => "Invalid User",
+            'data' => []
+        ]);
+    }
 
     /** check akun */
     $LOGIN_ACC = Account::realAccountDetail_byLogin($RSLT_CHECK['ACC_LOGIN']);
@@ -130,22 +146,51 @@
 
         /** MetaTrader action if accept */
         if($mt_act){
-            $apiManager = MetatraderFactory::apiManager();
-            /** Proses isi balance MetaTrader */
-            $deposit = $apiManager->deposit([
-                'login' => $LOGIN_ACC['ACC_LOGIN'],
-                'amount' => '-'.$RSLT_CHECK["JMLH"],
-                'comment' => "withdrawal_".$RSLT_CHECK["ID_DPWD"]
-            ]);
-
-            if(is_object($deposit) === FALSE || !property_exists($deposit, "ticket")) {
-                $db->rollback();
-                JsonResponse([
-                    'success' => false,
-                    'message' => "Invalid Status Withdrawal",
-                    'data' => []
+            $comment = "withdrawal_".$RSLT_CHECK["ID_DPWD"];
+            sleep(3);
+            
+            /** Check apakah withdrawal sudah berhasil */
+            $sqlGet = $db->query("SELECT TICKET FROM mt5_balance WHERE COMMENT = '{$comment}' LIMIT 1");
+            if($sqlGet->num_rows == 0) {
+                /** Proses penarikan balance MetaTrader */
+                $deposit = $apiManager->deposit([
+                    'login' => $LOGIN_ACC['ACC_LOGIN'],
+                    'amount' => '-'.$RSLT_CHECK["JMLH"],
+                    'comment' => $comment
                 ]);
+    
+                if(is_object($deposit) === FALSE || !property_exists($deposit, "ticket")) {
+                    $db->rollback();
+                    JsonResponse([
+                        'success' => false,
+                        'message' => "Invalid Status Withdrawal",
+                        'data' => []
+                    ]);
+                }
             }
+
+            /** Notifikasi email withdrawal success */
+            $emailData = [
+                'subject' => "Konfirmasi Withdrawal Anda Telah Disetujui",
+                'jumlah' => $RSLT_CHECK['DPWD_CURR_FROM'] . " " . Helper::formatCurrency($RSLT_CHECK['DPWD_AMOUNT_SOURCE'])
+            ];
+
+            $emailSender = EmailSender::init(['email' => $userdata['MBR_EMAIL'], 'name' => $userdata['MBR_NAME']]);
+            $emailSender->useFile("withdrawal-success", $emailData);
+            $send = $emailSender->send();
+        
+        }else {
+
+            /** Notifikasi email withdrawal reject */
+            $emailData = [
+                'subject' => "Konfirmasi Withdrawal Anda Telah Ditolak",
+                'jumlah' => $RSLT_CHECK['DPWD_CURR_FROM'] . " " . Helper::formatCurrency($RSLT_CHECK['DPWD_AMOUNT_SOURCE']),
+                'note' => $data['note']
+            ];
+
+            $emailSender = EmailSender::init(['email' => $userdata['MBR_EMAIL'], 'name' => $userdata['MBR_NAME']]);
+            $emailSender->useFile("withdrawal-reject", $emailData);
+            $send = $emailSender->send();
         }
 
 

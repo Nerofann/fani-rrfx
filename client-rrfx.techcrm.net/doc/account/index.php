@@ -15,7 +15,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-dashed table-hover table-bordered digi-dataTable table-striped" id="account-table">
+                            <table class="table table-bordered table-dashed table-hover digi-dataTable dataTable-resize table-striped" id="account-table">
                                 <thead>
                                     <tr class="text-center">
                                         <th class="text-center" rowspan="2">Tanggal Dibuat</th>
@@ -46,6 +46,7 @@
 <script type="text/javascript">
     $(document).ready(function() {
         $('#account-table').DataTable({
+            scrollX: true,
             processing: true,
             serverSide: true,
             order: [[0, 'desc']],

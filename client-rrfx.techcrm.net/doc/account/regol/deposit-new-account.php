@@ -8,6 +8,7 @@ use App\Models\User;
 $myBanks = User::myBank($user['MBR_ID']); 
 $depositData = Account::getDepositNewAccount_data($realAccount['ID_ACC']);
 $depositHistory = Account::getDepositNewAccount_History($realAccount['ID_ACC']);
+die("<script>location.href='/account/create?page=selesai';</script>");
 ?>
 
 <div class="row">

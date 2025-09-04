@@ -22,7 +22,7 @@ Options +SymLinksifOwnerMatch
 	RewriteRule ^forgot/?$ /index.php?a=forgot [L,QSA]
 	RewriteRule ^verification/([^./]+)?$ /index.php?a=verification&b=$1 [L,QSA]
 	RewriteRule ^reset/([^./]+)?$ /index.php?a=reset&b=$1 [L,QSA]
-	RewriteRule ^otp/?$ /index.php?a=otp [L,QSA]
+	RewriteRule ^otp/([^./]+)?$ /index.php?a=otp&b=$1 [L,QSA]
 
 
 	# Dashboard Page

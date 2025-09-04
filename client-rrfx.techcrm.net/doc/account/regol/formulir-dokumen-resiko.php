@@ -19,7 +19,7 @@
                         <div class="col-12">
                             <div class="text-center">
                                 <h5>
-                                    Formulir Dokumen Resiko untuk Transaksi <span class="text-capitalize">Kontrak <span class="title">Derivatif Dalam Sistem Perdagangan Alternatif</span></span>
+                                    Formulir Dokumen Resiko untuk Transaksi <span class="text-capitalize">Kontrak <span class="title">Derivatif Dalam Sistem Perdagangan Alternatif.</span></span>
                                 </h5>
                             </div>
                             <hr>
@@ -53,7 +53,7 @@
                                         perdagangan Kontrak Derivatif Dalam Sistem Perdagangan Alternatif.</p>
                                         <div class="text-left">
                                             <label style="cursor:pointer;">
-                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input" style="border: 1.5px solid black !important;" value="YA" required/> Saya sudah membaca dan memahami
+                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input ck-item" style="border: 1.5px solid black !important;" value="YA" required/> Saya sudah membaca dan memahami
                                             </label>
                                         </div> 
 
@@ -71,7 +71,7 @@
                                         memenuhi kebutuhan sehari-hari.
                                         <div class="text-left">
                                             <label style="cursor:pointer;">
-                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input" style="border: 1.5px solid black !important;" value="YA" required /> Saya sudah membaca dan memahami
+                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input ck-item" style="border: 1.5px solid black !important;" value="YA" required /> Saya sudah membaca dan memahami
                                             </label>
                                         </div> 
                                     </li>
@@ -84,7 +84,7 @@
                                         untung".
                                         <div class="text-left">
                                             <label style="cursor:pointer;">
-                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input" style="border: 1.5px solid black !important;" value="YA" required /> Saya sudah membaca dan memahami
+                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input ck-item" style="border: 1.5px solid black !important;" value="YA" required /> Saya sudah membaca dan memahami
                                             </label>
                                         </div> 
                                     </li>
@@ -105,7 +105,7 @@
                                         Anda wajib menyelesaikan defisit (jika ada) dalam rekening Anda.
                                         <div class="text-left">
                                             <label style="cursor:pointer;">
-                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input" style="border: 1.5px solid black !important;" value="YA" required /> Saya sudah membaca dan memahami
+                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input ck-item" style="border: 1.5px solid black !important;" value="YA" required /> Saya sudah membaca dan memahami
                                             </label>
                                         </div> 
                                     </li>
@@ -127,7 +127,7 @@
                                         pada harga yang menimbulkan kerugian besar.
                                         <div class="text-left">
                                             <label style="cursor:pointer;">
-                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input" style="border: 1.5px solid black !important;" value="YA" required /> Saya sudah membaca dan memahami
+                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input ck-item" style="border: 1.5px solid black !important;" value="YA" required /> Saya sudah membaca dan memahami
                                             </label>
                                         </div> 
                                     </li>
@@ -142,7 +142,7 @@
                                         perdagangan yang tidak lazim pada Kontrak Derivatif dalam Sistem Perdagangan Alternatif atau “Kontrak Derivatif dalam Sistem Perdagangan Alternatif”.
                                         <div class="text-left">
                                             <label style="cursor:pointer;">
-                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input" style="border: 1.5px solid black !important;" value="YA" required /> Saya sudah membaca dan memahami
+                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input ck-item" style="border: 1.5px solid black !important;" value="YA" required /> Saya sudah membaca dan memahami
                                             </label>
                                         </div> 
                                     </li>
@@ -155,7 +155,7 @@
                                         Kerugian Anda akan semakin besar jika Pialang Berjangka yang mengelola posisi Anda tidak memiliki sistem informasi cadangan atau prosedur yang layak.
                                         <div class="text-left">
                                             <label style="cursor:pointer;">
-                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input" style="border: 1.5px solid black !important;" value="YA" required /> Saya sudah membaca dan memahami
+                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input ck-item" style="border: 1.5px solid black !important;" value="YA" required /> Saya sudah membaca dan memahami
                                             </label>
                                         </div> 
                                     </li>
@@ -167,7 +167,7 @@
                                         pengetahuan mengenai Kontrak Derivatif Dalam Sistem Perdagangan Alternatif dan pasar berjangka.
                                         <div class="text-left">
                                             <label style="cursor:pointer;">
-                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input" style="border: 1.5px solid black !important;" value="YA" required /> Saya sudah membaca dan memahami
+                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input ck-item" style="border: 1.5px solid black !important;" value="YA" required /> Saya sudah membaca dan memahami
                                             </label>
                                         </div> 
                                     </li>
@@ -183,7 +183,7 @@
                                         trading</i>”).
                                         <div class="text-left">
                                             <label style="cursor:pointer;">
-                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input" style="border: 1.5px solid black !important;" value="YA" required /> Saya sudah membaca dan memahami
+                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input ck-item" style="border: 1.5px solid black !important;" value="YA" required /> Saya sudah membaca dan memahami
                                             </label>
                                         </div> 
                                     </li>
@@ -195,7 +195,7 @@
                                         tidak memungkinkan melikuidasi Kontrak Derivatif Dalam Sistem Perdagangan Alternatif.
                                         <div class="text-left">
                                             <label style="cursor:pointer;">
-                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input" style="border: 1.5px solid black !important;" value="YA" required /> Saya sudah membaca dan memahami
+                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input ck-item" style="border: 1.5px solid black !important;" value="YA" required /> Saya sudah membaca dan memahami
                                             </label>
                                         </div> 
                                     </li>
@@ -205,7 +205,7 @@
                                         Kontrak Derivatif Dalam Sistem Perdagangan Alternatif.</strong>
                                         <div class="text-left">
                                             <label style="cursor:pointer;">
-                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input" style="border: 1.5px solid black !important;" value="YA" required /> Saya sudah membaca dan memahami
+                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input ck-item" style="border: 1.5px solid black !important;" value="YA" required /> Saya sudah membaca dan memahami
                                             </label>
                                         </div> 
                                     </li>
@@ -216,7 +216,7 @@
                                         memutuskan melakukan transaksi.</strong>
                                         <div class="text-left">
                                             <label style="cursor:pointer;">
-                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input" style="border: 1.5px solid black !important;" value="YA" required /> Saya sudah membaca dan memahami
+                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input ck-item" style="border: 1.5px solid black !important;" value="YA" required /> Saya sudah membaca dan memahami
                                             </label>
                                         </div> 
                                     </li>
@@ -225,7 +225,7 @@
                                         Bahasa Indonesia.</strong>
                                         <div class="text-left">
                                             <label style="cursor:pointer;">
-                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input" style="border: 1.5px solid black !important;" value="YA" required /> Saya sudah membaca dan memahami
+                                                <input type="checkbox" <?php echo ((retnull("ACC_F_RESK", 0))) ? 'checked' : NULL ?> name="box[]" class="form-check-input ck-item" style="border: 1.5px solid black !important;" value="YA" required /> Saya sudah membaca dan memahami
                                             </label>
                                         </div> 
                                     </li>
@@ -274,12 +274,31 @@
 </div>
 
 <script type="text/javascript">
+    $(function () {
+        const $checkAll = $('#check_all');
+        const itemSelector = '.ck-item:not(:disabled)';
+
+        function syncMaster() {
+            const $items   = $(itemSelector);
+            const total    = $items.length;
+            const checked  = $items.filter(':checked').length;
+
+            $checkAll.prop('checked', checked === total);
+            $checkAll.prop('indeterminate', checked > 0 && checked < total);
+        }
+
+        $checkAll.on('change', function () {
+            $(itemSelector).prop('checked', this.checked);
+            syncMaster();
+        });
+
+        $(document).on('change', itemSelector, syncMaster);
+
+        syncMaster();
+    });
+</script>
+<script type="text/javascript">
     $(document).ready(function() {
-        $('#check_all').on('click', function() {
-            $(this).is(':checked')
-                ? $('input[name="box[]"]').attr('checked', 'checked')
-                : $('input[name="box[]"]').removeAttr('checked')
-        })
 
         $('#form-dokumen-resiko').on('submit', function(event) {
             event.preventDefault();

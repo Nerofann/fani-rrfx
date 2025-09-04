@@ -3,9 +3,10 @@
     use App\Models\Helper;
     use App\Models\Admin;
     use App\Models\Logger;
-    use App\Models\FileUpload;
+    use App\Models\User;
     use Config\Core\Database;
-    
+    use Config\Core\EmailSender;
+
     $listGrup = $adminPermissionCore->availableGroup();
     $adminRoles = Admin::adminRoles();
     if(!$adminPermissionCore->hasPermission($authorizedPermission, "/transaction/withdrawal_authorization")) {
@@ -43,7 +44,10 @@
     /** Check withdrawal id */
     $SQL_CHECK = mysqli_query($db, '
         SELECT 
-            tb_dpwd.ID_DPWD 
+            tb_dpwd.ID_DPWD,
+            DPWD_MBR,
+            DPWD_CURR_FROM,
+            DPWD_AMOUNT_SOURCE
         FROM tb_dpwd 
         WHERE MD5(MD5(tb_dpwd.ID_DPWD)) = "'.$data["auth-dpx"].'" 
         AND tb_dpwd.DPWD_STS = 0
@@ -60,18 +64,41 @@
     }
     $RSLT_CHECK = $SQL_CHECK->fetch_assoc();
 
+    /** check user */
+    $userdata = User::findByMemberId($RSLT_CHECK['DPWD_MBR']);
+    if(!$userdata) {
+        JsonResponse([
+            'success' => false,
+            'message' => "Invalid User",
+            'data' => []
+        ]);
+    }
+
     $UPDATE_DATA = [
         "DPWD_NOTE1"     => $data["note"],
         "DPWD_DATETIME2" => date("Y-m-d H:i:s")
     ];
+
+    $emailData = [];
     switch (strtolower($data["auth-act"])) {
         case 'accept':
             $UPDATE_DATA["DPWD_STSVER"]  = -1;
+            $emailData = [
+                'file' => "withdrawal-process",
+                'subject' => "Konfirmasi Withdrawal Anda Sedang Diprosess",
+                'jumlah' => $RSLT_CHECK['DPWD_CURR_FROM'] . " " . Helper::formatCurrency($RSLT_CHECK['DPWD_AMOUNT_SOURCE']),
+            ];
             break;
         
         case 'reject':
             $UPDATE_DATA["DPWD_STSVER"]    = 1;
             $UPDATE_DATA["DPWD_STS"]       = 1;
+            $emailData = [
+                'file' => "withdrawal-reject",
+                'subject' => "Konfirmasi Withdrawal Anda Telah Ditolak",
+                'jumlah' => $RSLT_CHECK['DPWD_CURR_FROM'] . " " . Helper::formatCurrency($RSLT_CHECK['DPWD_AMOUNT_SOURCE']),
+                'note' => $data['note']
+            ];
             break;
         
         default:
@@ -93,6 +120,13 @@
             'message'   => "Failed to ".$data["auth-act"],
             'data'      => []
         ]);
+    }
+
+    if(!empty($emailData)) {
+        /** Notifikasi email */
+        $emailSender = EmailSender::init(['email' => $userdata['MBR_EMAIL'], 'name' => $userdata['MBR_NAME']]);
+        $emailSender->useFile($emailData['file'], $emailData);
+        $send = $emailSender->send();
     }
     
     Logger::admin_log([

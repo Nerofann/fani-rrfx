@@ -11,6 +11,8 @@
                             <tr><td class="text-start"><b>Password Meta:</b> <span id="passw"><?= $demoAccount['ACC_PASS'] ?? "" ?></span></td></tr>
                             <tr><td class="text-start"><b>Investor Meta:</b> <span id="invst"><?= $demoAccount['ACC_INVESTOR'] ?? "" ?></span></td></tr>
                             <tr><td class="text-start"><b>Phone Meta:</b> <span id="phone"><?= $demoAccount['ACC_PASSPHONE'] ?? "" ?></span></td></tr>
+                            <?php $returnGetDemoServer = (mysqli_query($db, "SELECT ID_RTYPE, RTYPE_GROUP, RTYPE_LEVERAGE, RTYPE_SERVER FROM tb_racctype WHERE UPPER(RTYPE_TYPE) = 'DEMO' LIMIT 1"))->fetch_assoc() ?? []; ?>
+                            <tr><td class="text-start"><b>Server:</b> <span id="server"><?= $returnGetDemoServer['RTYPE_SERVER'] ?? "" ?></span></td></tr>
                         </tbody>
                     </table>
                     <p id="nte"></p>

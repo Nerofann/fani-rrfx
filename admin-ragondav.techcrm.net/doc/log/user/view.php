@@ -2,7 +2,7 @@
     <div>
         <h2 class="main-content-title tx-24 mg-b-5">Log User</h2>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
+            <li class="breadcrumb-item"><a href="<?= pathbreadcrumb(0) ?>/dashboard">Home</a></li>
             <li class="breadcrumb-item"><a href="javascript:void(0);">Log</a></li>
             <li class="breadcrumb-item active" aria-current="page">Log User</li>
         </ol>
@@ -39,6 +39,16 @@
             processing: true,
             serverSide: true,
             deferRender: true,
+			buttons: [
+				{
+					extend: 'excel',
+					text: 'Excel',
+				},
+				{
+					extend: 'copy',
+					text: 'Copy'
+				}
+			],
             lengthMenu: [[10, 50, 100, -1], [10, 50, 100, "All"]],
             scrollX: true,
             order: [[ 0, "desc" ]],

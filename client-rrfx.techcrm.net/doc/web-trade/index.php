@@ -7,7 +7,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="text-center">
-                    <a href="/create-acc" class="text-center btn btn-md btn-primary mt-3 mb-3">Create Real Account</a>
+                    <a href="/account/create" class="text-center btn btn-md btn-primary mt-3 mb-3">Create Real Account</a>
                 </div>
             </div>
         </div>

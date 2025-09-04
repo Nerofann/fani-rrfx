@@ -16,11 +16,11 @@
                     </div>
                     <div class="col-md-12 mb-2">
                         <label for="name" class="form-label">Nama Pemilik Rekening</label>
-                        <input type="text" class="form-control" name="name" value="<?= $user['MBR_NAME'] ?>" placeholder="Nama Pemilik Rekening">
+                        <input type="text" class="form-control" name="name" value="<?= $user['MBR_NAME'] ?>" pattern="[A-Za-z]+(?: [A-Za-z]+)*" placeholder="Nama Pemilik Rekening">
                     </div>
                     <div class="col-md-12 mb-2">
                         <label for="bank-number" class="form-label">No. Rekening</label>
-                        <input type="number" class="form-control" name="bank-number" placeholder="Nomor Rekening">
+                        <input type="text" class="form-control" name="bank-number" placeholder="Nomor Rekening" pattern="\d{1,16}" maxlength="16">
                     </div>
                     <div class="col-md-12 mb-2">
                         <button type="submit" class="btn btn-primary btn-sm btn-block w-100">Submit</button>

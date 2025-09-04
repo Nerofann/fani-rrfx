@@ -114,7 +114,7 @@ if(!$admin) {
                 button.removeClass('loading');
                 Swal.fire(resp.alert).then(() => {
                     if(resp.success) {
-                        location.reload();
+                        location.href = resp.data?.redirect;
                     }
                 })
             }, 'json');

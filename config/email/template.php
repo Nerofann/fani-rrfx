@@ -210,7 +210,8 @@
                                     <div style="height: 100%;width: 100% !important;">
                                         <!--[if (!mso)&(!IE)]><!-->
                                         <div style="box-sizing: border-box; height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]-->
-                                            <div style="margin: 5px 10px;"><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" width="600" style="background-color:#fff;border-radius:0;color:#000;width:600px;margin:0 auto">
+                                            <div style="margin: 5px 20px;">
+                                                <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" width="600" style="background-color:#fff;border-radius:0;color:#000;width:600px;margin:0 auto">
                                                 
                                                 <?php require_once $content; ?>
 

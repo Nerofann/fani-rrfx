@@ -1,4 +1,11 @@
-<?php $myBanks = App\Models\User::myBank($user['MBR_ID']); ?>
+<?php
+
+use App\Models\Helper;
+
+$myBanks = App\Models\User::myBank($user['MBR_ID']);
+$_SESSION['modal'] = ['create-bank'];
+?>
+
 <form method="post" enctype="multipart/form-data" id="form-aplikasi-pembukaan-rekening">
     <input type="hidden" name="csrf_token" value="<?= uniqid(); ?>">
     <div class="card">
@@ -43,7 +50,7 @@
                                             <td class="top-align text-start">
                                                 <select name="app_gender" id="app_gender" class="form-control">
                                                     <?php foreach(['Laki-laki', 'Perempuan'] as $gender) : ?>
-                                                        <option value="<?= $gender ?>" <?= (strtolower($realAccount['ACC_F_APP_PRIBADI_KELAMIN'] ?? "") == strtolower($gender))? "selected" : ""; ?>><?= $gender ?></option>
+                                                        <option value="<?= $gender ?>" <?= (strtolower($realAccount['ACC_F_APP_PRIBADI_KELAMIN'] ?? $user['MBR_JENIS_KELAMIN'] ?? "") == strtolower($gender))? "selected" : ""; ?>><?= $gender ?></option>
                                                     <?php endforeach; ?>
                                                 </select>
                                             </td>
@@ -128,10 +135,10 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td width="30%" class="top-align fw-bold">No. Telp Handphone</td>
+                                            <td width="30%" class="top-align fw-bold">No. Telp Handphone<span class="text-danger">*</span></td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="number" autocomplete="off" placeholder="No. Telp Handphone" name="app_no_handphone" value="<?= ($realAccount['ACC_F_APP_PRIBADI_HP'] == 0)? $user['MBR_PHONE'] : ($realAccount['ACC_F_APP_PRIBADI_HP'] ?? 0); ?>" class="form-control">
+                                                <input type="number" autocomplete="off" placeholder="62xxxxxxxxx" name="app_no_handphone" value="<?= ($realAccount['ACC_F_APP_PRIBADI_HP'] == 0)? $user['MBR_PHONE'] : ($realAccount['ACC_F_APP_PRIBADI_HP'] ?? 0); ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
@@ -226,7 +233,7 @@
                             <div class="row">
                                 <?php if(empty($myBanks)) : ?>
                                     <div class="col-md-6">
-                                        <a target="_blank" href="/bank" class="btn btn-outline-primary" style="min-width: 10px;"><i class="fas fa-plus"></i> Tambah Bank</a>
+                                        <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#modal-create-bank" class="btn btn-outline-primary" style="min-width: 10px;"><i class="fas fa-plus"></i> Tambah Bank</a>
                                     </div>
                                 <?php else : ?>
                                     <?php foreach($myBanks as $mbank) : ?>
@@ -418,7 +425,7 @@
                                             <td width="8%" class="top-align fw-bold">Lokasi Rumah<span class="text-danger">*</span></td>
                                             <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="text" autocomplete="off" placeholder="Lokasi Rumah" name="app_lokasi_rumah" value="<?= $realAccount['ACC_F_APP_KEKYAN_RMHLKS'] ?? 0 ?>" class="form-control" required>
+                                                <input type="text" autocomplete="off" placeholder="Lokasi Rumah" name="app_lokasi_rumah" value="<?= $realAccount['ACC_F_APP_KEKYAN_RMHLKS'] ?? "" ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
@@ -439,14 +446,14 @@
                                             <td width="8%" class="top-align fw-bold">Lainnya<span class="text-danger">*</span></td>
                                             <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="number" autocomplete="off" placeholder="Lainnya" name="app_kekayaan_lainnya" id="app_kekayaan_lainnya" value="<?= $realAccount['ACC_F_APP_KEKYAN_LAIN'] ?? "" ?>" class="form-control" required>
+                                                <input type="text" autocomplete="off" placeholder="Lainnya" name="app_kekayaan_lainnya" id="app_kekayaan_lainnya" value="<?= $realAccount['ACC_F_APP_KEKYAN_LAIN'] ?? "" ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td width="8%" class="top-align fw-bold">Jumlah<span class="text-danger">*</span></td>
                                             <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="text" autocomplete="off" placeholder="Jumlah" name="app_jumlah" readonly value="<?= $realAccount['ACC_F_APP_KEKYAN_NILAI'] ?? 0 ?>" class="form-control" required>
+                                                <input type="text" autocomplete="off" placeholder="Jumlah" name="app_jumlah" readonly value="IDR <?= Helper::formatCurrency(($realAccount['ACC_F_APP_KEKYAN_NILAI'] ?? 0), 0) ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -464,19 +471,23 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-md-3 mb-3">
-                                    <label for="" class="form-control-label required text-sm" style="font-size: 14px;">Rekening Koran Bank / Tagihan Kartu Kredit</label>
+                                <div class="col-md-4 mb-3">
+                                    <label for="" class="form-label required text-sm" style="font-size: 14px;">Rekening Koran Bank / Tagihan Kartu Kredit</label>
                                     <input type="file" class="dropify" id="app_image_1" name="app_image_1" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_IMG'] ?? "") ?>">
                                 </div>
-                                <div class="col-md-3 mb-3">
+                                <div class="col-md-4 mb-3">
                                     <label for="" class="form-label required">Rekening Listrik / Telepon</label>
                                     <input type="file" class="dropify" id="app_image_2" name="app_image_2" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_IMG2'] ?? "") ?>">
                                 </div>
-                                <div class="col-md-3 mb-3">
+                                <div class="col-md-4 mb-3">
+                                    <label for="" class="form-label required">NPWP</label>
+                                    <input type="file" class="dropify" id="app_image_npwp" name="app_image_npwp" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_NPWP'] ?? "") ?>">
+                                </div>
+                                <div class="col-md-4 mb-3">
                                     <label for="" class="form-label">Dokumen Lainnya</label>
                                     <input type="file" class="dropify" id="app_image_3" name="app_image_3" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_IMG3'] ?? "") ?>">
                                 </div>
-                                <div class="col-md-3 mb-3">
+                                <div class="col-md-4 mb-3">
                                     <label for="" class="form-label">Dokumen Lainnya</label>
                                     <input type="file" class="dropify" id="app_image_4" name="app_image_4" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_IMG4'] ?? "") ?>">
                                 </div>
@@ -533,7 +544,7 @@
                 let deposit = $('#app_deposit_bank').val() || 0;
                 let kekayaan = $('#app_kekayaan_lainnya').val() || 0;
 
-                $('input[name="app_jumlah"]').val(new Intl.NumberFormat("id-ID", {style: "currency", currency: "IDR"}).format((parseFloat(njop) + parseFloat(deposit) + parseFloat(kekayaan))))
+                $('input[name="app_jumlah"]').val(new Intl.NumberFormat("en-US", {style: "currency", currency: "IDR", minimumFractionDigits: 0}).format((parseFloat(njop) + parseFloat(deposit) + parseFloat(kekayaan))))
             })
         })
 

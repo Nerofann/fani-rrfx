@@ -1,5 +1,5 @@
 <div style="padding: 10px;text-align: justify;">
-    <strong>Informasi Data Demo Account</strong><br>
+    <strong>Informasi Data Real Account</strong><br>
     Hi <strong><?= $name ?>, </strong><br>
     
     <ul>

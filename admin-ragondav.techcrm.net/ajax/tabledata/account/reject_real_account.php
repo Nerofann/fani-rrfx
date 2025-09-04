@@ -1,5 +1,8 @@
 <?php
+    use App\Models\Helper;
 
+    $data = Helper::getSafeInput($_GET);
+    $mth = (!empty($data["mnthfltr"])) ? 'AND DATE(tb_racc.ACC_DATETIME) BETWEEN DATE("'.($data["mnthfltr"]).'-01") AND DATE("'.date("Y-m-t", strtotime(($data["mnthfltr"]))).'")' : NULL;
     $old_query = '
         SELECT
             tb_racc.ACC_F_PROFILE_DATE,
@@ -35,6 +38,7 @@
         ON(tb_racc.ACC_MBR = tb_member.MBR_ID)
         WHERE tb_racc.ACC_WPCHECK = 6
         AND tb_racc.ACC_STS = -1
+        '.$mth.'
     ';
     $dt->query($new_query);
     $dt->edit('ACC_STATUS', function($data){ 
