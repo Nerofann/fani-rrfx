@@ -1,10 +1,17 @@
 <?php
 
+use App\Models\Helper;
 use App\Models\Token;
-use App\Models\TokenGenerator;
 use App\Models\User;
 
-$refreshToken = form_input($_POST['refresh_token']);
+$status = [
+    '0' => "otp",
+    '1' => "suspend",
+    '2' => "verification",
+    '-1' => "active"
+];
+
+$refreshToken = Helper::form_input($_POST['refresh_token']);
 if(empty($refreshToken)) {
     ApiResponse([
         'status' => false,
@@ -14,7 +21,7 @@ if(empty($refreshToken)) {
 }
 
 // Verify refresh token
-$payload = TokenGenerator::verifyToken($refreshToken);
+$payload = Token::verifyToken($refreshToken);
 if (!$payload) {
     ApiResponse([
         'status' => false,
@@ -44,8 +51,8 @@ if(!$revokeToken) {
 }
 
 /** Generate new token */
-$accessToken = TokenGenerator::generateAccessToken($payload['user_id']);
-$refreshToken = TokenGenerator::generateRefreshToken($payload['user_id']);
+$accessToken = Token::generateAccessToken($payload['user_id']);
+$refreshToken = Token::generateRefreshToken($payload['user_id']);
 
 /** Save new token */
 $saveToken = Token::saveTokens($payload['user_id'], $accessToken, $refreshToken);
@@ -58,7 +65,7 @@ if(!$saveToken) {
 }
 
 /** find user */
-$user = User::findByID($payload['user_id']);
+$user = User::findByMemberId($payload['user_id']);
 if(!$user) {
     ApiResponse([
         'status' => false,
@@ -74,23 +81,6 @@ ApiResponse([
         "access_token" => $accessToken,
         "refresh_token" => $refreshToken,
         "expires_in" => ACCESS_TOKEN_LIFETIME,
-        "personal_detail" => array(
-            "id" => $user['MBR_ID'],
-            "name" => $user['MBR_NAME'],
-            "email" => $user['MBR_EMAIL'],
-            "phone" => $user['MBR_PHONE'],
-            "gender" => $user['MBR_JENIS_KELAMIN'],
-            "city" => $user['MBR_CITY'],
-            "country" => $user['MBR_COUNTRY'],
-            "address" => $user['MBR_ADDRESS'],
-            "zip" => $user['MBR_ZIP'],
-            "tgl_lahir" => default_date($user['MBR_TGLLAHIR'], "Y-m-d"),
-            "tmpt_lahir" => $user['MBR_TMPTLAHIR'],
-            "type_id" => $user['MBR_TYPE_IDT'],
-            "id_number" => $user['MBR_NO_IDT'],
-            "url_photo" => mbr_avatar($user['MBR_OAUTH_PIC'], $user['MBR_OAUTH_PIC']),
-            "status" => $user['MBR_STS'],
-            "ver" => $user['MBR_VERIF']
-        ),
+        "status" => $status[ $user['MBR_STS'] ]
     )
 ], 200);
