@@ -2,6 +2,7 @@
 
 use Allmedia\Shared\AdminPermission\Core\UrlParser;
 use App\Models\Helper;
+use App\Models\Logger;
 use App\Models\Token;
 use App\Models\TokenGenerator;
 use App\Models\User;
@@ -87,6 +88,15 @@ try {
             /** Avatar */
             $avatar = User::avatar($user['MBR_AVATAR']);
 
+            /** Logger */
+            Logger::client_log([
+                'mbrid' => $user['MBR_ID'],
+                'module' => $filepath,
+                'data' => $_POST,
+                'device' => implode(", ", array_values(json_decode($_POST['device'] ?? "{}", true))),
+                'message' => "Access route " . $filepath . " from ip " . Helper::get_ip_address()
+            ]);
+            
             require __DIR__ . "/routes/{$filepath}.php";
             break;
     }

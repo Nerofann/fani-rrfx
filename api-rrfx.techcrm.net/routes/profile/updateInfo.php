@@ -1,91 +1,89 @@
 <?php
 
-use App\Models\Database;
+use App\Models\FileUpload;
+use App\Models\Helper;
+use App\Models\Wilayah;
+use Config\Core\Database;
 
-$data = $helperClass->getSafeInput($_POST);
+$data = Helper::getSafeInput($_POST);
 $required = [
-    'fullname' => "Nama Lengkap",
-    'gender' => "Jenis Kelamin",
-    'date_of_birth' => "Tanggal Lahir",
+    'zip' => "Kodepos",
     'place_of_birth' => "Tempat Lahir",
-    'address' => "Alamat Lengkap",
-    'country' => "Negara Asal",
-    'zipcode' => "Kode Pos"
+    'date_of_birth' => "Tanggal Lahir",
+    'province' => "Provinsi",
+    'city' => "Kabupaten/Kota",
+    'district' => "Kecamatan",
+    'villages' => "Kelurahan/Desa",
 ];
 
-foreach($required as $key => $req) {
+foreach($required as $key => $text) {
     if(empty($data[ $key ])) {
         ApiResponse([
             'status' => false,
-            'message' => "{$req} wajib diisi",
-            'response' => [] 
-        ], 400);
+            'message' => "Kolom {$text} wajib diisi",
+            'response' => []
+        ]);
     }
 }
 
-/** Check Gender */
-if(!in_array(strtolower($data['gender']), ['laki-laki', 'perempuan'])) {
+/** check kodepos */
+if(is_numeric($data['zip']) === FALSE) {
     ApiResponse([
         'status' => false,
-        'message' => "Format jenis kelamin tidak valid",
-        'response' => [] 
-    ], 400);
+        'message' => "Nomor kodepos harus berupa angka",
+        'response' => []
+    ]);
 }
 
-/** Check Country */
-$country = strtolower($data['country']);
-$sqlCheckCountry = $db->query("SELECT * FROM tb_country WHERE LOWER(COUNTRY_NAME) = '{$country}' LIMIT 1");
-$fetch_country = $sqlCheckCountry->fetch_assoc();
-if($sqlCheckCountry->num_rows != 1) {
+$kodepos = Wilayah::postalCode($data['province'], $data['city'], $data['district'], $data['villages'], $data['zip']);
+if(!$kodepos) {
     ApiResponse([
         'status' => false,
-        'message' => "Nama Negara tidak valid",
-        'response' => [] 
-    ], 400);
+        'message' => "Nomor Kode Pos tidak valid / terdaftar",
+        'response' => []
+    ]);
 }
 
-/** Check Kode pos */
-$kodepos = $data['zipcode'];
-$sqlGetKodePos = $db->query("SELECT KDP_POS FROM tb_kodepos WHERE KDP_POS = {$kodepos} LIMIT 1");
-$fetch_kode = $sqlGetKodePos->fetch_assoc();
-if($sqlGetKodePos->num_rows != 1) {
-    ApiResponse([
-        'status' => false,
-        'message' => "Kodepos tidak valid",
-        'response' => [] 
-    ], 400);
-}
-
-/** Update */
+/* Update **/
+$gender = empty($data['gender'])? "" : strtoupper($data['gender']);
+$address = empty($data['address'])? "" : $data['address'];
 $updateData = [
-    'MBR_NAME' => $data['fullname'],
-    'MBR_JENIS_KELAMIN' => ucwords($data['gender']),
-    'MBR_TGLLAHIR' => $data['date_of_birth'],
+    'MBR_PROVINCE' => $kodepos['KDP_PROV'],
+    'MBR_CITY' => $kodepos['KDP_KABKO'],
+    'MBR_DISTRICT' => $kodepos['KDP_KECAMATAN'],
+    'MBR_VILLAGES' => $kodepos['KDP_KELURAHAN'],
+    'MBR_ZIP' => $kodepos['KDP_POS'],
     'MBR_TMPTLAHIR' => $data['place_of_birth'],
-    'MBR_ADDRESS' => $data['address'],
-    'MBR_COUNTRY' => $fetch_country['COUNTRY_NAME'],
-    'MBR_ZIP' => $fetch_kode['KDP_POS']
+    'MBR_TGLLAHIR' => date("Y-m-d", strtotime($data['date_of_birth'])),
+    'MBR_ADDRESS' => $address,
+    'MBR_JENIS_KELAMIN' => $gender
 ];
 
-$update = Database::updateWithArray("tb_member", $updateData, ['MBR_ID' => $userData['MBR_ID']]);
+/** check Avatar */
+if(!empty($_FILES['avatar']) && $_FILES['avatar']['error'] == 0) {
+    $uploadFile = FileUpload::upload_myfile($_FILES['avatar'], "avatar");
+    if(!is_array($uploadFile) || !array_key_exists("filename", $uploadFile)) {
+        ApiResponse([
+            'status' => false,
+            'message' => $uploadFile ?? "Upload avatar gagal",
+            'response' => []
+        ]);
+    }
+
+    $updateData['MBR_AVATAR'] = $uploadFile['filename'];
+}
+
+$update = Database::update("tb_member", $updateData, ['MBR_ID' => $user['MBR_ID']]);
 if(!$update) {
     ApiResponse([
         'status' => false,
-        'message' => "Gagal memperbarui profile",
-        'response' => [] 
-    ], 400);
+        'message' => "Gagal memperbarui data",
+        'response' => []
+    ]);
 }
-
-newInsertLog([
-    'mbrid' => $userData['MBR_ID'],
-    'module' => "profile",
-    'message' => "Memperbarui Profile",
-    'device' => "mobile",
-    'data'  => $data
-]);
 
 ApiResponse([
     'status' => true,
-    'message' => "Profile berhasil diperbarui",
-    'response' => [] 
+    'message' => "Berhasil",
+    'response' => []
 ]);
