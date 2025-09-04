@@ -2,7 +2,7 @@
     $versionApp = 1.0;
 
     try {
-        $version = form_input($_POST['version'] ?? "1.0");
+        $version = App\Models\Helper::form_input($_POST['version'] ?? "1.0");
         if($version != $versionApp){
             ApiResponse([
                 'status' => false,
