@@ -66,9 +66,9 @@ try {
                 ], 300);
             }
 
-            $userData = User::findByMemberId($isValid['user_id']);
+            $user = User::findByMemberId($isValid['user_id']);
             $userId = md5(md5($isValid['user_id']));
-            if(empty($userData)) {
+            if(empty($user)) {
                 ApiResponse([
                     'status' => false,
                     'message' => "Invalid User",
@@ -85,7 +85,7 @@ try {
             }
 
             /** Avatar */
-            $avatar = User::avatar($userData['MBR_AVATAR']);
+            $avatar = User::avatar($user['MBR_AVATAR']);
 
             require __DIR__ . "/routes/{$filepath}.php";
             break;

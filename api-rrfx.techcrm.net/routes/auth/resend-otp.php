@@ -73,7 +73,7 @@ Logger::client_log([
     'mbrid' => $user['MBR_ID'],
     'module' => "resend-otp",
     'message' => "Resend OTP code " . $user['MBR_EMAIL'],
-    'device' => implode(", ", array_values($_POST['device'] ?? [])),
+    'device' => implode(", ", array_values(json_decode($_POST['device'] ?? ""))),
     'data' => array_merge(($emailData ?? []))
 ]);
 
