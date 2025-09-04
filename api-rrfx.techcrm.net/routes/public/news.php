@@ -1,5 +1,10 @@
 <?php
-$getData = $helperClass->getSafeInput($_GET);
+
+use App\Models\Blog;
+use App\Models\FileUpload;
+use App\Models\Helper;
+
+$getData = Helper::getSafeInput($_GET);
 $type_news = $getData['type_news'] ?? "";
 $result = $db->query("SELECT * FROM tb_blog");
 $data = [];
@@ -17,21 +22,15 @@ foreach($result->fetch_all(MYSQLI_ASSOC) as $row){
             continue;
         }
     }
-    if($row['BLOG_TYPE'] == 1){
-        $BLOG_TYPE = 'Fundamental & technical Analys';
-    } else if($row['BLOG_TYPE'] == 2){
-        $BLOG_TYPE = 'News';
-    } else {
-        $BLOG_TYPE = 'Unknown';
-    }
+   
     $data[] = array(
         'id' => md5(md5($row['ID_BLOG'])),
         'title' => $row['BLOG_TITLE'],
-        'type' => $BLOG_TYPE,
-        'message' => $row['BLOG_MESSAGE'],
+        'type' => Blog::$type[ $row['BLOG_TYPE'] ],
+        'message' => html_entity_decode($row['BLOG_MESSAGE']),
         'author' => $row['BLOG_AUTHOR'],
-        'tanggal' => default_date($row['BLOG_DATETIME'], "Y-m-d H:i:s"),
-        'picture' => $aws_folder.$row['BLOG_IMG'],
+        'tanggal' => Helper::default_date($row['BLOG_DATETIME'], "Y-m-d H:i:s"),
+        'picture' => FileUpload::awsFile($row['BLOG_IMG']),
     );
 }
 
