@@ -10,16 +10,26 @@ use Exception;
 
 class MetatraderFactory {
 
-    public static $server = "ICDX-Demo";
-    public static $tokenManager = "47c8fe4e-4733-4fe3-bdcf-5c2a97e9dca5";
+    public static $serverReal = "RRFX-Live";
+    public static $serverDemo = "RRFX-Demo";
+    public static $tokenManagerDemo = "5c585515-6500-4fc2-b7fb-ca3a7c276d4c-rrfx-demo";
+    public static $tokenManagerReal = "5c585515-6500-4fc2-b7fb-ca3a7c276d4c-rrfx-live";
     public static float $initMarginDemo = 10000;
 
     public static function apiManager(): ApiManager {
-        return new ApiManager(self::$tokenManager);
+        return new ApiManager(self::$tokenManagerReal, "http://139.180.212.62:7005");
     }
 
     public static function apiTerminal(): ApiTerminal {
-        return new ApiTerminal(self::$server);
+        return new ApiTerminal(self::$serverReal);
+    }
+
+    public static function apiTerminalDemo(): ApiTerminal {
+        return new ApiTerminal(self::$serverDemo);
+    }
+
+    public static function apiManagerDemo(): ApiManager {
+        return new ApiManager(self::$tokenManagerDemo, "http://139.180.212.62:7005");
     }
 
     public static function createDemo(?string $fullname, ?string $email): array {
@@ -42,11 +52,11 @@ class MetatraderFactory {
             $meta_phone = Account::generatePassword();
 
             /** Create Demo */
-            $apiManager = self::apiManager();
+            $apiManager = self::apiManagerDemo();
             $apiData = [
                 'master_pass' => $meta_pass, 
                 'investor_pass' => $meta_investor, 
-                'group' => "demo\MandiriInvestindo\MMUSD", 
+                'group' => $demoType['RTYPE_GROUP'], 
                 'fullname' => ($fullname ?? "-"), 
                 'email' => ($email ?? "-"), 
                 'leverage' => $demoType['RTYPE_LEVERAGE'],
