@@ -175,7 +175,7 @@ Logger::client_log([
     'mbrid' => $newMbrId,
     'module' => "signup",
     'data' => $data,
-    'device' => implode(", ", array_values(json_decode($_POST['device'] ?? "", true))),
+    'device' => implode(", ", array_values(json_decode($_POST['device'] ?? "{}", true))),
     'message' => "Pendaftaran user baru " . $data['email']
 ]);
 

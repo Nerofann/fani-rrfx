@@ -103,7 +103,7 @@ Logger::client_log([
     'mbrid' => $userData['MBR_ID'],
     'module' => "signin",
     'data' => $data,
-    'device' => implode(", ", array_values(json_decode($_POST['device'] ?? "", true))),
+    'device' => implode(", ", array_values(json_decode($_POST['device'] ?? "{}", true))),
     'message' => "Login " . $data['email']
 ]);
 

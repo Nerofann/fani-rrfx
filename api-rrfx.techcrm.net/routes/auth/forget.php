@@ -56,7 +56,7 @@ Logger::client_log([
     'mbrid' => $userData['MBR_ID'],
     'module' => "forgot-password",
     'data' => array_merge($_POST, $emailData),
-    'device' => implode(", ", array_values(json_decode($_POST['device'] ?? "", true))),
+    'device' => implode(", ", array_values(json_decode($_POST['device'] ?? "{}", true))),
     'message' => "Forgot Password " . $data['email']
 ]);
 
