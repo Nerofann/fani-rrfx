@@ -133,7 +133,7 @@ mysqli_begin_transaction($db);
 $newMbrId = User::createMbrId();
 $passwordHash = password_hash($data['password'], PASSWORD_BCRYPT);
 $otpCode = random_int(1000, 9999);
-$otpExpired = date("Y-m-d H:i:s", strtotime("+1 hour"));
+$otpExpired = date("Y-m-d H:i:s", strtotime("+5 minute"));
 
 /** insert tb_member */
 $insert = Database::insert("tb_member", [
@@ -160,14 +160,14 @@ if(!$insert) {
     ]);
 }
 
-/** Email Verifikasi */
+/** Email OTP */
 $emailData = [
-    'subject'   => "Email Verification",
-    'code'  => md5(md5($newMbrId.$otpCode)),
+    'subject' => "OTP Verification",
+    'otp'  => $otpCode,
 ];
 
 $emailSender = EmailSender::init(['email' => $data['email'], 'name' => $data['fullname']]);
-$emailSender->useFile("register", $emailData);
+$emailSender->useFile("otp", $emailData);
 $send = $emailSender->send();
 
 /** Log */
