@@ -2,6 +2,7 @@
 
 use Allmedia\Shared\AdminPermission\Core\UrlParser;
 use App\Models\Helper;
+use App\Models\Logger;
 use App\Models\Token;
 use App\Models\TokenGenerator;
 use App\Models\User;
@@ -55,7 +56,7 @@ try {
             break;
 
         default: 
-            $userToken = $headers['Authorization'] ?? "";
+            $userToken = $_SERVER['HTTP_AUTHORIZATION'] ?? "";
             $userToken = str_replace("Bearer ", "", $userToken);
             $isValid = Token::verifyToken($userToken);
             if(!$isValid || !is_array($isValid)) {
@@ -66,9 +67,9 @@ try {
                 ], 300);
             }
 
-            $userData = User::findByMemberId($isValid['user_id']);
+            $user = User::findByMemberId($isValid['user_id']);
             $userId = md5(md5($isValid['user_id']));
-            if(empty($userData)) {
+            if(empty($user)) {
                 ApiResponse([
                     'status' => false,
                     'message' => "Invalid User",
@@ -85,8 +86,17 @@ try {
             }
 
             /** Avatar */
-            $avatar = User::avatar($userData['MBR_AVATAR']);
+            $avatar = User::avatar($user['MBR_AVATAR']);
 
+            /** Logger */
+            Logger::client_log([
+                'mbrid' => $user['MBR_ID'],
+                'module' => $filepath,
+                'data' => $_POST,
+                'device' => implode(", ", array_values(json_decode($_POST['device'] ?? "{}", true))),
+                'message' => "Access route " . $filepath . " from ip " . Helper::get_ip_address()
+            ]);
+            
             require __DIR__ . "/routes/{$filepath}.php";
             break;
     }
