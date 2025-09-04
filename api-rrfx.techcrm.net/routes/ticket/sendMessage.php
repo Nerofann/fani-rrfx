@@ -1,90 +1,82 @@
 <?php
 
-use App\Models\Database;
+use App\Models\FileUpload;
+use App\Models\Helper;
+use App\Models\Ticket;
+use Config\Core\Database;
 
-$data = $helperClass->getSafeInput($_POST);
-foreach(['code'] as $req) {
-    if(empty($data[$req])) {
-        ApiResponse([
-            'status' => false,
-            'message' => "{$req} is required",
-            'response' => [] 
-        ]);
-    }
-}
+$ticketCode = Helper::form_input($_POST['code']);
+$message = Helper::form_input($_POST['message']);
 
 /** check code */
-$ticketCode = $data['code'];
-$sqlGet = $db->query("SELECT * FROM tb_ticket WHERE TICKET_CODE = '{$ticketCode}' LIMIT 1");
-$ticket = $sqlGet->fetch_assoc();
-if($sqlGet->num_rows != 1) {
+$ticket = Ticket::findByCode($ticketCode);
+if(!$ticket) {
     ApiResponse([
         'status' => false,
         'message' => "Invalid Code",
-        'response' => [] 
+        'response' => []
     ]);
 }
 
-/** check apakah tidak ada file / pesan yang dikirim */
-if((empty($_FILES['image']) || $_FILES['image']['error'] != 0) && empty($data['message'])) {
+/** Check status */
+if($ticket['TICKET_STS'] != -1) {
     ApiResponse([
         'status' => false,
-        'message' => "Message field is required",
-        'response' => [] 
+        'message' => "Invalid Status",
+        'response' => []
     ]);
 }
 
-/** Upload File */
-if(!empty($_FILES['image']) && $_FILES['image']['error'] == 0) {
-    $uploadFile = upload_myfile($_FILES['image'], "ticket_img");
-    if(!is_array($uploadFile) || !array_key_exists("filename", $uploadFile)) {
+/** check Attachment */
+if(!empty($_FILES['attachment']) && $_FILES['attachment']['error'] == 0) {
+    $uploadAttachment = FileUpload::upload_myfile($_FILES['attachment']);
+    if(!is_array($uploadAttachment) || !array_key_exists("filename", $uploadAttachment)) {
         ApiResponse([
             'status' => false,
-            'message' => $uploadFile ?? "Failed to upload image",
-            'response' => [] 
+            'message' => "Upload file gagal",
+            'response' => []
         ]);
     }
 
-    /** Insert Image */
-    $insertImage = Database::insertWithArray("tb_ticket_detail", [
+    /** Insert Attachment */
+    $insertAttachment = Database::insert("tb_ticket_detail", [
         'TDETAIL_TCODE' => $ticketCode,
+        'TDETAIL_FROM' => $user['MBR_ID'],
         'TDETAIL_TYPE' => "member",
-        'TDETAIL_FROM' => $userData['MBR_ID'],
         'TDETAIL_CONTENT_TYPE' => "image",
-        'TDETAIL_CONTENT' => $aws_folder . $uploadFile['filename'],
+        'TDETAIL_CONTENT' => FileUpload::awsFile($uploadAttachment['filename']),
         'TDETAIL_DATETIME' => date("Y-m-d H:i:s")
     ]);
 
-    if(!$insertImage) {
+    if(!$insertAttachment) {
         ApiResponse([
             'status' => false,
-            'message' => "Failed to save image",
-            'response' => [] 
+            'message' => "File gagal disimpan",
+            'response' => []
         ]);
     }
 }
 
-if(!empty($data['message'])) {
-    /** insert */
-    $insert = Database::insertWithArray("tb_ticket_detail", [
-        'TDETAIL_TCODE' => $ticketCode,
-        'TDETAIL_TYPE' => "member",
-        'TDETAIL_FROM' => $userData['MBR_ID'],
-        'TDETAIL_CONTENT' => $data['message'],
-        'TDETAIL_DATETIME' => date("Y-m-d H:i:s")
+/** Insert message */
+$insert = Database::insert("tb_ticket_detail", [
+    'TDETAIL_TCODE' => $ticketCode,
+    'TDETAIL_FROM' => $user['MBR_ID'],
+    'TDETAIL_TYPE' => "member",
+    'TDETAIL_CONTENT_TYPE' => "message",
+    'TDETAIL_CONTENT' => $message,
+    'TDETAIL_DATETIME' => date("Y-m-d H:i:s")
+]);
+
+if(!$insert) {
+    ApiResponse([
+        'status' => false,
+        'message' => "File gagal disimpan",
+        'response' => []
     ]);
-    
-    if(!$insert) {
-        ApiResponse([
-            'status' => false,
-            'message' => "Failed to send message",
-            'response' => [] 
-        ]);
-    }
 }
 
 ApiResponse([
     'status' => true,
-    'message' => "Send message sucessfully",
-    'response' => [] 
+    'message' => "Berhasil",
+    'response' => []
 ]);
