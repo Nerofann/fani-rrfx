@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Helper;
+use App\Models\Logger;
 use App\Models\User;
 use Config\Core\EmailSender;
 
@@ -50,6 +51,14 @@ $emailData = [
 
 $emailSender = EmailSender::init(['email' => $userData['MBR_EMAIL'], 'name' => $userData['MBR_NAME']]);
 $emailSender->useFile("reset-password", $emailData)->send();
+
+Logger::client_log([
+    'mbrid' => $userData['MBR_ID'],
+    'module' => "forgot-password",
+    'data' => array_merge($_POST, $emailData),
+    'device' => implode(", ", array_values($_POST['device'] ?? [])),
+    'message' => "Forgot Password " . $data['email']
+]);
 
 ApiResponse([
     'status' => true,
