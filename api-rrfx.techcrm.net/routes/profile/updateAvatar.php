@@ -1,6 +1,6 @@
 <?php
-
-use App\Models\Database;
+use App\Models\FileUpload;
+use Config\Core\Database;
 
 if(empty($_FILES['image']) || $_FILES['image']['error'] != 0) {
     ApiResponse([
@@ -10,7 +10,7 @@ if(empty($_FILES['image']) || $_FILES['image']['error'] != 0) {
     ],400);
 }
 
-$uploadFile = upload_myfile($_FILES['image'], "avatar");
+$uploadFile = FileUpload::upload_myfile($_FILES['image'], "avatar");
 if(!is_array($uploadFile) || !array_key_exists("filename", $uploadFile)) {
     ApiResponse([
         'status' => false,
@@ -20,7 +20,7 @@ if(!is_array($uploadFile) || !array_key_exists("filename", $uploadFile)) {
 }
 
 /** Update avatar */
-$update = Database::updateWithArray("tb_member", ['MBR_AVATAR' => $uploadFile['filename']], ['MBR_ID' => $userData['MBR_ID']]);
+$update = Database::update("tb_member", ['MBR_AVATAR' => $uploadFile['filename']], ['MBR_ID' => $user['MBR_ID']]);
 if(!$update) {
     ApiResponse([
         'status' => false,
@@ -28,14 +28,6 @@ if(!$update) {
         'response' => []
     ],400);
 }
-
-newInsertLog([
-    'mbrid' => $userData['MBR_ID'],
-    'module' => "profile",
-    'message' => "Memperbarui Avatar",
-    'device' => "mobile",
-    'data'  => $uploadFile
-]);
 
 ApiResponse([
     'status' => true,
