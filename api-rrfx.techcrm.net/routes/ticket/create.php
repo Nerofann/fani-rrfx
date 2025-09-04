@@ -1,40 +1,74 @@
 <?php
 
-use App\Models\Database;
+use App\Models\Helper;
+use App\Models\Logger;
+use Config\Core\Database;
 
-$subject = form_input($_POST['subject'] ?? "");
-if(empty($subject)) {
+$data = Helper::getSafeInput($_POST);
+if(empty($data['subject'])) {
     ApiResponse([
         'status' => false,
-        'message' => "Subject field is required",
+        'message' => "Kolom Subjek perlu diisi",
         'response' => []
-    ], 400);
+    ]);
 }
 
-$code = uniqid();
-$datetime = date("Y-m-d H:i:s");
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+mysqli_begin_transaction($db);
 
 /** Insert */
-$insert = Database::insertWithArray("tb_ticket", [
-    'TICKET_CODE' => $code,
-    'TICKET_MBR' => $userData['MBR_ID'],
-    'TICKET_SUBJECT' => $subject,
+$ticketCode = uniqid();
+$datetime = date("Y-m-d H:i:s");
+$insert = Database::insert("tb_ticket", [
+    'TICKET_CODE' => $ticketCode,
+    'TICKET_MBR' => $user['MBR_ID'],
+    'TICKET_SUBJECT' => $data['subject'],
     'TICKET_STS' => -1,
     'TICKET_DATETIME' => $datetime
 ]);
 
 if(!$insert) {
+    $db->rollback();
     ApiResponse([
         'status' => false,
-        'message' => "Failed to create ticket",
+        'message' => "Gagal membuat ticket",
         'response' => []
-    ], 400);
+    ]);
 }
 
+/** first message */
+if(!empty($data['desc'])) {
+    $insertFirstMessage = Database::insert("tb_ticket_detail", [
+        'TDETAIL_TCODE' => $ticketCode,
+        'TDETAIL_FROM' => $user['MBR_ID'],
+        'TDETAIL_TYPE' => "member",
+        'TDETAIL_CONTENT_TYPE' => "message",
+        'TDETAIL_CONTENT' => $data['desc'],
+        'TDETAIL_DATETIME' => $datetime,
+    ]);
+
+    if(!$insertFirstMessage) {
+        $db->rollback();
+        ApiResponse([
+            'status' => false,
+            'message' => "Gagal membuat pesan",
+            'response' => []
+        ]);
+    }
+}
+
+Logger::client_log([
+    'mbrid' => $user['MBR_ID'],
+    'module' => "ticket",
+    'message' => "Membua ticket baru dengan kode: $ticketCode, subjek: ".$data['subject'],
+    'data' => $data
+]);
+
+$db->commit();
 ApiResponse([
     'status' => true,
-    'message' => "Create ticket successfull",
+    'message' => "Berhasil",
     'response' => [
-        'code' => $code
+        'ticketCode' => $ticketCode
     ]
 ]);
