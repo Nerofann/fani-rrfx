@@ -19,7 +19,7 @@ foreach(['email', 'password'] as $req) {
     if(!isset($data[$req])) {
         ApiResponse([
             'status' => false,
-            'message' => "{$req} field is required",
+            'message' => "kolom {$req} diperlukan",
             'response' => []
         ], 400);
     }
@@ -52,6 +52,14 @@ if(!array_key_exists($userData['MBR_STS'], $status)) {
     ApiResponse([
         'status' => false,
         'message' => "Invalid Status",
+        'response' => []
+    ]);
+}
+
+if($userData['MBR_STS'] == 1) {
+    ApiResponse([
+        'status' => false,
+        'message' => "Akun anda telah diblokir",
         'response' => []
     ]);
 }
