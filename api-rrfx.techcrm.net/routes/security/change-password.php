@@ -65,7 +65,7 @@ Logger::client_log([
     'mbrid' => $user['MBR_ID'],
     'module' => "security/update-password",
     'data' => $data,
-    'device' => implode(", ", array_values($_POST['device'] ?? [])),
+    'device' => implode(", ", array_values(json_decode($_POST['device'] ?? ""))),
     'message' => "Update password"
 ]);
 
