@@ -5,6 +5,7 @@ use App\Models\Account;
 use App\Models\Helper;
 use App\Models\Logger;
 use Config\Core\Database;
+use Config\Core\EmailSender;
 
 $data = Helper::getSafeInput($_POST);
 $required = [
@@ -77,6 +78,7 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 mysqli_begin_transaction($db);
 
 $code = uniqid();
+$statusDeposit = false;
 $apiManager = MetatraderFactory::apiManager();
 $insert = Database::insert("tb_internal_transfer", [
     'IT_CODE' => $code,
@@ -118,6 +120,9 @@ if(is_object($withdrawal) === FALSE || !property_exists($withdrawal, "ticket")) 
     ]);
 }
 
+/** update ticket withdrawal */
+Database::update("tb_internal_transfer", ['IT_TICKET_FROM' => $withdrawal->ticket], ['IT_CODE' => $code]);
+
 /** Deposit ke akun penerima */
 $deposit = $apiManager->deposit([
     'login' => $toAccount['ACC_LOGIN'],
@@ -125,23 +130,46 @@ $deposit = $apiManager->deposit([
     'comment' => "IT-{$code}"
 ]);
 
-if(is_object($deposit) === FALSE || !property_exists($deposit, "ticket")) {
-    $db->rollback();
-    JsonResponse([
-        'success' => false,
-        'message' => "Invalid Status balance " . $toAccount['ACC_LOGIN'],
-        'data' => []
-    ]);
+if(is_object($deposit) !== FALSE && property_exists($deposit, "ticket")) {
+    /** update ticket deposit */
+    Database::update("tb_internal_transfer", ['IT_TICKET_TO' => $deposit->ticket], ['IT_CODE' => $code]);
+    $statusDeposit = true;
 }
 
-/** Update Ticket */
-Database::update("tb_internal_transfer", ['IT_TICKET_FROM' => $withdrawal->ticket, 'IT_TICKET_TO' => $deposit->ticket], ['IT_CODE' => $code]);
 Logger::client_log([
     'mbrid' => $user['MBR_ID'],
     'module' => "internal-transfer",
     'message' => "Internal Transfer from " . $data['from-account'] . " to " . $data['to-account'] . " $jumlah USD",
     'data' => $data 
 ]);
+
+switch($statusDeposit) {
+    case (true):
+        $emailData = [
+            'subject' => "Internal Transfer Successfull",
+            'accountFrom' => $fromAccount['ACC_LOGIN'],
+            'accountTo' => $toAccount['ACC_LOGIN'],
+            'amount' => "$".Helper::formatCurrency($jumlah)
+        ];
+        
+        $emailSender = EmailSender::init(['email' => $user['MBR_EMAIL'], 'name' => $user['MBR_NAME']]);
+        $emailSender->useFile("internal-transfer-success", $emailData);
+        $send = $emailSender->send();
+        break;
+
+    case (false):
+        $emailData = [
+            'subject' => "Internal Transfer Failed",
+            'accountFrom' => $fromAccount['ACC_LOGIN'],
+            'accountTo' => $toAccount['ACC_LOGIN'],
+            'amount' => "$".Helper::formatCurrency($jumlah)
+        ];
+        
+        $emailSender = EmailSender::init(['email' => $user['MBR_EMAIL'], 'name' => $user['MBR_NAME']]);
+        $emailSender->useFile("internal-transfer-failed", $emailData);
+        $send = $emailSender->send();
+        break;
+}
 
 $db->commit();
 JsonResponse([

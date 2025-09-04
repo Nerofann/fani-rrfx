@@ -1909,38 +1909,7 @@
         // Two Factor Verification
         //------------------------------------------------------------------------------------------------------------------
         if($('#otp_target').length) {
-            $('#otp_target').otpdesigner({
-                length: 4,
-                onlyNumbers: true,
-                typingDone: function(code) {
-                    $.ajax({
-                        url: '/ajax/appPost.php',
-                        type: "POST",
-                        dataType: "JSON",
-                        data: {
-                            method: "otpVerification",
-                            code: window.location.pathname,
-                            otp: code
-                        } 
-                    })
-                    .done(function(resp) {
-                        if(!resp.success) {
-                            return Swal.fire({
-                                text: resp.error ?? "Please enter valid security code",
-                                icon: "error",
-                                confirmButtonText: "Try Again",
-                                confirmButtonClass: "btn btn-primary px-3",
-                                buttonsStyling: false,
-                                showCloseButton: false,
-                            });
-                        }
-
-                        return location.href = '/dashboard'
-                    })
-                }
-            })
             // $('#otp_target').otpdesigner();
-            
             // $('.security-code-submit').on('click', function() {
             //     var emptyOtpContents = $('.otp-content').filter(function() {
             //         return $(this).text().trim() === '';
