@@ -12,11 +12,17 @@
                     <div class="row">
                         <div class="col-md-6 mb-3 h-100">
                             <label for="app_foto_terbaru" class="form-label">Foto Terbaru (Selfie) <span class="text-danger">*</span></label>
-                            <input type="file" class="dropify" id="app_foto_terbaru" name="app_foto_terbaru" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_FOTO'] ?? ""); ?>">
+                            <input type="file" class="dropify" id="app_foto_terbaru" name="app_foto_terbaru" 
+                                data-max-file-size="4M"
+                                data-allowed-file-extensions="png jpg jpeg" 
+                                data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_FOTO'] ?? ""); ?>">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="app_foto_identitas" class="form-label">Foto KTP <span class="text-danger">*</span></label>
-                            <input type="file" class="dropify" id="app_foto_identitas" name="app_foto_identitas" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_ID'] ?? ""); ?>">
+                            <input type="file" class="dropify" id="app_foto_identitas" name="app_foto_identitas" 
+                                data-max-file-size="2M"
+                                data-allowed-file-extensions="png jpg jpeg" 
+                                data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_ID'] ?? ""); ?>">
                         </div>
                     </div>
 
