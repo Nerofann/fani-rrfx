@@ -892,8 +892,6 @@ class AppPost {
             ])); 
         }
 
-        
-        
         $update = Database::update("tb_racc", [
             'ACC_F_PENGLAMAN'       => 1,
             'ACC_F_PENGLAMAN_IP'    => Helper::get_ip_address(),
@@ -1018,8 +1016,6 @@ class AppPost {
             ]));  
         }
 
-        
-        
         $update = Database::update("tb_racc", [
             'ACC_F_DISC2'        => 1,
             'ACC_F_DISC_IP2'     => Helper::get_ip_address(),
@@ -1079,8 +1075,6 @@ class AppPost {
                 ]
             ]));  
         }
-
-        
         
         $update = Database::update("tb_racc", [
             'ACC_F_DISC3'        => 1,
@@ -1212,6 +1206,9 @@ class AppPost {
 
         /** Validasi APP Pekerjaan */
         $this->aplikasiPembukaanRekening_Pekerjaan($data, $user, $progressAccount);
+        
+        /** Validasi APP Bank Nasabah */
+        $this->aplikasiPembukaanRekening_RekeningBank($data, $user, $progressAccount);
         
         /** Validasi APP Daftar Kekayaan */
         $this->aplikasiPembukaanRekening_DaftarKekayaan($data, $user, $progressAccount);
@@ -1612,6 +1609,99 @@ class AppPost {
         return true;
     }
 
+    private function aplikasiPembukaanRekening_RekeningBank($data, $user, $progressAccount) {
+
+        if(isset($data['bank_name1']) && isset($data['bank_number1'])){
+            if(strlen($data['bank_name1']) > 5 && strlen($data['bank_number1']) > 5){
+                $bank_name1 = $data['bank_name1'] ?? null;
+                $bank_number1 = $data['bank_number1'] ?? null;
+                
+                $insertBank1 = Database::insert("tb_member_bank", [
+                    'MBANK_MBR' => $progressAccount['ACC_MBR'],
+                    'MBANK_HOLDER' => $progressAccount['ACC_FULLNAME'],
+                    'MBANK_NAME' => $bank_name1,
+                    'MBANK_ACCOUNT' => $bank_number1
+                ]);
+
+                if(!$insertBank1) {
+                    $this->db->rollback();
+                    exit(json_encode([
+                        'success'   => false,
+                        'alert'     => [
+                            'title' => "Gagal",
+                            'text'  => "Failed to create bank 1",
+                            'icon'  => "error"
+                        ]
+                    ])); 
+                }
+            }
+        }
+
+        if(isset($data['bank_name2']) && isset($data['bank_number2'])){
+            if(strlen($data['bank_name2']) > 5 && strlen($data['bank_number2']) > 5){
+                $bank_name2 = $data['bank_name2'] ?? null;
+                $bank_number2 = $data['bank_number2'] ?? null;
+                
+                $insertBank1 = Database::insert("tb_member_bank", [
+                    'MBANK_MBR' => $progressAccount['ACC_MBR'],
+                    'MBANK_HOLDER' => $progressAccount['ACC_FULLNAME'],
+                    'MBANK_NAME' => $bank_name2,
+                    'MBANK_ACCOUNT' => $bank_number2
+                ]);
+
+                if(!$insertBank1) {
+                    $this->db->rollback();
+                    exit(json_encode([
+                        'success'   => false,
+                        'alert'     => [
+                            'title' => "Gagal",
+                            'text'  => "Failed to create bank 2",
+                            'icon'  => "error"
+                        ]
+                    ])); 
+                }
+            }
+        }
+
+        // $bank_name2 = $data['bank_name2'] ?? null;
+        // $bank_number2 = $data['bank_number2'] ?? null;
+
+        // $sqlCheckAddress = $this->db->query("SELECT tb_member_bank.ID_MBANK FROM tb_member_bank WHERE tb_member_bank.MBANK_MBR = ".$progressAccount['ACC_MBR']."");
+        // if($sqlCheckAddress->num_rows >= 2) {
+        //     exit(json_encode([
+        //         'success'   => false,
+        //         'alert'     => [
+        //             'title' => "Gagal",
+        //             'text'  => "Kode pos tidak ditemukan / salah",
+        //             'icon'  => "error"
+        //         ]
+        //     ]));
+        // }
+        
+        // if($bank_name2 && $bank_number2){
+        //     $insertBank2 = Database::insert("tb_member_bank", [
+        //         'MBANK_MBR' => $progressAccount['ACC_MBR'],
+        //         'MBANK_HOLDER' => $progressAccount['ACC_FULLNAME'],
+        //         'MBANK_NAME' => $bank_name2,
+        //         'MBANK_ACCOUNT' => $bank_number2
+        //     ]);
+
+        //     if(!$insertBank2) {
+        //         $this->db->rollback();
+        //         exit(json_encode([
+        //             'success'   => false,
+        //             'alert'     => [
+        //                 'title' => "Gagal",
+        //                 'text'  => "Failed to create bank 2",
+        //                 'icon'  => "error"
+        //             ]
+        //         ])); 
+        //     }
+        // };
+
+        return true;
+    }
+
     private function aplikasiPembukaanRekening_DaftarKekayaan($data, $user, $progressAccount) {
         $required = [
             'app_penghasilan'   => "Jumlah Penghasilan",
@@ -1668,9 +1758,6 @@ class AppPost {
             ]));
         }
         
-
-        
-         
         $updateKekayaan = Database::update("tb_racc", [
             'ACC_F_APP_KEKYAN'  => $data['app_penghasilan'],
             'ACC_F_APP_KEKYAN_RMHLKS' => $data['app_lokasi_rumah'],
