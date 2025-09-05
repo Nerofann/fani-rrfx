@@ -264,6 +264,7 @@ class Account {
             $sqlGet = $db->query("
                 SELECT 
                     tr.*,
+                    tra.*,
                     IFNULL(mtud.BALANCE, 10000) as BALANCE,
                     mtud.CREDIT,
                     mtud.EQUITY,
