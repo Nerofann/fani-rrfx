@@ -29,7 +29,7 @@ $sqlGetAccounts = $db->query("
     ) as note ON (note.NOTE_RACC = tr.ID_ACC)
     WHERE tr.ACC_DERE = 1
     AND tr.ACC_STS IN (0, 1, 2)
-    AND tr.ACC_MBR = ".$userData['MBR_ID']."
+    AND tr.ACC_MBR = ".$user['MBR_ID']."
 ");
 
 $accounts = [];
