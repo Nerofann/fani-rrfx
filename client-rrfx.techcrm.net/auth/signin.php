@@ -39,12 +39,12 @@ if($isLoggedIn) {
 				</div>
 				<button type="submit" name="sumit_login" class="btn btn-primary w-100 login-btn">Login</button>
 			</form>
-			<div class="other-option">
+			<!-- <div class="other-option">
 				<p>Or continue with</p>
 				<div class="social-box d-flex justify-content-center gap-20">
 					<a href="/google_login" aria-label="login as google"><i class="fa-brands fa-google text-dark"></i></a>
 				</div>
-			</div>
+			</div> -->
 
 			<div class="other-option">
 				<p class="mb-0">Don't have an account? <a href="/signup" class="text-white text-decoration-underline">create</a></p>
