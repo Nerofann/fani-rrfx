@@ -13,7 +13,7 @@ class MetatraderFactory {
     public static $serverReal = "RRFX-Live";
     public static $serverDemo = "RRFX-Demo";
     public static $tokenManagerDemo = "5c585515-6500-4fc2-b7fb-ca3a7c276d4c-rrfx-demo";
-    public static $tokenManagerReal = "5c585515-6500-4fc2-b7fb-ca3a7c276d4c-rrfx-live";
+    public static $tokenManagerReal = "02c89495-67a8-4ca0-9a81-af0d25e74135-rrfx-live";
     public static float $initMarginDemo = 10000;
 
     public static function apiManager(): ApiManager {

@@ -91,8 +91,8 @@ switch ($data["sbmt_act"]) {
         $ACCOND_CHECK = Account::accoundCondition($ACCOUNT_CHECK["ID_ACC"]);
         if(!$ACCOND_CHECK || (isset($ACCOND_CHECK['ACCCND_LOGIN']) && $ACCOND_CHECK['ACCCND_LOGIN'] == 0)){
             /** create metatrader account */
-            $password = Helper::generatePassword();
-            $investor = Helper::generatePassword();
+            $password = Account::generatePassword();
+            $investor = Account::generatePassword();
             $accountData = [
                 "master_pass" => $password, 
                 "investor_pass" => $investor, 
@@ -130,10 +130,8 @@ switch ($data["sbmt_act"]) {
                 $UPDATE_RACC["ACC_TOKEN"] = $connect;
             }
 
-            $UPDATE_RACC = [
-                'ACC_PASS' => $password,
-                'ACC_INVESTOR' => $investor
-            ];
+            $UPDATE_RACC['ACC_PASS'] = $password;
+            $UPDATE_RACC['ACC_INVESTOR'] = $investor;
             
             /** Send Email */
             $emailData = [
