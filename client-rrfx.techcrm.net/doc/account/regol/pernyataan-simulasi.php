@@ -134,7 +134,7 @@ $tanggalLahir = ($progressAccount['ACC_TANGGAL_LAHIR'] ?? $user['MBR_TGLLAHIR'])
                                             <td width="20%" class="top-align fw-bold">No. Identitas</td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="number" autocomplete="off" placeholder="No. Identitas" name="smls_nomidt" value="<?php echo $realAccount['ACC_NO_IDT'] ?>" class="form-control" required>
+                                                <input type="text" autocomplete="off" data-kind="npwp" inputmode="numeric" placeholder="No. Identitas" name="smls_nomidt" value="<?php echo $realAccount['ACC_NO_IDT'] ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
@@ -183,6 +183,145 @@ $tanggalLahir = ($progressAccount['ACC_TANGGAL_LAHIR'] ?? $user['MBR_TGLLAHIR'])
         </form>
     </div>
 </div>
+<script>
+    (() => {
+        // Konfigurasi ringkas: title, pattern, minimal & maksimal KARAKTER (bukan hanya digit)
+        const CONFIG = {
+            "nama": {
+                title: "Nama hanya boleh huruf, spasi, titik, apostrof, dan tanda minus",
+                // huruf latin + spasi . ' ’ -
+                pattern: "^[A-Za-zÀ-ÖØ-öø-ÿ .,'’\\-]+$",
+                min: 2,  
+                max: 80
+            },
+            "bankaccount": { 
+                title: "Pastikan nomer bank benar", 
+                pattern: "^\\d{10,16}$", 
+                min: 10,  
+                max: 16 
+            },
+            "kodepos": { 
+                title: "Kode pos harus 5 digit angka", 
+                pattern: "^\\d{5}$", 
+                min: 5,  
+                max: 5 
+            },
+            "npwp":    { 
+                title: "NPWP harus 16 digit angka (tanpa titik/strip)", 
+                pattern: "^\\d{16}$", 
+                min: 16, 
+                max: 16 
+            },
+            "NIK":    { 
+                title: "NIK harus 16 digit angka (tanpa titik/strip)", 
+                pattern: "^\\d{16}$", 
+                min: 16, 
+                max: 16 
+            },
+            "phone": { 
+                title: "Nomor telepon Indonesia diawali +62",
+                pattern: "^(?:0\\d{8,12}|\\+62\\d{8,12})$",
+                min: 9, 
+                max: 15 
+            }
+        };
+
+
+        // --- Filter nilai sesuai tipe ---
+        function sanitizeByKind(val, kind) {
+            if (kind === "nama") {
+                // huruf latin + spasi . ' ’ -
+                return (val || "").replace(/[^A-Za-zÀ-ÖØ-öø-ÿ .,'’\-]/g, "");
+            }
+            if (kind === "phone") {
+                // angka + opsional satu '+' di depan
+                const hasPlusFirst = (val || "").startsWith("+");
+                const digitsOnly = (val || "").replace(/\D/g, "");
+                return hasPlusFirst ? ("+" + digitsOnly) : digitsOnly;
+            }
+            // kodepos & npwp: angka saja
+            return (val || "").replace(/\D/g, "");
+        }
+
+        // Blokir karakter tidak valid saat KETIK (paste dibersihkan di 'input')
+        document.addEventListener("beforeinput", (e) => {
+            const el = e.target;
+            if (!el.matches('input[data-kind]')) return;
+
+            const kind = el.dataset.kind;
+            const t = e.inputType;
+            const ch = e.data ?? "";
+
+            if (t === "insertText") {
+                if (kind === "nama") {
+                    // izinkan huruf latin + spasi . ' ’ -
+                    if (!/^[A-Za-zÀ-ÖØ-öø-ÿ .,'’\-]$/.test(ch)) e.preventDefault();
+                } else if (kind === "phone") {
+                    const selStart = el.selectionStart ?? 0;
+                    const insertingPlus = ch === "+";
+                    const alreadyPlus = el.value.includes("+");
+                    const isDigit = /\d/.test(ch);
+                    if (insertingPlus) {
+                        if (selStart !== 0 || alreadyPlus) e.preventDefault();
+                    } else if (!isDigit) {
+                        e.preventDefault();
+                    }
+                } else {
+                    // kodepos/npwp -> hanya digit
+                    if (!/\d/.test(ch)) e.preventDefault();
+                }
+            }
+        });
+
+        // Terapkan aturan + balon error bawaan browser
+        function applyRules(el, { showNow = false } = {}) {
+            const kind = el.dataset.kind;
+            const cfg = CONFIG[kind];
+            if (!cfg) return;
+
+            // sanitize
+            const cleaned = sanitizeByKind(el.value, kind);
+            if (cleaned !== el.value) el.value = cleaned;
+
+            // atribut validasi
+            el.setAttribute("title", cfg.title);
+            el.setAttribute("pattern", cfg.pattern);
+            el.setAttribute("minlength", String(cfg.min));
+            el.setAttribute("maxlength", String(cfg.max));
+
+            // cek validitas ringan untuk pesan cepat
+            const val = el.value;
+            let msg = "";
+            if (val.length === 0) {
+                msg = ""; // biarkan required
+            } else if (val.length < cfg.min) {
+                msg = `Minimal ${cfg.min} karakter.`;
+            } else if (val.length > cfg.max) {
+                msg = `Maksimal ${cfg.max} karakter.`;
+            } else if (!(new RegExp(cfg.pattern).test(val))) {
+                msg = cfg.title;
+            }
+            el.setCustomValidity(msg);
+
+            if (showNow) el.reportValidity();
+        }
+
+        // keyup -> tampilkan balon sekarang
+        document.addEventListener("keyup", (e) => {
+            if (e.target.matches('input[data-kind]')) applyRules(e.target, { showNow: true });
+        });
+
+        // input -> handle paste/autofill
+        document.addEventListener("input", (e) => {
+            if (e.target.matches('input[data-kind]')) applyRules(e.target);
+        });
+
+        // init
+        window.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll('input[data-kind]').forEach(el => applyRules(el));
+        });
+    })();
+</script>
 
 <script type="text/javascript">
     $(document).ready(function() {
