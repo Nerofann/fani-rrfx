@@ -62,6 +62,7 @@ function is_disable($inp) {
                             <div class="col-sm-4 mb-1">
                                 <label for="province" class="form-label required">Province</label>
                                 <select name="province" id="province" class="form-control form-select select2" required>
+                                    <option >Pilih</option>
                                     <?php foreach(App\Models\Wilayah::provinces() as $province) : ?>
                                         <option value="<?= $province ?>" <?= $user['MBR_PROVINCE'] == $province? "selected" : ""; ?>><?= $province ?></option>
                                     <?php endforeach; ?>
