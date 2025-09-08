@@ -34,7 +34,6 @@
         <div class="card">
             <div class="card-body">
                 <div class="d-flex w-100 justify-content-center">
-                    <a target="_blank" data-tst="test" href="/export/trans-topup?acc=<?php echo md5(md5($depositData["ID_DPWD"])); ?>" class="btn btn-primary mx-2">Margin Receipt</a>
                     <a target="_blank" data-tst="test" href="/export/account-condition?acc=<?php echo $id_acc; ?>" class="btn btn-primary mx-2">Account Condition</a>
                     <a target="_blank" data-tst="test" href="/export/bukti-konfirmasi-penerimaan-nasabah?acc=<?php echo $id_acc; ?>" class="btn btn-primary mx-2">WP Confirm</a>
                     <a target="_blank" data-tst="test" href="/export/pernyataan-pengungkapan?acc=<?php echo $id_acc; ?>" class="btn btn-primary mx-2">Diclosure Statemen</a>
@@ -269,23 +268,6 @@
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <div class="card text-center h-100">
-                                    <?php if($depositData['DPWD_PIC'] == ''|| $depositData['DPWD_PIC'] == '-' ){ ?>
-                                        <img src="/assets/img/unknown-file.png" class="card-img-top">
-                                    <?php } else { ?>
-                                        <a target="_blank" href="<?php echo FileUpload::awsFile(($depositData['DPWD_PIC'] ?? '')); ?>">
-                                            <img class="card-img-top" src="<?php echo FileUpload::awsFile(($depositData['DPWD_PIC'] ?? '')); ?>">
-                                        </a>
-                                    <?php }; ?>
-                                    <div class="card-body">
-                                        <a target="_blank" href="<?php echo FileUpload::awsFile(($depositData['DPWD_PIC'] ?? '')); ?>">
-                                            Deposit New Account
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
                                 <div class="card text-center m-auto h-100">
                                     <?php if($progressAccount['ACC_F_APP_FILE_IMG2'] == ''|| $progressAccount['ACC_F_APP_FILE_IMG2'] == '-' ){ ?>
                                         <img src="/assets/img/unknown-file.png" class="card-img-top">
@@ -314,22 +296,6 @@
                                     <div class="card-body">
                                         <a class="mt-2" target="_blank" href="<?php echo FileUpload::awsFile(($depositData['DPWD_PIC_MUTASI'] ?? '')); ?>">
                                             Dokumen Pendukung Lainya
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="card text-center m-auto h-100">
-                                    <?php if($progressAccount['ACC_F_SIMULASI_IMG'] == ''|| $progressAccount['ACC_F_SIMULASI_IMG'] == '-' ){ ?>
-                                        <img src="/assets/img/unknown-file.png" class="card-img-top">
-                                    <?php } else { ?>
-                                        <a target="_blank" href="<?php echo FileUpload::awsFile(($progressAccount['ACC_F_SIMULASI_IMG'] ?? '')); ?>">
-                                            <img class="card-img-top" src="<?php echo FileUpload::awsFile(($progressAccount['ACC_F_SIMULASI_IMG'] ?? '')); ?>">
-                                        </a>
-                                    <?php }; ?>
-                                    <div class="card-body">
-                                        <a class="mt-2" target="_blank" href="<?php echo FileUpload::awsFile(($progressAccount['ACC_F_SIMULASI_IMG'] ?? '')); ?>">
-                                            Demo Account
                                         </a>
                                     </div>
                                 </div>
