@@ -14,7 +14,7 @@ $referral = Helper::form_input($_GET['referral'] ?? "");
 			<a href="/"><i class="fa-duotone fa-house-chimney"></i></a>
 		</div>
 		<div class="bottom">
-			<h3 class="panel-title">Registration Test</h3>
+			<h3 class="panel-title">Registration</h3>
 			<form id="form-signup" method="post">
 				<input type="hidden" name="csrf_token" value="">
 				<div class="input-group mb-25">
