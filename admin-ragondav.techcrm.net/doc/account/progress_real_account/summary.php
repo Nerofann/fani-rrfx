@@ -26,6 +26,9 @@
                         <td class="text-start">
                             <strong>
                                 <?php
+
+                                use App\Factory\VerihubFactory;
+
                                     if($progressAccount['RTYPE_ISFLOATING'] == 1){
                                         echo 'Floating';
                                     }else{ echo number_format($progressAccount['RTYPE_RATE'], 0); }
@@ -101,6 +104,54 @@
                             <td><?= $bank['MBANK_NAME'] ?></td>
                             <td><?= $bank['MBANK_ACCOUNT'] ?></td>
                             <td><?= $bank['MBANK_HOLDER'] ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th colspan="3" class="bg-secondary text-muted">User Bank</th>
+                    </tr>
+                    <tr>
+                        <th>Nama Bank</th>
+                        <th>No. Rekening</th>
+                        <th>Nama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach($userBanks as $bank) : ?>
+                        <tr>
+                            <td><?= $bank['MBANK_NAME'] ?></td>
+                            <td><?= $bank['MBANK_ACCOUNT'] ?></td>
+                            <td><?= $bank['MBANK_HOLDER'] ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th colspan="3" class="bg-secondary text-muted">Log Verihub</th>
+                    </tr>
+                    <tr>
+                        <th width="25%">Tanggal</th>
+                        <th width="10%">Kode</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach(VerihubFactory::findAccountLog($progressAccount['ACC_MBR'], md5($progressAccount['ID_ACC'])) as $logVer) : ?>
+                        <tr>
+                            <td><?= $logVer['LOGVER_DATETIME'] ?></td>
+                            <td><?= $logVer['LOGVER_CODE'] ?></td>
+                            <td><?= $logVer['LOGVER_MESSAGE'] ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

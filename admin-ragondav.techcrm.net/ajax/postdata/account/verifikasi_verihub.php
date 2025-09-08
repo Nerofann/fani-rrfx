@@ -33,6 +33,7 @@ $fileContentKTP = file_get_contents(FileUpload::awsFile($account['ACC_F_APP_FILE
 $fileContentSelfie = file_get_contents(FileUpload::awsFile($account['ACC_F_APP_FILE_FOTO']));
 $sendVerification = $verihub->send_idVerification([
     'mbrid' => $userdata['MBR_ID'],
+    'account_id' => md5($account['ID_ACC']),
     'nik'   => $account['ACC_NO_IDT'],
     'name'  => $account['ACC_FULLNAME'],
     'birth_date' => $account['ACC_TANGGAL_LAHIR'],
