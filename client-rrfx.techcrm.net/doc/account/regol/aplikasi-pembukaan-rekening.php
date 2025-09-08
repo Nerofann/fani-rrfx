@@ -5,6 +5,13 @@ use App\Models\Helper;
 $myBanks = App\Models\User::myBank($user['MBR_ID']);
 $_SESSION['modal'] = ['create-bank'];
 ?>
+<style>
+    .row_dash {
+        border-bottom: 1px dashed #ddd;
+        padding-bottom: 10px;
+        margin-bottom: .5rem !important;
+    }
+</style>
 
 <form method="post" enctype="multipart/form-data" id="form-aplikasi-pembukaan-rekening">
     <input type="hidden" name="csrf_token" value="<?= uniqid(); ?>">
@@ -41,7 +48,7 @@ $_SESSION['modal'] = ['create-bank'];
                                             <td width="30%" class="top-align fw-bold">No. NPWP<?= (!empty(unrequireNPWP())) ? '<span class="text-danger">*</span>' : '' ; ?></td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="number" autocomplete="off" placeholder="No. Npwp" name="app_npwp" value="<?= $realAccount['ACC_F_APP_PRIBADI_NPWP'] ?>" class="form-control" <?= unrequireNPWP() ?>>
+                                                <input type="text" data-kind="npwp" inputmode="numeric" autocomplete="off" placeholder="No. Npwp" name="app_npwp" value="<?= $realAccount['ACC_F_APP_PRIBADI_NPWP'] ?>" class="form-control" <?= unrequireNPWP() ?>>
                                             </td>
                                         </tr>
                                         <tr>
@@ -59,7 +66,7 @@ $_SESSION['modal'] = ['create-bank'];
                                             <td width="30%" class="top-align fw-bold">Nama Ibu Kandung<span class="text-danger">*</span></td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="text" autocomplete="off" placeholder="Nama Ibu Kandung" name="app_nama_ibu" value="<?= $realAccount['ACC_F_APP_PRIBADI_IBU'] ?>" class="form-control" required>
+                                                <input type="text" data-kind="nama" inputmode="text" autocomplete="off" placeholder="Nama Ibu Kandung" name="app_nama_ibu" value="<?= $realAccount['ACC_F_APP_PRIBADI_IBU'] ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
@@ -77,7 +84,7 @@ $_SESSION['modal'] = ['create-bank'];
                                             <td width="30%" class="top-align fw-bold">Nama Istri/Suami</td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="text" name="acc_app_nama_istri" class="form-control" id="acc_app_nama_istri" value="<?= $realAccount['ACC_F_APP_PRIBADI_NAMAISTRI']; ?>">
+                                                <input type="text" data-kind="nama" inputmode="text" name="acc_app_nama_istri" class="form-control" id="acc_app_nama_istri" value="<?= $realAccount['ACC_F_APP_PRIBADI_NAMAISTRI']; ?>">
                                             </td>
                                         </tr>
                                         <tr>
@@ -124,21 +131,21 @@ $_SESSION['modal'] = ['create-bank'];
                                             <td width="30%" class="top-align fw-bold">No. Telp Rumah</td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="number" autocomplete="off" placeholder="No. Telp Rumah" name="app_telepon_rumah" value="<?= $realAccount['ACC_F_APP_PRIBADI_TLP'] ?? 0 ?>" class="form-control">
+                                                <input type="text" data-kind="phone" inputmode="tel" autocomplete="off" placeholder="No. Telp Rumah" name="app_telepon_rumah" value="<?= $realAccount['ACC_F_APP_PRIBADI_TLP'] ?? 0 ?>" class="form-control">
                                             </td>
                                         </tr>
                                         <tr>
                                             <td width="30%" class="top-align fw-bold">No. Faksimili Rumah</td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="number" autocomplete="off" placeholder="No. Faksimili Rumah" name="app_faksimili_rumah" value="<?= $realAccount['ACC_F_APP_PRIBADI_FAX'] ?? 0 ?>" class="form-control">
+                                                <input type="text" data-kind="phone" inputmode="tel" autocomplete="off" placeholder="No. Faksimili Rumah" name="app_faksimili_rumah" value="<?= $realAccount['ACC_F_APP_PRIBADI_FAX'] ?? 0 ?>" class="form-control">
                                             </td>
                                         </tr>
                                         <tr>
                                             <td width="30%" class="top-align fw-bold">No. Telp Handphone<span class="text-danger">*</span></td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="number" autocomplete="off" placeholder="62xxxxxxxxx" name="app_no_handphone" value="<?= ($realAccount['ACC_F_APP_PRIBADI_HP'] == 0)? $user['MBR_PHONE'] : ($realAccount['ACC_F_APP_PRIBADI_HP'] ?? 0); ?>" class="form-control" required>
+                                                <input type="text" data-kind="phone" inputmode="tel" autocomplete="off" placeholder="62xxxxxxxxx" name="app_no_handphone" value="<?= ($realAccount['ACC_F_APP_PRIBADI_HP'] == 0)? $user['MBR_PHONE'] : ($realAccount['ACC_F_APP_PRIBADI_HP'] ?? 0); ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
@@ -197,7 +204,7 @@ $_SESSION['modal'] = ['create-bank'];
                                                     <div class="form-check">
                                                         <input class="form-check-input" name="app_anggota_berjangka" id="app_anggota_berjangka" type="checkbox" required checked>
                                                         <label class="form-check-label" for="app_anggota_berjangka">
-                                                            Saya menyetujui bahwa tidak memiliki anggota keluarga yang bekerja di BAPPEBTI / Bursa Berjangka / Kliring Berjangka
+                                                            Saya menyetujui bahwa tidak memiliki anggota keluarga yang<br>bekerja di BAPPEBTI / Bursa Berjangka / Kliring Berjangka
                                                         </label>
                                                     </div>
                                                 </div>
@@ -230,32 +237,91 @@ $_SESSION['modal'] = ['create-bank'];
                                 Rekening Bank Nasabah Untuk Penyetoran dan Penarikan Margin 
                                 (hanya rekening dibawah ini yang dapat Saudara pergunakan untuk lalulintas margin)
                             </p>
-                            <div class="row">
-                                <?php if(empty($myBanks)) : ?>
-                                    <div class="col-md-6">
-                                        <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#modal-create-bank" class="btn btn-outline-primary" style="min-width: 10px;"><i class="fas fa-plus"></i> Tambah Bank</a>
+                            <?php if(!isset($myBanks[0])){ ?>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-fixed" style="text-align: left; table-layout: fixed;" width="100%">
+                                            <tbody>
+                                                <tr>
+                                                    <td width="30%" class="top-align fw-bold">Nama Bank<span class="text-danger">*</span></td>
+                                                    <td width="3%" class="top-align"> : </td>
+                                                    <td class="top-align text-start">
+                                                        <select name="bank_name1" class="form-control form-select input-sm" required>
+                                                            <?php foreach(App\Models\BankList::all() as $bank) : ?>
+                                                                <option value="<?= $bank['BANKLST_NAME'] ?>"><?= $bank['BANKLST_NAME'] ?></option>
+                                                            <?php endforeach; ?>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="30%" class="top-align fw-bold">Nama Pemilik Rekening<span class="text-danger">*</span></td>
+                                                    <td width="3%" class="top-align"> : </td>
+                                                    <td class="top-align text-start"><?= $realAccount['ACC_FULLNAME']; ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="30%" class="top-align fw-bold">No. Rekening<span class="text-danger">*</span></td>
+                                                    <td width="3%" class="top-align"> : </td>
+                                                    <td class="top-align text-start">
+                                                        <input type="text" data-kind="bankaccount" inputmode="numeric" autocomplate="off" class="form-control input-sm" name="bank_number1" placeholder="Nomor Rekening" required>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
-                                <?php else : ?>
-                                    <?php foreach($myBanks as $mbank) : ?>
-                                        <div class="col-md-6">
-                                            <div class="card h-100 border-primary">
-                                                <div class="card-body">
-                                                    <div class="d-flex flex-column justify-content-between gap-3">
-                                                        <div class="bank-info">
-                                                            <p class="mb-0 lh-1"><?php echo $mbank['MBANK_HOLDER'] ?></p>
-                                                            <small style="font-size: 11px;" class="d-flex flex-column mt-0 font-15 text-upper">
-                                                                <i><?php echo $mbank['MBANK_NAME'] ?></i>
-                                                            </small>
-                                                        </div>
-                                                        <div class="mt-auto">
-                                                            <div class="float-end font-weight-bold"><?php echo $mbank['MBANK_ACCOUNT'] ?></div>
-                                                        </div>
+                            <?php
+                                }
+                                if(!isset($myBanks[1])){
+                            ?>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover" style="text-align: left; table-layout: fixed;" width="100%">
+                                            <tbody>
+                                                <tr>
+                                                    <td width="30%" class="top-align fw-bold">Nama Bank<span class="text-danger">*</span></td>
+                                                    <td width="3%" class="top-align"> : </td>
+                                                    <td class="top-align text-start">
+                                                        <select name="bank_name2" class="form-control form-select input-sm">
+                                                            <?php foreach(App\Models\BankList::all() as $bank) : ?>
+                                                                <option value="<?= $bank['BANKLST_NAME'] ?>"><?= $bank['BANKLST_NAME'] ?></option>
+                                                            <?php endforeach; ?>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="30%" class="top-align fw-bold">Nama Pemilik Rekening<span class="text-danger">*</span></td>
+                                                    <td width="3%" class="top-align"> : </td>
+                                                    <td class="top-align text-start"><?= $realAccount['ACC_FULLNAME']; ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="30%" class="top-align fw-bold">No. Rekening<span class="text-danger">*</span></td>
+                                                    <td width="3%" class="top-align"> : </td>
+                                                    <td class="top-align text-start">
+                                                        <input type="text" data-kind="bankaccount" inputmode="numeric" autocomplate="off" class="form-control input-sm" name="bank_number2" placeholder="Nomor Rekening">
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                            <?php } ?>
+                            <hr>
+                            <div class="row">
+                                <?php foreach($myBanks as $mbank) : ?>
+                                    <div class="col-md-6">
+                                        <div class="card h-100 border-primary">
+                                            <div class="card-body">
+                                                <div class="d-flex flex-column justify-content-between gap-3">
+                                                    <div class="bank-info">
+                                                        <p class="mb-0 lh-1"><?php echo $mbank['MBANK_HOLDER'] ?></p>
+                                                        <small style="font-size: 11px;" class="d-flex flex-column mt-0 font-15 text-upper">
+                                                            <i><?php echo $mbank['MBANK_NAME'] ?></i>
+                                                        </small>
+                                                    </div>
+                                                    <div class="mt-auto">
+                                                        <div class="float-end font-weight-bold"><?php echo $mbank['MBANK_ACCOUNT'] ?></div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
+                                    </div>
+                                <?php endforeach; ?>
                             </div>
                         </div>
                     </div>
@@ -274,7 +340,7 @@ $_SESSION['modal'] = ['create-bank'];
                                             <td width="30%" class="top-align fw-bold">Nama Lengkap<span class="text-danger">*</span></td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="text" autocomplete="off" placeholder="Nama Lengkap" name="app_darurat_nama" value="<?= $realAccount['ACC_F_APP_DRRT_NAMA'] ?>" class="form-control" required>
+                                                <input type="text" data-kind="nama" inputmode="text" autocomplete="off" placeholder="Nama Lengkap" name="app_darurat_nama" value="<?= $realAccount['ACC_F_APP_DRRT_NAMA'] ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
@@ -288,21 +354,21 @@ $_SESSION['modal'] = ['create-bank'];
                                             <td width="30%" class="top-align fw-bold">Kode Pos<span class="text-danger">*</span></td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="number" autocomplete="off" min="10000" max="99999" placeholder="Kode Pos" name="app_darurat_kodepos" value="<?= $realAccount['ACC_F_APP_DRRT_ZIP'] ?>" class="form-control" required>
+                                                <input type="text" data-kind="kodepos" inputmode="numeric" autocomplete="off" placeholder="Kode Pos" name="app_darurat_kodepos" value="<?= $realAccount['ACC_F_APP_DRRT_ZIP'] ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td width="30%" class="top-align fw-bold">No. Telepon<span class="text-danger">*</span></td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="number" autocomplete="off" placeholder="No. Telp" name="app_darurat_telepon" value="<?= $realAccount['ACC_F_APP_DRRT_TLP'] ?>" class="form-control" required>
+                                                <input type="text" data-kind="phone" inputmode="tel" autocomplete="off" placeholder="No. Telp" name="app_darurat_telepon" value="<?= $realAccount['ACC_F_APP_DRRT_TLP'] ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td width="30%" class="top-align fw-bold">Hubungan dengan anda<span class="text-danger">*</span></td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="text" autocomplete="off" placeholder="Hubungan dengan anda" name="app_darurat_hubungan" value="<?= $realAccount['ACC_F_APP_DRRT_HUB'] ?>" class="form-control" required>
+                                                <input type="text" data-kind="nama" inputmode="text" autocomplete="off" placeholder="Hubungan dengan anda" name="app_darurat_hubungan" value="<?= $realAccount['ACC_F_APP_DRRT_HUB'] ?>" class="form-control" required>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -380,21 +446,21 @@ $_SESSION['modal'] = ['create-bank'];
                                             <td width="8%" class="top-align fw-bold">Kode Pos</td>
                                             <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="number" autocomplete="off" placeholder="Kode Pos" name="app_kodepos_kantor" value="<?= $realAccount['ACC_F_APP_KRJ_ZIP'] ?>" class="form-control">
+                                                <input type="text" data-kind="kodepos" inputmode="numeric" autocomplete="off" inputmode="numeric" autocomplete="off" placeholder="Kode Pos" name="app_kodepos_kantor" value="<?= $realAccount['ACC_F_APP_KRJ_ZIP'] ?>" class="form-control">
                                             </td>
                                         </tr>
                                         <tr>
                                             <td width="8%" class="top-align fw-bold">No. Telp Kantor</td>
                                             <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="number" autocomplete="off" placeholder="No. Telp Kantor" name="app_nomor_kantor" value="<?= $realAccount['ACC_F_APP_KRJ_TLP'] ?>" class="form-control">
+                                                <input type="text" data-kind="phone" inputmode="tel" autocomplete="off" placeholder="No. Telp Kantor" name="app_nomor_kantor" value="<?= $realAccount['ACC_F_APP_KRJ_TLP'] ?>" class="form-control">
                                             </td>
                                         </tr>
                                         <tr>
                                             <td width="8%" class="top-align fw-bold">No. Faksimili</td>
                                             <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="number" autocomplete="off" placeholder="No. Faksimili" name="app_nomor_fax_kantor" value="<?= $realAccount['ACC_F_APP_KRJ_FAX'] ?>" class="form-control">
+                                                <input type="text" data-kind="phone" inputmode="tel" autocomplete="off" placeholder="No. Faksimili" name="app_nomor_fax_kantor" value="<?= $realAccount['ACC_F_APP_KRJ_FAX'] ?>" class="form-control">
                                             </td>
                                         </tr>
                                     </tbody>
@@ -533,6 +599,140 @@ $_SESSION['modal'] = ['create-bank'];
         </div>
     </div>
 </form>
+
+<script>
+    (() => {
+        // Konfigurasi ringkas: title, pattern, minimal & maksimal KARAKTER (bukan hanya digit)
+        const CONFIG = {
+            "nama": {
+                title: "Nama hanya boleh huruf, spasi, titik, apostrof, dan tanda minus",
+                // huruf latin + spasi . ' ’ -
+                pattern: "^[A-Za-zÀ-ÖØ-öø-ÿ .,'’\\-]+$",
+                min: 2,  
+                max: 80
+            },
+            "bankaccount": { 
+                title: "Pastikan nomer bank benar", 
+                pattern: "^\\d{10,16}$", 
+                min: 10,  
+                max: 16 
+            },
+            "kodepos": { 
+                title: "Kode pos harus 5 digit angka", 
+                pattern: "^\\d{5}$", 
+                min: 5,  
+                max: 5 
+            },
+            "npwp":    { 
+                title: "NPWP harus 16 digit angka (tanpa titik/strip)", 
+                pattern: "^\\d{16}$", 
+                min: 16, 
+                max: 16 
+            },
+            "phone": { 
+                title: "Nomor telepon Indonesia diawali +62",
+                pattern: "^(?:0\\d{8,12}|\\+62\\d{8,12})$",
+                min: 9, 
+                max: 15 
+            }
+        };
+
+
+        // --- Filter nilai sesuai tipe ---
+        function sanitizeByKind(val, kind) {
+            if (kind === "nama") {
+                // huruf latin + spasi . ' ’ -
+                return (val || "").replace(/[^A-Za-zÀ-ÖØ-öø-ÿ .,'’\-]/g, "");
+            }
+            if (kind === "phone") {
+                // angka + opsional satu '+' di depan
+                const hasPlusFirst = (val || "").startsWith("+");
+                const digitsOnly = (val || "").replace(/\D/g, "");
+                return hasPlusFirst ? ("+" + digitsOnly) : digitsOnly;
+            }
+            // kodepos & npwp: angka saja
+            return (val || "").replace(/\D/g, "");
+        }
+
+        // Blokir karakter tidak valid saat KETIK (paste dibersihkan di 'input')
+        document.addEventListener("beforeinput", (e) => {
+            const el = e.target;
+            if (!el.matches('input[data-kind]')) return;
+
+            const kind = el.dataset.kind;
+            const t = e.inputType;
+            const ch = e.data ?? "";
+
+            if (t === "insertText") {
+                if (kind === "nama") {
+                    // izinkan huruf latin + spasi . ' ’ -
+                    if (!/^[A-Za-zÀ-ÖØ-öø-ÿ .,'’\-]$/.test(ch)) e.preventDefault();
+                } else if (kind === "phone") {
+                    const selStart = el.selectionStart ?? 0;
+                    const insertingPlus = ch === "+";
+                    const alreadyPlus = el.value.includes("+");
+                    const isDigit = /\d/.test(ch);
+                    if (insertingPlus) {
+                        if (selStart !== 0 || alreadyPlus) e.preventDefault();
+                    } else if (!isDigit) {
+                        e.preventDefault();
+                    }
+                } else {
+                    // kodepos/npwp -> hanya digit
+                    if (!/\d/.test(ch)) e.preventDefault();
+                }
+            }
+        });
+
+        // Terapkan aturan + balon error bawaan browser
+        function applyRules(el, { showNow = false } = {}) {
+            const kind = el.dataset.kind;
+            const cfg = CONFIG[kind];
+            if (!cfg) return;
+
+            // sanitize
+            const cleaned = sanitizeByKind(el.value, kind);
+            if (cleaned !== el.value) el.value = cleaned;
+
+            // atribut validasi
+            el.setAttribute("title", cfg.title);
+            el.setAttribute("pattern", cfg.pattern);
+            el.setAttribute("minlength", String(cfg.min));
+            el.setAttribute("maxlength", String(cfg.max));
+
+            // cek validitas ringan untuk pesan cepat
+            const val = el.value;
+            let msg = "";
+            if (val.length === 0) {
+                msg = ""; // biarkan required
+            } else if (val.length < cfg.min) {
+                msg = `Minimal ${cfg.min} karakter.`;
+            } else if (val.length > cfg.max) {
+                msg = `Maksimal ${cfg.max} karakter.`;
+            } else if (!(new RegExp(cfg.pattern).test(val))) {
+                msg = cfg.title;
+            }
+            el.setCustomValidity(msg);
+
+            if (showNow) el.reportValidity();
+        }
+
+        // keyup -> tampilkan balon sekarang
+        document.addEventListener("keyup", (e) => {
+            if (e.target.matches('input[data-kind]')) applyRules(e.target, { showNow: true });
+        });
+
+        // input -> handle paste/autofill
+        document.addEventListener("input", (e) => {
+            if (e.target.matches('input[data-kind]')) applyRules(e.target);
+        });
+
+        // init
+        window.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll('input[data-kind]').forEach(el => applyRules(el));
+        });
+    })();
+</script>
 
 <script type="text/javascript">
     $(document).ready(function() {

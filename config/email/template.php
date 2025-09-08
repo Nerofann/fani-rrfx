@@ -220,7 +220,7 @@
                                                 <hr>
                                                 <table>
                                                     <tbody>
-                                                        <tr><td><b>Phone</b> : <?= $profile['name']; ?></td></tr>
+                                                        <tr><td><b>Company</b> : <?= $profile['name']; ?></td></tr>
                                                         <tr><td><b>Support</b> : <?= $profile['support'] ?></td></tr>
                                                         <tr><td><b>Website</b> : <?= $profile['website'] ?></td></tr>
                                                         <tr><td><b>Address</b> : <?= $profile['address'] ?></td></tr>
