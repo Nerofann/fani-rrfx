@@ -453,14 +453,14 @@ $_SESSION['modal'] = ['create-bank'];
                                             <td width="8%" class="top-align fw-bold">No. Telp Kantor</td>
                                             <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="number" data-kind="phone" inputmode="tel" autocomplete="off" placeholder="No. Telp Kantor" name="app_nomor_kantor" value="<?= $realAccount['ACC_F_APP_KRJ_TLP'] ?>" class="form-control">
+                                                <input type="text" data-kind="phone" inputmode="tel" autocomplete="off" placeholder="No. Telp Kantor" name="app_nomor_kantor" value="<?= $realAccount['ACC_F_APP_KRJ_TLP'] ?>" class="form-control">
                                             </td>
                                         </tr>
                                         <tr>
                                             <td width="8%" class="top-align fw-bold">No. Faksimili</td>
                                             <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="number" data-kind="phone" inputmode="tel" autocomplete="off" placeholder="No. Faksimili" name="app_nomor_fax_kantor" value="<?= $realAccount['ACC_F_APP_KRJ_FAX'] ?>" class="form-control">
+                                                <input type="text" data-kind="phone" inputmode="tel" autocomplete="off" placeholder="No. Faksimili" name="app_nomor_fax_kantor" value="<?= $realAccount['ACC_F_APP_KRJ_FAX'] ?>" class="form-control">
                                             </td>
                                         </tr>
                                     </tbody>
