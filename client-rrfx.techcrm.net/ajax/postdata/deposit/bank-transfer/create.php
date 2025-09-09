@@ -169,6 +169,6 @@ if(!$insert) {
 
 JsonResponse([
     'success' => true,
-    'message' => "Barhasil",
+    'message' => "Berhasil",
     'data' => []
 ]);
