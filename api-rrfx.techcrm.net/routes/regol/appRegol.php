@@ -9,6 +9,7 @@ use App\Models\Account;
 use App\Models\FileUpload;
 use App\Models\Helper;
 use App\Models\ProfilePerusahaan;
+use App\Models\Regol;
 use Config\Core\Database;
 use Config\Core\EmailSender;
 
@@ -217,6 +218,9 @@ class AppRegol {
                 'kekayaan_deposit' => $progressAccount['ACC_F_APP_KEKYAN_DPST'],
                 'kekayaan_nilai' => $progressAccount['ACC_F_APP_KEKYAN_NILAI'],
                 'kekayaan_lain' => $progressAccount['ACC_F_APP_KEKYAN_LAIN']
+            ],
+            'data' => [
+                'list_pekerjaan' => Regol::$listPekerjaan
             ]
         ]));
     }
@@ -1281,7 +1285,7 @@ class AppRegol {
 
         /** Check Nama Pekerjaan */
         $data['nama_pekerjaan'] = strtolower($data['nama_pekerjaan']);
-        if(!in_array($data['nama_pekerjaan'], ['swasta', 'wiraswasta', 'ibu rt', 'profesional', 'asn', 'mahasiswa', 'pegawai bumn', 'lainnya'])) {
+        if(!in_array($data['nama_pekerjaan'], array_map(fn($ar): string => strtolower($ar), Regol::$listPekerjaan))) {
             exit(json_encode([
                 'status' => false,
                 'message' => "Nama Pekerjaan tidak valid",
@@ -1289,7 +1293,7 @@ class AppRegol {
             ]));
         }
 
-        $progressAccount = $this->checkProgressAccount(md5(md5($user['MBR_ID'])));
+        $progressAccount = $this->checkProgressAccount($user['userid']);
         
         /** Update */
         $updateData = [
@@ -1374,8 +1378,6 @@ class AppRegol {
             ]));
         }
         
-        loadModel("Helper");
-        $helperClass = new Helper();
         $progressAccount = $this->checkProgressAccount(md5(md5($user['MBR_ID'])));
         
         $updateData = [
@@ -1383,7 +1385,7 @@ class AppRegol {
             'ACC_F_APP_KELGABURSA' => strtolower($data['app_keluarga_bursa']),
         ];
 
-        $update = $helperClass->updateWithArray("tb_racc", $updateData, ['ID_ACC' => $progressAccount['ID_ACC']]);
+        $update = Database::update("tb_racc", $updateData, ['ID_ACC' => $progressAccount['ID_ACC']]);
         if($update !== TRUE) {
             exit(json_encode([
                 'status' => false,
@@ -1391,15 +1393,6 @@ class AppRegol {
                 'response' => []
             ]));
         }
-
-        newInsertLog([
-            'mbrid' => $user['MBR_ID'],
-            'module' => "create-account",
-            'ref' => $progressAccount['ID_ACC'],
-            'message' => "Progress Real Account (Keterangan Pailit)",
-            'device' => "mobile",
-            'data'  => json_encode($data)
-        ]);
 
         exit(json_encode([
             'status' => true,
@@ -1493,25 +1486,6 @@ class AppRegol {
     }    
 
     public function apr_dokumen_pendukung($data, $user) {
-        if(empty($data['tipe'])) {
-            exit(json_encode([
-                'status' => false,
-                'message' => "Tipe Dokumen Pendukung diperlukan",
-                'response' => []
-            ]));
-        }   
-
-        $dokumenPendukung = [
-            'cover buku tabungan (recommended)',
-            'tagihan kartu kredit',
-            'tagihan listrik / air',
-            'scan kartu npwp',
-            'rekening koran bank',
-            'pbb / bpjs',
-            'lainnya'
-        ];
-
-
         $data['tipe'] = strtolower($data['tipe']);
         if(!in_array($data['tipe'], $dokumenPendukung)) {
             exit(json_encode([
