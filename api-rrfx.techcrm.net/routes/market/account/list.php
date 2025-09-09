@@ -11,15 +11,16 @@ if(empty($accounts)) {
     ], 400);
 }
 
+$result = [];
 foreach($accounts as $acc) {
-    $accounts[] = [
+    $result[] = [
         'login' => intval($acc['ACC_LOGIN']),
-        'balance' => floatval($acc['FREE_MARGIN']),
+        'balance' => floatval($acc['MARGIN_FREE']),
     ];
 }
 
 ApiResponse([
     'status' => true,
     'message' => "Success",
-    'response' => $accounts
+    'response' => $result
 ], 200);
