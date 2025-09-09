@@ -6,10 +6,12 @@ if(!class_exists('Aws\S3\S3Client')) {
 use App\Factory\MetatraderFactory;
 use App\Factory\VerihubFactory;
 use App\Models\Account;
+use App\Models\Admin;
 use App\Models\FileUpload;
 use App\Models\Helper;
 use App\Models\ProfilePerusahaan;
 use App\Models\Regol;
+use App\Models\User;
 use Config\Core\Database;
 use Config\Core\EmailSender;
 
@@ -1694,7 +1696,7 @@ class AppRegol {
  
     public function kelengkapanFormulir($data, $user) {
         $this->checkCsrfToken($data);
-        $progressAccount = $this->checkProgressAccount(md5(md5($user['MBR_ID'])));  
+        $progressAccount = $this->checkProgressAccount($user['userid']);  
     
         /** Check Status */
         $this->isAllowToEdit(status: $progressAccount['ACC_STS']);
@@ -1712,21 +1714,16 @@ class AppRegol {
             ]));  
         }
 
-        
-        loadModel("Helper");
-        $helperClass = new Helper();
-
-
         $dataUpdate = [
             'ACC_F_CMPLT' => 1,
-            'ACC_F_CMPLT_IP' => $helperClass->get_ip_address(), 
+            'ACC_F_CMPLT_IP' => Helper::get_ip_address(), 
             'ACC_F_CMPLT_PERYT' => "Ya",
             'ACC_F_CMPLT_DATE' => date("Y-m-d H:i:s"),
             'ACC_STS' => 1,
             'ACC_KODE' => uniqid()
         ];
 
-        $update = $helperClass->updateWithArray("tb_racc", $dataUpdate, ['ID_ACC' => $progressAccount['ID_ACC']]);
+        $update = Database::update("tb_racc", $dataUpdate, ['ID_ACC' => $progressAccount['ID_ACC']]);
 
         if($update !== TRUE) {
             exit(json_encode([
@@ -1738,14 +1735,6 @@ class AppRegol {
                 ]
             ])); 
         }
-
-        newInsertLog([
-            'mbrid' => $user['MBR_ID'],
-            'module' => "create-account",
-            'ref' => $progressAccount['ID_ACC'],
-            'message' => "Progress Real Account (Kelengkapan Formulir)",
-            'data'  => json_encode($data)
-        ]);
 
         exit(json_encode([
             'status'   => true,
@@ -1810,17 +1799,13 @@ class AppRegol {
             ]));  
         }
 
-        loadModel("Helper");
-        loadModel("Account");
-        $helperClass = new Helper();
-        $classAcc = new Account();
-        $amountSource = $helperClass->stringTonumber($data['dpnewacc_dpstval']);
+        $amountSource = Helper::stringTonumber($data['dpnewacc_dpstval']);
         $amountFinal = 0;
         $currencyFrom = $progressAccount['RTYPE_CURR'];
         $currencyTo = "IDR";
 
         /** Check Bank nasabah */
-        $userBank = myBank(md5(md5($user['MBR_ID'])), $data['dpnewacc_bankusr']);
+        $userBank = User::myBank($user['userid'], $data['dpnewacc_bankusr']);
         if(empty($userBank)) {
             exit(json_encode([
                 'status'   => false,
@@ -1833,7 +1818,7 @@ class AppRegol {
         }
 
         /** Check bank admin */
-        $adminBank = $helperClass->getAdminBank($data['dpnewacc_bankcmpy']);
+        $adminBank = Admin::getAdminBank($data['dpnewacc_bankcmpy']);
         if(empty($adminBank)) {
             exit(json_encode([
                 'status'   => false,
@@ -1863,7 +1848,7 @@ class AppRegol {
                 'status'   => false,
                 'alert'     => [
                     'title' => "Gagal",
-                    'text'  => "Minimum deposit " . implode(" ", [$progressAccount['RTYPE_CURR'], formatCurrency($progressAccount['RTYPE_MINDEPOSIT'])]),
+                    'text'  => "Minimum deposit " . implode(" ", [$progressAccount['RTYPE_CURR'], Helper::formatCurrency($progressAccount['RTYPE_MINDEPOSIT'])]),
                     'icon'  => "error"
                 ]
             ]));  
@@ -1871,7 +1856,7 @@ class AppRegol {
 
 
         /** Convertsation */
-        $convert = $classAcc->accountConvertation([
+        $convert = Account::accountConvertation([
             'account_id' => $progressAccount['ID_ACC'],
             'amount' => $amountSource,
             'from' => $currencyFrom,
@@ -1893,7 +1878,7 @@ class AppRegol {
         $amountFinal = ($amountSource * $convert['rate']);
         
         /** Upload File */
-        $uploadFile = upload_myfile($_FILES['dpnewacc_tfprove'], "deposit_new_account");
+        $uploadFile = FileUpload::upload_myfile($_FILES['dpnewacc_tfprove'], "deposit_new_account");
         if(!is_array($uploadFile) || !array_key_exists("filename", $uploadFile)) {
             exit(json_encode([
                 'status'   => false,
@@ -1909,7 +1894,7 @@ class AppRegol {
         mysqli_begin_transaction($this->db);
 
         /** Insert DPWD */
-        $insert = $helperClass->insertWithArray("tb_dpwd", [
+        $insert = Database::insert("tb_dpwd", [
             'DPWD_MBR' => $user['MBR_ID'],
             'DPWD_TYPE' => 3,
             'DPWD_RACC' => $progressAccount['ID_ACC'],
@@ -1922,7 +1907,7 @@ class AppRegol {
             'DPWD_RATE' => $convert['rate'],
             'DPWD_PIC' => $uploadFile['filename'],
             'DPWD_NOTE' => "Deposit New Account",
-            'DPWD_IP' => $helperClass->get_ip_address(),
+            'DPWD_IP' => Helper::get_ip_address(),
             'DPWD_DATETIME' => date("Y-m-d H:i:s")
         ]);
 
@@ -1939,7 +1924,7 @@ class AppRegol {
         }
 
         /** Update tb_racc */
-        $update = $helperClass->updateWithArray("tb_racc", ['ACC_WPCHECK' => 2], ['ID_ACC' => $progressAccount['ID_ACC']]);
+        $update = Database::update("tb_racc", ['ACC_WPCHECK' => 2], ['ID_ACC' => $progressAccount['ID_ACC']]);
         if(!$update) {
             $this->db->rollback();
             exit(json_encode([
@@ -1953,16 +1938,6 @@ class AppRegol {
         }
 
         $data['filename'] = $uploadFile['filename'];
-        newInsertLog([
-            'mbrid' => $user['MBR_ID'],
-            'module' => "create-account",
-            'ref' => $progressAccount['ID_ACC'],
-            'ip' => $helperClass->get_ip_address(),
-            'message' => "Progress Real Account (Deposit New Account)",
-            'data'  => json_encode($data)
-        ]);
-
-
         $this->db->commit();
         exit(json_encode([
             'status'   => true,
