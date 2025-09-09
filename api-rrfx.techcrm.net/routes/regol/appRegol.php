@@ -1699,7 +1699,7 @@ class AppRegol {
         $progressAccount = $this->checkProgressAccount($user['userid']);  
     
         /** Check Status */
-        $this->isAllowToEdit(status: $progressAccount['ACC_STS']);
+        $this->isAllowToEdit($progressAccount['ACC_STS']);
         
         /** Check Peresetujuan */
         $agree = $data['aggree'] ?? "Tidak";
