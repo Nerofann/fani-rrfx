@@ -1,5 +1,14 @@
 <?php
-$data = $helperClass->getSafeInput($_POST);
+
+use App\Models\Account;
+use App\Models\Admin;
+use App\Models\FileUpload;
+use App\Models\Helper;
+use App\Models\User;
+use App\PaymentSystem\BankTransfer;
+use Config\Core\Database;
+
+$data = Helper::getSafeInput($_POST);
 $required = [
     'account' => "Real Account",
     'amount' => "Jumlah Deposit",
@@ -27,7 +36,7 @@ if(empty($_FILES['image']) || $_FILES['image']['error'] != 0) {
 }
 
 /** Validasi Amount  */
-$amountSource = $helperClass->stringTonumber($data['amount']);
+$amountSource = Helper::stringTonumber($data['amount']);
 if($amountSource <= 0) {
     ApiResponse([
         'status'    => false,
@@ -37,7 +46,7 @@ if($amountSource <= 0) {
 }
 
 /** Validasi bank user */
-$bankUser = myBank($userId, $data['bank_user']);
+$bankUser = User::myBank($user['MBR_ID'], $data['bank_user']);
 if(empty($bankUser)) {
     ApiResponse([
         'status'    => false,
@@ -47,7 +56,7 @@ if(empty($bankUser)) {
 }
 
 /** Validasi Bank Admin */
-$bankAdmin = $helperClass->getAdminBank($data['bank_admin']);
+$bankAdmin = Admin::getAdminBank($data['bank_admin']);
 if(empty($bankAdmin)) {
     ApiResponse([
         'status'    => false,
@@ -57,7 +66,7 @@ if(empty($bankAdmin)) {
 }
 
 /** Check account */
-$account = $classAcc->realAccountDetail($data['account']);
+$account = Account::realAccountDetail($data['account']);
 if(empty($account)) {
     ApiResponse([
         'status'    => false,
@@ -67,7 +76,7 @@ if(empty($account)) {
 }
 
 /** Check ACC_MBR */
-if($account['ACC_MBR'] != $userData['MBR_ID']) {
+if($account['ACC_MBR'] != $user['MBR_ID']) {
     ApiResponse([
         'status'    => false,
         'message'   => "Permintaan ditolak",
@@ -75,12 +84,43 @@ if($account['ACC_MBR'] != $userData['MBR_ID']) {
     ], 400);
 }
 
-/** Check Minimum Deposit */
-$amountCheck =  $amountSource;
-if($amountCheck < $account['RTYPE_MINTOPUP']) {
+
+/** check apakah ada deposit pending */
+$isHavePending = Account::havePendingTransaction($user['MBR_ID']);
+if($isHavePending) {
     ApiResponse([
         'status'    => false,
-        'message'   => "Minimum Deposit ".$helperClass->formatCurrency($account['RTYPE_MINTOPUP']) . " ".$account['RTYPE_CURR'],
+        'message'   => "Masih ada transaksi yang belum selesai",
+        'response'  => []
+    ], 400);
+}
+
+/** check metode pembayaran */
+$payment = BankTransfer::detail();
+if(!$payment) {
+    ApiResponse([
+        'status'    => false,
+        'message'   => "Metode pembayaran tidak tersedia",
+        'response'  => []
+    ], 400);
+}
+
+/** check minimum deposit */
+$minimumTopup = Helper::stringTonumber($account['RTYPE_MINTOPUP'] ?? 0);
+if($amountSource < $minimumTopup && $minimumTopup != 0) {
+    ApiResponse([
+        'status'    => false,
+        'message'   => "Minimum Deposit " . $account['RTYPE_CURR'] . " " . Helper::formatCurrency($minimumTopup),
+        'response'  => []
+    ], 400);
+}
+
+/** check maximum deposit */
+$maximumTopup = Helper::stringTonumber($account['RTYPE_MAXTOPUP'] ?? 0);
+if($amountSource > $maximumTopup && $maximumTopup != 0) {
+    ApiResponse([
+        'status'    => false,
+        'message'   => "Maximum Deposit " . $account['RTYPE_CURR'] . " " . Helper::formatCurrency($maximumTopup),
         'response'  => []
     ], 400);
 }
@@ -94,21 +134,12 @@ if($account['RTYPE_CURR'] != $bankAdmin['BKADM_CURR']) {
     ], 400);
 }
 
-/** cekDepositPending */
-if($classAcc->havePendingTransaction($userData['MBR_ID'], [1]) !== FALSE) {
-    ApiResponse([
-        'status'    => false,
-        'message'   => "Masih ada transaksi dengan status pending",
-        'response'  => []
-    ], 400);
-}
-
 /** conversation */
-$convert = $classAcc->accountConvertation([
+$convert = Account::accountConvertation([
     'account_id' => $account['ID_ACC'],
     'amount' => $amountSource,
     'from' => $account['RTYPE_CURR'],
-    'to' => "IDR"
+    'to' => "USD"
 ]);
 
 if(!is_array($convert)) {
@@ -120,10 +151,10 @@ if(!is_array($convert)) {
 }
 
 /** Set Amount Final */
-$amountFinal = ($amountSource * $convert['rate']);
+$amountFinal = ($amountSource / $convert['rate']);
 
 /** Upload File */
-$fileUpload = upload_myfile($_FILES['image']);
+$fileUpload = FileUpload::upload_myfile($_FILES['image']);
 if(!is_array($fileUpload) || !array_key_exists("filename", $fileUpload)) {
     ApiResponse([
         'status'    => false,
@@ -133,8 +164,8 @@ if(!is_array($fileUpload) || !array_key_exists("filename", $fileUpload)) {
 }
 
 /** Insert DPWD */
-$insert = $helperClass->insertWithArray("tb_dpwd", [
-    'DPWD_MBR' => $userData['MBR_ID'],
+$insert = Database::insert("tb_dpwd", [
+    'DPWD_MBR' => $user['MBR_ID'],
     'DPWD_TYPE' => 1,
     'DPWD_DEVICE' => "mobile",
     'DPWD_RACC' => $account['ID_ACC'],
@@ -146,7 +177,7 @@ $insert = $helperClass->insertWithArray("tb_dpwd", [
     'DPWD_CURR_TO' => "IDR",
     'DPWD_RATE' => $convert['rate'],
     'DPWD_PIC' => $fileUpload['filename'],
-    'DPWD_IP' => $helperClass->get_ip_address(),
+    'DPWD_IP' => Helper::get_ip_address(),
     'DPWD_DATETIME' => date("Y-m-d H:i:s"),
 ]);
 
@@ -159,16 +190,6 @@ if(!$insert) {
 }
 
 $dpwdId = $db->insert_id;
-newInsertLog([
-    'mbrid' => $userData['MBR_ID'],
-    'module' => "deposit",
-    'ref' => $dpwdId,
-    'message' => "Deposit account ".$account['ACC_LOGIN'],
-    'device' => "mobile", 
-    'ip' => $helperClass->get_ip_address(),
-    'data'  => json_encode($data)
-]);
-
 ApiResponse([
     'status'    => true,
     'message'   => "Deposit berhasil",
