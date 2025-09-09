@@ -14,6 +14,7 @@ use App\Models\Regol;
 use App\Models\User;
 use Config\Core\Database;
 use Config\Core\EmailSender;
+use Config\Core\SystemInfo;
 
 class AppRegol {
     private $db;
@@ -637,7 +638,7 @@ class AppRegol {
         } catch (Aws\S3\Exception\S3Exception $e) {
             exit(json_encode([
                 'status'    => false,
-                'message'   => "Gagal mengunggah foto Selfie (400)",
+                'message'   => (SystemInfo::isDevelopment())? $e->getMessage() : "Gagal mengunggah foto Selfie (400)",
                 'response'  => []
             ]));
         }
