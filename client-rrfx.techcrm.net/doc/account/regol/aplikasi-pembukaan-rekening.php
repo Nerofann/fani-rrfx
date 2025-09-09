@@ -481,7 +481,7 @@ $_SESSION['modal'] = ['create-bank'];
                                             <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
                                                 <select name="app_penghasilan" id="app_penghasilan" class="form-control">
-                                                    <?php foreach(['Antara 100-250 juta', 'Antara 250-500 juta', '> 500 juta'] as $penghasilan) : ?>
+                                                    <?php foreach(App\Models\Regol::$listPendapatan as $penghasilan) : ?>
                                                         <option value="<?= $penghasilan ?>" <?= (strtolower($realAccount['ACC_F_APP_KEKYAN'] ?? "") == strtolower($penghasilan))? "selected" : ""; ?>><?= $penghasilan ?></option>
                                                     <?php endforeach; ?>
                                                 </select>

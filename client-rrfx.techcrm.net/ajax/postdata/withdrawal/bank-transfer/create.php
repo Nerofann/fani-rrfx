@@ -47,7 +47,7 @@ if(!$userBank) {
 
 /** check apakah ada withdrawal pending */
 $isHavePending = Account::havePendingTransaction($user['MBR_ID'], [2]);
-if(!$isHavePending) {
+if($isHavePending) {
     JsonResponse([
         'success' => false,
         'message' => "Masih ada transaksi yang belum selesai",
