@@ -5,6 +5,7 @@ use App\Models\Admin;
 use App\Models\FileUpload;
 use App\Models\Helper;
 use App\Models\User;
+use App\PaymentSystem\BankTransfer;
 use Config\Core\Database;
 
 $data = Helper::getSafeInput($_POST);
@@ -71,6 +72,36 @@ if($jumlah <= 0) {
     JsonResponse([
         'success' => false,
         'message' => "Jumlah deposit tidak valid",
+        'data' => []
+    ]);
+}
+
+/** check metode pembayaran */
+$payment = BankTransfer::detail();
+if(!$payment) {
+    JsonResponse([
+        'success' => false,
+        'message' => "Metode pembayaran tidak tersedia",
+        'data' => []
+    ]);
+}
+
+/** check minimum deposit */
+$minimumTopup = Helper::stringTonumber($account['RTYPE_MINTOPUP'] ?? 0);
+if($jumlah < $minimumTopup && $minimumTopup != 0) {
+    JsonResponse([
+        'success' => false,
+        'message' => "Minimum Deposit " . $account['RTYPE_CURR'] . " " . Helper::formatCurrency($minimumTopup),
+        'data' => []
+    ]);
+}
+
+/** check maximum deposit */
+$maximumTopup = Helper::stringTonumber($account['RTYPE_MAXTOPUP'] ?? 0);
+if($jumlah > $maximumTopup && $maximumTopup != 0) {
+    JsonResponse([
+        'success' => false,
+        'message' => "Maximum Deposit " . $account['RTYPE_CURR'] . " " . Helper::formatCurrency($maximumTopup),
         'data' => []
     ]);
 }
