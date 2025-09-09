@@ -5,6 +5,7 @@ use App\Models\Admin;
 use App\Models\FileUpload;
 use App\Models\Helper;
 use App\Models\User;
+use App\PaymentSystem\BankTransfer;
 use Config\Core\Database;
 
 $data = Helper::getSafeInput($_POST);
@@ -46,7 +47,7 @@ if(!$userBank) {
 
 /** check apakah ada withdrawal pending */
 $isHavePending = Account::havePendingTransaction($user['MBR_ID'], [2]);
-if($isHavePending) {
+if(!$isHavePending) {
     JsonResponse([
         'success' => false,
         'message' => "Masih ada transaksi yang belum selesai",
@@ -74,6 +75,16 @@ if(!$balance || $balance < $jumlah) {
     ]);
 }
 
+/** check metode pembayaran */
+$payment = BankTransfer::detail();
+if(!$payment) {
+    JsonResponse([
+        'success' => false,
+        'message' => "Metode pembayaran tidak tersedia",
+        'data' => []
+    ]);
+}
+
 $toCurrency = $account['RTYPE_CURR']; 
 $convert = Account::accountConvertation([
     'account_id' => $account['ID_ACC'],
@@ -90,8 +101,30 @@ if(!is_array($convert)) {
     ]);
 }
 
-/** Insert Withdrawal */
+/** final amount */
 $dpwdAmount = ($jumlah * $convert['rate']) ?? 0;
+
+/** check minimum withdrawal */
+$minimumWithdrawal = Helper::stringTonumber($account['RTYPE_MINWITHDRAWAL'] ?? 0);
+if($dpwdAmount < $minimumWithdrawal && $minimumWithdrawal != 0) {
+    JsonResponse([
+        'success' => false,
+        'message' => "Minimum Withdrawal " . $account['RTYPE_CURR'] . " " . Helper::formatCurrency($minimumWithdrawal),
+        'data' => []
+    ]);
+}
+
+/** check maximum withdrawal */
+$maximumWithdrawal = Helper::stringTonumber($account['RTYPE_MAXWITHDRAWAL'] ?? 0);
+if($dpwdAmount > $maximumWithdrawal && $maximumWithdrawal != 0) {
+    JsonResponse([
+        'success' => false,
+        'message' => "Maximum Withdrawal " . $account['RTYPE_CURR'] . " " . Helper::formatCurrency($maximumWithdrawal),
+        'data' => []
+    ]);
+}
+
+/** Insert Withdrawal */
 $insert = Database::insert("tb_dpwd", [
     'DPWD_MBR' => $user['MBR_ID'],
     'DPWD_TYPE' => 2,
@@ -117,6 +150,6 @@ if(!$insert) {
 
 JsonResponse([
     'success' => true,
-    'message' => "Barhasil",
+    'message' => "Berhasil",
     'data' => []
 ]);
