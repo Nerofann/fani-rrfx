@@ -3,7 +3,8 @@
     use App\Models\Helper;
     use App\Models\Admin;
     use App\Models\Logger;
-    use App\Models\User;
+use App\Models\ProfilePerusahaan;
+use App\Models\User;
     use Config\Core\Database;
     use Config\Core\EmailSender;
 
@@ -126,6 +127,7 @@
         /** Notifikasi email */
         $emailSender = EmailSender::init(['email' => $userdata['MBR_EMAIL'], 'name' => $userdata['MBR_NAME']]);
         $emailSender->useFile($emailData['file'], $emailData);
+        $emailSender->addBcc(ProfilePerusahaan::$emailDealing , ProfilePerusahaan::$namaDealing);
         $send = $emailSender->send();
     }
     
