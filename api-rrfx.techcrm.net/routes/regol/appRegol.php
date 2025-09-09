@@ -1050,9 +1050,6 @@ class AppRegol {
             ]));
         }
 
-
-        loadModel("Helper");
-        $helperClass = new Helper();
         $progressAccount = $this->checkProgressAccount(md5(md5($user['MBR_ID'])));
         
         if(!empty($data['app_nomor_tlp_rumah'])) {
@@ -1094,7 +1091,7 @@ class AppRegol {
             $updateData['ACC_F_APP_PRIBADI_NAMAISTRI'] = $data['app_nama_istri'];
         }
 
-        $update = $helperClass->updateWithArray("tb_racc", $updateData, ['ID_ACC' => $progressAccount['ID_ACC']]);
+        $update = Database::update("tb_racc", $updateData, ['ID_ACC' => $progressAccount['ID_ACC']]);
         if($update !== TRUE) {
             exit(json_encode([
                 'status' => false,
@@ -1102,15 +1099,6 @@ class AppRegol {
                 'response' => []
             ]));
         }
-
-        newInsertLog([
-            'mbrid' => $user['MBR_ID'],
-            'module' => "create-account",
-            'ref' => $progressAccount['ID_ACC'],
-            'message' => "Progress Real Account (Status perkawinan)",
-            'device' => "mobile",
-            'data'  => json_encode($data)
-        ]);
 
         exit(json_encode([
             'status' => true,
