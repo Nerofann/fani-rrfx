@@ -1,6 +1,8 @@
 <?php
 
-$login = form_input($_GET['login'] ?? 1);
+use App\Models\Helper;
+
+$login = Helper::form_input($_GET['login'] ?? 1);
 $sqlGet = $db->query("
     SELECT 
         td.ID_DPWD,
@@ -17,7 +19,7 @@ $sqlGet = $db->query("
         tr.ACC_LOGIN
     FROM tb_dpwd td
     JOIN tb_racc tr ON (tr.ID_ACC = td.DPWD_RACC)
-    WHERE td.DPWD_MBR = ".$userData['MBR_ID']."
+    WHERE td.DPWD_MBR = ".$user['MBR_ID']."
     AND td.DPWD_TYPE IN (1, 2, 3)
     AND (tr.ACC_LOGIN = ".$login." OR 1 = ".$login.")
     ORDER BY td.DPWD_DATETIME DESC
@@ -39,8 +41,8 @@ foreach($sqlGet->fetch_all(MYSQLI_ASSOC) as $dpwd) {
         default: $status = "-";
     }
 
-    $amount = $dpwd['DPWD_CURR_FROM'] ." ". $helperClass->formatCurrency($dpwd['DPWD_AMOUNT_SOURCE']) ?? 0;
-    $amountReceived = $dpwd['DPWD_CURR_TO'] ." ". $helperClass->formatCurrency($dpwd['DPWD_AMOUNT']) ?? 0;
+    $amount = $dpwd['DPWD_CURR_FROM'] ." ". Helper::formatCurrency($dpwd['DPWD_AMOUNT_SOURCE']) ?? 0;
+    $amountReceived = $dpwd['DPWD_CURR_TO'] ." ". Helper::formatCurrency($dpwd['DPWD_AMOUNT']) ?? 0;
 
 
     $result[] = [

@@ -1,5 +1,14 @@
 <?php
-$data = $helperClass->getSafeInput($_POST);
+
+use App\Factory\MetatraderFactory;
+use App\Models\Account;
+use App\Models\Helper;
+use App\Models\Logger;
+use Config\Core\Database;
+use Config\Core\EmailSender;
+
+$apiManager = MetatraderFactory::apiManager();
+$data = Helper::getSafeInput($_POST);
 $required = [
     'acc_from' => "Nomor Login Akun Pengirim",
     'acc_to' => "Nomor Login Akun Penerima",
@@ -17,7 +26,7 @@ foreach($required as $req => $text) {
 }
 
 /** Check Amount */
-$amount = $helperClass->stringTonumber($data['amount']);
+$amount = Helper::stringTonumber($data['amount']);
 if(is_numeric($amount) === FALSE || $amount <= 0) {
     ApiResponse([
         'status'    => false,
@@ -39,150 +48,147 @@ if($loginPengirim == $loginPenerima) {
     ], 400);
 }
 
-/** Check Account */
-$userAccount = myAccount($userId, "real");
-$availableAccounts = array_map(fn($ar): string => $ar['ACC_LOGIN'], $userAccount);
-
-/** Check akun Pengirim */
-if(!in_array($loginPengirim, $availableAccounts)) {
+/** check akun pengirim */
+$fromAccount = Account::realAccountDetail_byLogin($loginPengirim);
+if(!$fromAccount) {
     ApiResponse([
         'status'    => false,
-        'message'   => "Login pengirim tidak valid",
+        'message'   => "Akun Pengirim tidak valid",
         'response'  => []
     ], 400);
 }
 
-/** Check Balance pengirim */
-$detailAkunPengirim = $ApiMeta->accountDetails(['login' => $loginPengirim]);
-if(!$detailAkunPengirim->success) {
+/** check akun penerima */
+$toAccount = Account::realAccountDetail_byLogin($loginPenerima);
+if(!$toAccount) {
     ApiResponse([
         'status'    => false,
-        'message'   => "Login pengirim tidak terdaftar",
+        'message'   => "Akun Penerima tidak valid",
         'response'  => []
     ], 400);
 }
 
-$balancePengirim = $detailAkunPengirim->message->Balance;
+/** Check rate account */
+if($fromAccount['RTYPE_RATE'] != $toAccount['RTYPE_RATE']) {
+    ApiResponse([
+        'status'    => false,
+        'message'   => "Gagal, Invalid Rate",
+        'response'  => []
+    ], 400);
+}
+
+/** Check Balance Pengirim */
+$balancePengirim = Account::marginBalance($fromAccount['ACC_LOGIN']);
 if($balancePengirim < $amount) {
     ApiResponse([
         'status'    => false,
-        'message'   => "Balance Login {$loginPengirim} tidak mencukupi",
+        'message'   => "Insufficient balance metatrader",
         'response'  => []
     ], 400);
 }
-
-/** Check Penerima */
-if(!in_array($loginPenerima, $availableAccounts)) {
-    ApiResponse([
-        'status'    => false,
-        'message'   => "Login penerima tidak valid",
-        'response'  => []
-    ], 400);
-}
-
-/** Check Rate */
-$detailPenerima = [];
-$detailPengirim = [];
-foreach($userAccount as $acc) {
-    if($acc['ACC_LOGIN'] == $loginPengirim) {
-        $detailPengirim = $acc;
-    
-    }else if($acc['ACC_LOGIN'] == $loginPenerima) {
-        $detailPenerima = $acc;
-    }
-}
-
-if(empty($detailPenerima) || empty($detailPengirim)) {
-    ApiResponse([
-        'status'    => false,
-        'message'   => "Invalid Accounts",
-        'response'  => []
-    ], 400);
-}
-
-/** Check Rate */
-if($detailPengirim['RTYPE_RATE'] != $detailPenerima['RTYPE_RATE']) {
-    ApiResponse([
-        'status'    => false,
-        'message'   => "Rate akun tidak sama",
-        'response'  => []
-    ], 400);
-}
-
-/** Adjustment Account Rate */
-$amountSource = $amount;
-// $adjustment = $this->internalTransfer_adjustmentRate($detailPengirim, $detailPenerima, $amount);
-// $amount = round($adjustment['amount'], 2);
 
 /** Start Transaction */
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 mysqli_begin_transaction($db);
 
 /** Insert */
-$internalTransfer = $helperClass->insertWithArray("tb_internal_transfer", [
-    'IT_FROM'   => $loginPengirim,
-    'IT_TO' => $loginPenerima,
+$code = uniqid();
+$statusDeposit = false;
+$apiManager = MetatraderFactory::apiManager();
+$insert = Database::insert("tb_internal_transfer", [
+    'IT_CODE' => $code,
+    'IT_FROM' => $fromAccount['ACC_LOGIN'],
+    'IT_TO' => $toAccount['ACC_LOGIN'],
     'IT_AMOUNT' => $amount,
-    'IT_AMOUNT_SOURCE'  => $amountSource,
-    'IT_CURR_TO'    => "USD",
-    'IT_CURR_FROM'  => "USD",
-    'IT_RATE_TO'    => $detailPengirim['RTYPE_RATE'],
-    'IT_RATE_FROM'  => $detailPenerima['RTYPE_RATE'],
-    // 'IT_RATE_TO'    => $adjustment['rate_penerima'],
-    // 'IT_RATE_FROM'  => $adjustment['rate_pengirim'],
-    'IT_DATETIME'   => date("Y-m-d H:i:s")
+    'IT_AMOUNT_SOURCE' => $amount,
+    'IT_CURR_TO' => $toAccount['RTYPE_CURR'],
+    'IT_CURR_FROM' => $fromAccount['RTYPE_CURR'],
+    'IT_RATE_TO' => 1,
+    'IT_RATE_FROM' => 1,
+    // '' => ,
+    // '' => $deposit->ticket,
+    'IT_DATETIME' => date("Y-m-d H:i:s"),
 ]);
 
-if(!$internalTransfer) {
+
+if(!$insert) {
+    $db->rollback();
     ApiResponse([
         'status'    => false,
-        'message'   => "Internal Transfer gagal",
+        'message'   => "Invalid Status",
         'response'  => []
     ], 400);
 }
 
-/** Last Insert ID */
 $idInternalTransfer = $db->insert_id;
 
-/** Withdraw balance pengirim */
-$wdBalance = $ApiMeta->withdrawal(['login' => $loginPengirim, 'amount' => $amountSource, 'comment' => "ITOUT-{$idInternalTransfer}"]);
-if(!$wdBalance->success) {
-    $db->rollback();
-    ApiResponse([
-        'status'    => false,
-        'message'   => "[WD] ".($wdBalance->error ?? "Failed Withdrawal"),
-        'response'  => []
-    ], 400);
-}
-
-/** Deposit balance penerima */
-$depositBalance = $ApiMeta->deposit(['login' => $loginPenerima, 'amount' => $amount, 'comment' => "ITIN-{$idInternalTransfer}"]);
-if(!$depositBalance->success) {
-    $db->rollback();
-    ApiResponse([
-        'status'    => false,
-        'message'   => "[DP] ".($depositBalance->error ?? "Failed Deposit"),
-        'response'  => []
-    ], 400);
-}
-
-/** Update data internal_transfer */
-$update = $helperClass->updateWithArray("tb_internal_transfer", [
-    'IT_TICKET_FROM' => ($wdBalance->message->ticket ?? 0),
-    'IT_TICKET_TO' => ($depositBalance->message->ticket ?? 0)
-], [
-    'ID_IT' => $idInternalTransfer
+/** Withdrawal dari akun pengirim */
+$withdrawal = $apiManager->deposit([
+    'login' => $fromAccount['ACC_LOGIN'],
+    'amount' => ($amount * -1),
+    'comment' => "IT-{$code}"
 ]);
 
-newInsertLog([
+if(is_object($withdrawal) === FALSE || !property_exists($withdrawal, "ticket")) {
+    $db->rollback();
+    ApiResponse([
+        'status' => false,
+        'message' => "Invalid Status balance " . $fromAccount['ACC_LOGIN'],
+        'response' => []
+    ]);
+}
+
+/** update ticket withdrawal */
+Database::update("tb_internal_transfer", ['IT_TICKET_FROM' => $withdrawal->ticket], ['IT_CODE' => $code]);
+
+/** Deposit ke akun penerima */
+$deposit = $apiManager->deposit([
+    'login' => $toAccount['ACC_LOGIN'],
+    'amount' => $amount,
+    'comment' => "IT-{$code}"
+]);
+
+if(is_object($deposit) !== FALSE && property_exists($deposit, "ticket")) {
+    /** update ticket deposit */
+    Database::update("tb_internal_transfer", ['IT_TICKET_TO' => $deposit->ticket], ['IT_CODE' => $code]);
+    $statusDeposit = true;
+}
+
+Logger::client_log([
     'mbrid' => $user['MBR_ID'],
     'module' => "internal-transfer",
-    'ref' => $idInternalTransfer,
-    'message' => "Internal Transfer {$amount} USD from {$loginPengirim} to {$loginPenerima}",
-    'device' => "mobile",
-    'ip' => $helperClass->get_ip_address(),
-    'data' => json_encode($data)
+    'message' => "Internal Transfer from " . $loginPengirim . " to " . $loginPenerima . " $amount USD",
+    'data' => $data 
 ]);
+
+switch($statusDeposit) {
+    case (true):
+        $emailData = [
+            'subject' => "Internal Transfer Successfull",
+            'accountFrom' => $fromAccount['ACC_LOGIN'],
+            'accountTo' => $toAccount['ACC_LOGIN'],
+            'amount' => "$".Helper::formatCurrency($amount)
+        ];
+        
+        $emailSender = EmailSender::init(['email' => $user['MBR_EMAIL'], 'name' => $user['MBR_NAME']]);
+        $emailSender->useFile("internal-transfer-success", $emailData);
+        $send = $emailSender->send();
+        break;
+
+    case (false):
+        $emailData = [
+            'subject' => "Internal Transfer Failed",
+            'accountFrom' => $fromAccount['ACC_LOGIN'],
+            'accountTo' => $toAccount['ACC_LOGIN'],
+            'amount' => "$".Helper::formatCurrency($amount)
+        ];
+        
+        $emailSender = EmailSender::init(['email' => $user['MBR_EMAIL'], 'name' => $user['MBR_NAME']]);
+        $emailSender->useFile("internal-transfer-failed", $emailData);
+        $send = $emailSender->send();
+        break;
+}
+
 
 $db->commit();
 ApiResponse([

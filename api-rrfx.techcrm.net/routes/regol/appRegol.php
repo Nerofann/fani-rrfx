@@ -14,6 +14,7 @@ use App\Models\Regol;
 use App\Models\User;
 use Config\Core\Database;
 use Config\Core\EmailSender;
+use Config\Core\SystemInfo;
 
 class AppRegol {
     private $db;
@@ -183,15 +184,15 @@ class AppRegol {
                 'npwp' => $progressAccount['ACC_F_APP_PRIBADI_NPWP'],
                 'date_of_birth' => $progressAccount['ACC_TANGGAL_LAHIR'],
                 'place_of_birth' => $progressAccount['ACC_TEMPAT_LAHIR'],
-                'gender' => $progressAccount['ACC_F_APP_PRIBADI_KELAMIN'],
-                'province' => $progressAccount['ACC_PROVINCE'],
-                'city' => $progressAccount['ACC_REGENCY'],
-                'district' => $progressAccount['ACC_DISTRICT'],
-                'village' => $progressAccount['ACC_VILLAGE'],
+                'gender' => $progressAccount['ACC_F_APP_PRIBADI_KELAMIN'] ?? $user['MBR_JENIS_KELAMIN'],
+                'province' => $progressAccount['ACC_PROVINCE'] ?? $user['MBR_PROVINCE'],
+                'city' => $progressAccount['ACC_REGENCY'] ?? $user['MBR_CITY'],
+                'district' => $progressAccount['ACC_DISTRICT'] ?? $user['MBR_DISTRICT'],
+                'village' => $progressAccount['ACC_VILLAGE'] ?? $user['MBR_VILLAGES'],
                 'rt' => $progressAccount['ACC_RT'],
                 'rw' => $progressAccount['ACC_RW'],
                 'address' => $progressAccount['ACC_ADDRESS'],
-                'postal_code' => $progressAccount['ACC_ZIPCODE'],
+                'postal_code' => $progressAccount['ACC_ZIPCODE'] ?? $user['MBR_ZIP'],
                 'marital_status' => $progressAccount['ACC_F_APP_PRIBADI_STSKAWIN'],
                 'wife_husband_name' => $progressAccount['ACC_F_APP_PRIBADI_NAMAISTRI'],
                 'mother_name' => $progressAccount['ACC_F_APP_PRIBADI_IBU'],
@@ -637,7 +638,7 @@ class AppRegol {
         } catch (Aws\S3\Exception\S3Exception $e) {
             exit(json_encode([
                 'status'    => false,
-                'message'   => "Gagal mengunggah foto Selfie (400)",
+                'message'   => (SystemInfo::isDevelopment())? $e->getMessage() : "Gagal mengunggah foto Selfie (400)",
                 'response'  => []
             ]));
         }

@@ -1,5 +1,9 @@
 <?php
-$data = $helperClass->getSafeInput($_POST);
+
+use App\Models\Account;
+use App\Models\Helper;
+
+$data = Helper::getSafeInput($_POST);
 $required = [
     'account' => "Akun",
     'type' => "Tipe Konversi",
@@ -17,7 +21,7 @@ foreach($required as $req => $text) {
 }
 
 /** Validasi Amount */
-$amountSource = $helperClass->stringTonumber($data['amount']);
+$amountSource = Helper::stringTonumber($data['amount']);
 if(is_numeric($amountSource) === FALSE || $amountSource <= 0) {
     ApiResponse([
         'status'    => false,
@@ -36,7 +40,7 @@ if(!in_array(strtolower($data['type']), ['deposit', 'withdrawal'])) {
 }
 
 /** Check Account */
-$account = $classAcc->realAccountDetail($data['account']);
+$account = Account::realAccountDetail($data['account']);
 if(empty($account)) {
     ApiResponse([
         'status'    => false,
@@ -47,7 +51,7 @@ if(empty($account)) {
 
 switch(strtolower($data['type'])) {
     case "deposit":
-        $convert = $classAcc->accountConvertation([
+        $convert = Account::accountConvertation([
             'account_id' => $account['ID_ACC'],
             'amount' => $amountSource,
             'from' => $account['RTYPE_CURR'],
@@ -75,7 +79,7 @@ switch(strtolower($data['type'])) {
         break;
 
     case "withdrawal":
-        $convert = $classAcc->accountConvertation([
+        $convert = Account::accountConvertation([
             'account_id' => $account['ID_ACC'],
             'amount' => $amountSource,
             'from' => "USD",

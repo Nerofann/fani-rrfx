@@ -1,5 +1,11 @@
 <?php
-$data = $helperClass->getSafeInput($_POST);
+
+use App\Models\Account;
+use App\Models\Helper;
+use App\Models\User;
+use Config\Core\Database;
+
+$data = Helper::getSafeInput($_POST);
 $required = [
     'account' => "Real Account",
     'bank_user' => "Bank User",
@@ -17,7 +23,7 @@ foreach($required as $req => $text) {
 }
 
 /** Validasi Amount  */
-$amountSource = $helperClass->stringTonumber($data['amount']);
+$amountSource = Helper::stringTonumber($data['amount']);
 if($amountSource <= 0) {
     ApiResponse([
         'status'    => false,
@@ -27,7 +33,7 @@ if($amountSource <= 0) {
 }
 
 /** Validasi bank user */
-$bankUser = myBank($userId, $data['bank_user']);
+$bankUser = User::myBank($user['MBR_ID'], $data['bank_user']);
 if(empty($bankUser)) {
     ApiResponse([
         'status'    => false,
@@ -37,7 +43,7 @@ if(empty($bankUser)) {
 }
 
 /** Check account */
-$account = $classAcc->realAccountDetail($data['account']);
+$account = Account::realAccountDetail($data['account']);
 if(empty($account)) {
     ApiResponse([
         'status'    => false,
@@ -47,7 +53,7 @@ if(empty($account)) {
 }
 
 /** Check ACC_MBR */
-if($account['ACC_MBR'] != $userData['MBR_ID']) {
+if($account['ACC_MBR'] != $user['MBR_ID']) {
     ApiResponse([
         'status'    => false,
         'message'   => "Permintaan ditolak",
@@ -55,28 +61,8 @@ if($account['ACC_MBR'] != $userData['MBR_ID']) {
     ], 400);
 }
 
-/** Check Minimum Withdrawal */
-$amountCheck =  $amountSource;
-if($amountCheck < $account['RTYPE_MINWITHDRAWAL']) {
-    ApiResponse([
-        'status'    => false,
-        'message'   => "Minimum Withdrawal ".$helperClass->formatCurrency($account['RTYPE_MINWITHDRAWAL']) . " ".$account['RTYPE_CURR'],
-        'response'  => []
-    ], 400);
-}
-
-/** Check Maximum Withdrawal */
-$amountCheck =  $amountSource;
-if($amountCheck < $account['RTYPE_MAXWITHDRAWAL']) {
-    ApiResponse([
-        'status'    => false,
-        'message'   => "Maximum Withdrawal ".$helperClass->formatCurrency($account['RTYPE_MAXWITHDRAWAL']) . " ".$account['RTYPE_CURR'],
-        'response'  => []
-    ], 400);
-}
-
 /** cek Withdrawal Pending */
-if($classAcc->havePendingTransaction($userData['MBR_ID'], [2]) !== FALSE) {
+if(Account::havePendingTransaction($user['MBR_ID'], [2]) !== FALSE) {
     ApiResponse([
         'status'    => false,
         'message'   => "Masih ada transaksi withdrawal dengan status pending",
@@ -85,11 +71,11 @@ if($classAcc->havePendingTransaction($userData['MBR_ID'], [2]) !== FALSE) {
 }
 
 /** conversation */
-$convert = $classAcc->accountConvertation([
+$convert = Account::accountConvertation([
     'account_id' => $account['ID_ACC'],
     'amount' => $amountSource,
-    'from' => $account['RTYPE_CURR'],
-    'to' => "IDR"
+    'from' => "USD",
+    'to' => $account['RTYPE_CURR']
 ]);
 
 if(!is_array($convert)) {
@@ -103,19 +89,38 @@ if(!is_array($convert)) {
 /** Set Amount Final */
 $amountFinal = ($amountSource * $convert['rate']);
 
+/** Check Minimum Withdrawal */
+if($amountFinal < $account['RTYPE_MINWITHDRAWAL'] && $account['RTYPE_MINWITHDRAWAL'] != 0) {
+    ApiResponse([
+        'status'    => false,
+        'message'   => "Minimum Withdrawal ".$account['RTYPE_CURR']." ".Helper::formatCurrency($account['RTYPE_MINWITHDRAWAL']),
+        'response'  => []
+    ], 400);
+}
+
+/** Check Maximum Withdrawal */
+if($amountFinal > $account['RTYPE_MAXWITHDRAWAL'] && $account['RTYPE_MINWITHDRAWAL'] != 0) {
+    ApiResponse([
+        'status'    => false,
+        'message'   => "Maximum Withdrawal ".$account['RTYPE_CURR']." ".Helper::formatCurrency($account['RTYPE_MAXWITHDRAWAL']) . " ",
+        'response'  => []
+    ], 400);
+}
+
+
 /** Insert DPWD */
-$insert = $helperClass->insertWithArray("tb_dpwd", [
-    'DPWD_MBR' => $userData['MBR_ID'],
+$insert = Database::insert("tb_dpwd", [
+    'DPWD_MBR' => $user['MBR_ID'],
     'DPWD_TYPE' => 2,
     'DPWD_DEVICE' => "mobile",
     'DPWD_RACC' => $account['ID_ACC'],
     'DPWD_BANKSRC' => implode("/", [$bankUser['MBANK_NAME'], $bankUser['MBANK_ACCOUNT'], $bankUser['MBANK_HOLDER']]),
     'DPWD_AMOUNT' => $amountFinal,
     'DPWD_AMOUNT_SOURCE' => $amountSource,
-    'DPWD_CURR_FROM' => $account['RTYPE_CURR'],
-    'DPWD_CURR_TO' => "IDR",
+    'DPWD_CURR_FROM' => "USD",
+    'DPWD_CURR_TO' => $account['RTYPE_CURR'],
     'DPWD_RATE' => $convert['rate'],
-    'DPWD_IP' => $helperClass->get_ip_address(),
+    'DPWD_IP' => Helper::get_ip_address(),
     'DPWD_DATETIME' => date("Y-m-d H:i:s"),
 ]);
 
@@ -128,16 +133,6 @@ if(!$insert) {
 }
 
 $dpwdId = $db->insert_id;
-newInsertLog([
-    'mbrid' => $userData['MBR_ID'],
-    'module' => "withdrawal",
-    'ref' => $dpwdId,
-    'device' => "mobile",
-    'message' => "Withdrawal account ".$account['ACC_LOGIN'],
-    'data'  => json_encode($data),
-    'ip' => $helperClass->get_ip_address(),
-]);
-
 ApiResponse([
     'status'    => true,
     'message'   => "Withdrawal berhasil",
