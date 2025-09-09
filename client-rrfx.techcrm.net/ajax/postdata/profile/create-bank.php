@@ -2,7 +2,10 @@
 
 use App\Models\BankList;
 use App\Models\Helper;
+use App\Models\Logger;
 use App\Models\User;
+use App\Models\FileUpload;
+use Config\Core\EmailSender;
 use Config\Core\Database;
 
 $data = Helper::getSafeInput($_POST);
@@ -70,13 +73,49 @@ if(!preg_match('/^[a-zA-Z\s]+$/', $data['name'])) {
     ]);
 }
 
+$uploadCoverBank = FileUpload::upload_myfile($_FILES['imagecover'], "bank_cover");
+if(!is_array($uploadCoverBank) || !array_key_exists("filename", $uploadCoverBank)) {
+    exit(json_encode([
+        'success' => false,
+        'alert' => [
+            'title' => "Gagal",
+            'text'  => $uploadCoverBank ?? "Gagal mengunggah file dokumen pendukung",
+            'icon'  => "error"
+        ] 
+    ]));
+}
+
 /** insert */
+$otpCode = random_int(1000, 9999);
+$otpExpired = date("Y-m-d H:i:s", strtotime("+5 minute"));
 $insert = Database::insert("tb_member_bank", [
     'MBANK_MBR' => $user['MBR_ID'],
     'MBANK_HOLDER' => $data['name'],
     'MBANK_NAME' => $data['bank-name'],
     'MBANK_ACCOUNT' => $rekening,
+    'MBANK_OTP' => $otpCode,
+    'MBANK_OTP_EXPIRED' => $otpExpired,
+    'MBANK_STS' => 0,
+    'MBANK_IMG' => $uploadCoverBank['filename'],
     'MBANK_DATETIME' => date("Y-m-d H:i:s")
+]);
+
+/** Email OTP */
+$emailData = [
+    'subject' => "OTP Verification",
+    'otp'  => $otpCode,
+];
+
+$emailSender = EmailSender::init(['email' => $user['MBR_EMAIL'], 'name' => $user['MBR_NAME']]);
+$emailSender->useFile("otp", $emailData);
+$send = $emailSender->send();
+
+/** Log */
+Logger::client_log([
+    'mbrid' => $user['MBR_ID'],
+    'module' => "send-otp-bank",
+    'data' => array_merge($_POST, $emailData),
+    'message' => "Send OTP code " . $user['MBR_EMAIL']
 ]);
 
 if(!$insert) {
