@@ -3,7 +3,14 @@ if(!class_exists('Aws\S3\S3Client')) {
     require_once CONFIG_ROOT . '/vendor/autoload.php';
 }
 
-use Aws\S3\S3Client;
+use App\Factory\MetatraderFactory;
+use App\Factory\VerihubFactory;
+use App\Models\Account;
+use App\Models\FileUpload;
+use App\Models\Helper;
+use App\Models\ProfilePerusahaan;
+use Config\Core\Database;
+use Config\Core\EmailSender;
 
 class AppRegol {
     private $db;
@@ -55,25 +62,23 @@ class AppRegol {
             ]));
         }
 
-        if(!isValidCSRFToken($data['csrf_token'])) {
-            exit(json_encode([
-                'status'    => false,
-                'message'   => "CSRF_TOKEN Expired",
-                'response'  => []
-            ]));
-        }
+        // if(!isValidCSRFToken($data['csrf_token'])) {
+        //     exit(json_encode([
+        //         'status'    => false,
+        //         'message'   => "CSRF_TOKEN Expired",
+        //         'response'  => []
+        //     ]));
+        // }
 
         return true;
     }
 
     private function checkProgressAccount(string $userid) {
-        loadModel("Account");
-        $classAcc = new Account();
-        $progressAccount = $classAcc->getProgressRealAccount($userid);
+        $progressAccount = Account::getProgressRealAccount($userid);
         if(empty($progressAccount)) {
             exit(json_encode([
                 'status'   => false,
-                'message'  => "You haven't started creating an account",
+                'message'  => "Anda belum mulai membuat akun",
                 'response' => []
             ]));  
         }
@@ -93,142 +98,6 @@ class AppRegol {
         return true;
     }
 
-    public function getProvince($data, $user) {
-        $progressAccount = $this->checkProgressAccount(md5(md5($user['MBR_ID'])));
-        $sqlGet = $this->db->query("SELECT KDP_PROV FROM tb_kodepos GROUP BY KDP_PROV ORDER BY KDP_PROV");
-        if($sqlGet->num_rows == 0) {
-            exit(json_encode([
-                'status'    => false,
-                'message'   => "Province not found",
-                'response'  => []
-            ]));  
-        }
-
-        $list = [];
-        foreach($sqlGet->fetch_all(MYSQLI_ASSOC) as $prov) {
-            $list[] = [
-                'name' => $prov['KDP_PROV'],
-                'code' => base64_encode($prov['KDP_PROV']),
-                'selected' => ($progressAccount['ACC_PROVINCE'] == $prov['KDP_PROV'])
-            ];
-        }
-
-        exit(json_encode([
-            'status'    => true,
-            'message'   => "Province found",
-            'response'  => $list
-        ]));  
-    }
-
-    public function getRegency($data, $user) {
-        $progressAccount = $this->checkProgressAccount(md5(md5($user['MBR_ID'])));
-        if(empty($data['province'])) {
-            exit(json_encode([
-                'status'    => false,
-                'message'   => "Province is required",
-                'response'  => []
-            ]));  
-        }
-
-        $province = base64_decode($data['province']);
-        $sqlGet = $this->db->query("SELECT KDP_KABKO FROM tb_kodepos WHERE UPPER(KDP_PROV) = UPPER('{$province}') GROUP BY KDP_KABKO ORDER BY KDP_KABKO");
-        if($sqlGet->num_rows == 0) {
-            exit(json_encode([
-                'status'    => false,
-                'message'   => "Province not found",
-                'response'  => []
-            ]));  
-        }
-
-        $list = [];
-        foreach($sqlGet->fetch_all(MYSQLI_ASSOC) as $prov) {
-            $list[] = [
-                'name' => $prov['KDP_KABKO'],
-                'code' => base64_encode($prov['KDP_KABKO']),
-                'selected' => ($progressAccount['ACC_REGENCY'] == $prov['KDP_KABKO'])
-            ];
-        }
-
-        exit(json_encode([
-            'status'    => true,
-            'message'   => "Province found",
-            'response'  => $list
-        ]));  
-    }
-
-    public function getDistrict($data, $user) {
-        $progressAccount = $this->checkProgressAccount(md5(md5($user['MBR_ID'])));
-        if(empty($data['regency'])) {
-            exit(json_encode([
-                'status'    => false,
-                'message'   => "Regency is required",
-                'response'  => []
-            ]));  
-        }
-
-        $regency = base64_decode($data['regency']);
-        $sqlGet = $this->db->query("SELECT KDP_KECAMATAN FROM tb_kodepos WHERE UPPER(KDP_KABKO) = UPPER('{$regency}') GROUP BY KDP_KECAMATAN ORDER BY KDP_KECAMATAN");
-        if($sqlGet->num_rows == 0) {
-            exit(json_encode([
-                'status'    => false,
-                'message'   => "Regency not found",
-                'response'  => []
-            ]));  
-        }
-
-        $list = [];
-        foreach($sqlGet->fetch_all(MYSQLI_ASSOC) as $prov) {
-            $list[] = [
-                'name' => $prov['KDP_KECAMATAN'],
-                'code' => base64_encode($prov['KDP_KECAMATAN']),
-                'selected' => ($progressAccount['ACC_DISTRICT'] == $prov['KDP_KECAMATAN'])
-            ];
-        }
-
-        exit(json_encode([
-            'status'    => true,
-            'message'   => "Regency found",
-            'response'  => $list
-        ]));  
-    }
-
-    public function getVillages($data, $user) {
-        $progressAccount = $this->checkProgressAccount(md5(md5($user['MBR_ID'])));
-        if(empty($data['district'])) {
-            exit(json_encode([
-                'status'    => false,
-                'message'   => "District is required",
-                'response'  => []
-            ]));  
-        }
-
-        $district = base64_decode($data['district']);
-        $sqlGet = $this->db->query("SELECT KDP_KELURAHAN, KDP_POS FROM tb_kodepos WHERE UPPER(KDP_KECAMATAN) = UPPER('{$district}') GROUP BY KDP_KELURAHAN ORDER BY KDP_KELURAHAN");
-        if($sqlGet->num_rows == 0) {
-            exit(json_encode([
-                'status'    => false,
-                'message'   => "District not found",
-                'response'  => []
-            ]));  
-        }
-
-        $list = [];
-        foreach($sqlGet->fetch_all(MYSQLI_ASSOC) as $vil) {
-            $list[] = [
-                'village'   => $vil['KDP_KELURAHAN'],
-                'code' => base64_encode($vil['KDP_KELURAHAN']),
-                'selected'  => ($progressAccount['ACC_VILLAGE'] == $vil['KDP_KELURAHAN']),
-                'postalCode'=> $vil['KDP_POS'] 
-            ];
-        }
-
-        exit(json_encode([
-            'status'    => true,
-            'message'   => "District found",
-            'response'  => $list
-        ]));  
-    }
-
     public function unrequireNPWP($type_acc = 0){
         $progressAccount = $type_acc;
         $SQL_ACC_TYPE  = mysqli_query($this->db, 'SELECT tb_racctype.RTYPE_TYPE FROM tb_racctype WHERE tb_racctype.ID_RTYPE = '.$progressAccount.' LIMIT 1');
@@ -237,9 +106,7 @@ class AppRegol {
     }
 
     public function product($data, $user) {
-        loadModel("Account");
-        $classAcc = new Account();
-        $availableProduct = $classAcc->getAvailableProduct($user['userid']);
+        $availableProduct = Account::getAvailableProduct($user['userid']);
         if(empty($availableProduct)) {
             exit(json_encode([
                 'status'    => false,
@@ -275,8 +142,7 @@ class AppRegol {
     }
 
     public function progressAccount($data, $user) {
-        global $aws_folder;
-        $progressAccount = $this->checkProgressAccount(md5(md5($user['MBR_ID'])));
+        $progressAccount = $this->checkProgressAccount($user['userid']);
         if(empty($progressAccount)) {
             exit(json_encode([
                 'status'    => false,
@@ -285,11 +151,11 @@ class AppRegol {
             ]));
         }
 
-        $demoFile = empty($progressAccount['ACC_F_SIMULASI_IMG']) ? null : $aws_folder . $progressAccount['ACC_F_SIMULASI_IMG'];
-        $fotoIdentitas = (empty($progressAccount['ACC_F_APP_FILE_ID'])) ? null : $aws_folder . $progressAccount['ACC_F_APP_FILE_ID'];
-        $fotoTerbaru = (empty($progressAccount['ACC_F_APP_FILE_FOTO'])) ? null : $aws_folder . $progressAccount['ACC_F_APP_FILE_FOTO'];
-        $fotoPendukung = (empty($progressAccount['ACC_F_APP_FILE_IMG'])) ? null : $aws_folder . $progressAccount['ACC_F_APP_FILE_IMG'];
-        $fotoPendukungLainnya = (empty($progressAccount['ACC_F_APP_FILE_IMG2'])) ? null : $aws_folder . $progressAccount['ACC_F_APP_FILE_IMG2'];
+        $demoFile = empty($progressAccount['ACC_F_SIMULASI_IMG']) ? null : FileUpload::awsFile($progressAccount['ACC_F_SIMULASI_IMG']);
+        $fotoIdentitas = (empty($progressAccount['ACC_F_APP_FILE_ID'])) ? null : FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_ID']);
+        $fotoTerbaru = (empty($progressAccount['ACC_F_APP_FILE_FOTO'])) ? null : FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_FOTO']);
+        $fotoPendukung = (empty($progressAccount['ACC_F_APP_FILE_IMG'])) ? null : FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_IMG']);
+        $fotoPendukungLainnya = (empty($progressAccount['ACC_F_APP_FILE_IMG2'])) ? null : FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_IMG2']);
 
         exit(json_encode([
             'status'    => true,
@@ -340,10 +206,10 @@ class AppRegol {
                 'kerja_bidang' => $progressAccount['ACC_F_APP_KRJ_BDNG'],
                 'kerja_jabatan' => $progressAccount['ACC_F_APP_KRJ_JBTN'],
                 'kerja_lama' => $progressAccount['ACC_F_APP_KRJ_LAMA'],
-                'kerja_lama_sebelum' => $progressAccount['ACC_F_APP_LAMASBLM'],
+                'kerja_lama_sebelum' => $progressAccount['ACC_F_APP_KRJ_LAMASBLM'],
                 'kerja_alamat' => $progressAccount['ACC_F_APP_KRJ_ALAMAT'],
                 'kerja_zip' => $progressAccount['ACC_F_APP_KRJ_ZIP'],
-                'kerja_telepon' => $progressAccount['ACC_F_APP_KRJ_TELP'],
+                'kerja_telepon' => $progressAccount['ACC_F_APP_KRJ_TLP'],
                 'kerja_fax' => $progressAccount['ACC_F_APP_KRJ_FAX'],
                 'kekayaan' => $progressAccount['ACC_F_APP_KEKYAN'],
                 'kekayaan_rumah_lokasi' => $progressAccount['ACC_F_APP_KEKYAN_RMHLKS'],
@@ -359,10 +225,7 @@ class AppRegol {
         global $web_name_full;
         $this->checkCsrfToken($data);
        
-        loadModel("Account");
-        $classAcc = new Account();
-        $mbrid = $user['MBR_ID'] ?? 0;
-        $demoAccount = $classAcc->getDemoAccount(md5(md5($mbrid)));
+        $demoAccount = Account::getDemoAccount($user['userid']);
         if(!empty($demoAccount)) {
             exit(json_encode([
                 'status'    => false,
@@ -371,62 +234,45 @@ class AppRegol {
             ]));
         }
 
-        $init_margin   = 10000;
-        $meta_pass     = ($this->generatePassword());
-        $meta_investor = ($this->generatePassword());
-        $meta_phone    = ($this->generatePassword());
-        $lgn           = create_demoacc($meta_pass, $meta_investor, $user["MBR_NAME"], $user["MBR_EMAIL"]);
-
-        /** Check is success / no, success always return Login Number not array */
-        if(is_array($lgn)){
+       $createDemo = MetatraderFactory::createDemo($user['MBR_NAME'], $user['MBR_EMAIL']);
+        if(!$createDemo['success']) {
+            $this->db->rollback();
             exit(json_encode([
                 'status'    => false,
-                'message'   => $lgn['message'] ?? $lgn['error'] ?? "Gagal membuat akun demo, Respons tidak valid",
-                'response'  => []
-            ]));
-        }
-
-        /** Get Demo Type */
-        $sqlGetType = $this->db->query("SELECT ID_RTYPE FROM tb_racctype WHERE UPPER(RTYPE_TYPE) = 'DEMO' LIMIT 1");
-        $demoType = $sqlGetType->fetch_assoc()['ID_RTYPE'] ?? 0;
-        if($sqlGetType->num_rows == 0 || $demoType == 0) {
-            exit(json_encode([
-                'status'    => false,
-                'message'   => "Gagal membuat akun demo, Jenis akun tidak valid",
+                'message'   => $createDemo['message'] ?? "Gagal",
                 'response'  => []
             ]));
         }
 
         /** Insert Demo */
-        $sqlInsertDemo = $this->db->prepare("INSERT INTO tb_racc (ACC_DERE, ACC_DEVICE, ACC_TYPE, ACC_MBR, ACC_LOGIN, ACC_PASS, ACC_INVESTOR, ACC_PASSPHONE, ACC_INITIALMARGIN) VALUES (2, 'Website', ?, ?, ?, ?, ?, ?, ?)");
-        $sqlInsertDemo->bind_param("iiisssi", $demoType, $mbrid, $lgn, $meta_pass, $meta_investor, $meta_phone, $init_margin);
-        if(!$sqlInsertDemo->execute()) {
-            exit(json_encode([
-                'status'    => false,
-                'message'   => "Gagal menyimpan akun demo",
-                'response'  => []
-            ]));
-        }
+        $demoData = $createDemo['data'];
+        $insertDemo = Database::insert("tb_racc", [
+            'ACC_MBR' => $user['MBR_ID'],
+            'ACC_DERE' => 2,
+            'ACC_TYPE' => $demoData['type'],
+            'ACC_LOGIN' => $demoData['login'],
+            'ACC_PASS' => $demoData['password'],
+            'ACC_INVESTOR' => $demoData['investor'],
+            'ACC_PASSPHONE' => $demoData['passphone'],
+            'ACC_INITIALMARGIN' => MetatraderFactory::$initMarginDemo,
+            'ACC_FULLNAME' => $user['MBR_NAME'],
+            'ACC_DATETIME' => date("Y-m-d H:i:s"),
+        ]);
+        
 
         /** Send Notification Email */
-        $data   = [
-            "name"          => $user["MBR_NAME"],
-            "login"         => $lgn,
-            "metaPassword"  => $meta_pass,
-            "metaInvestor"  => $meta_investor,
-            "metaPassPhone" => $meta_phone,
-            "subject"       => "Demo Account Information {$web_name_full} ".date('Y-m-d H:i:s')
+        $emailData = [
+            "subject" => "Demo Account Information - ". ProfilePerusahaan::get()['PROF_COMPANY_NAME'] ." ".date('Y-m-d H:i:s'),
+            "name" => $user["MBR_NAME"],
+            "login" => $demoData['login'],
+            "metaPassword"  => $demoData['password'],
+            "metaInvestor"  => $demoData['investor'],
+            "metaPassPhone" => $demoData['passphone'],
         ];
-        $sendEmail = new SendEmail();
-        $sendEmail->useDefault()->useFile("create-demo", $data)->destination($user['MBR_EMAIL'], $user['MBR_NAME'])->send();
-
-        newInsertLog([
-            'mbrid' => $mbrid,
-            'module' => "create-demo",
-            'message' => "Create Demo Account {$lgn}",
-            'device' => "mobile",
-            'data'  => json_encode($_POST)
-        ]);
+        
+        $emailSender = EmailSender::init(['email' => $user['MBR_EMAIL'], 'name' => $user['MBR_NAME']]);
+        $emailSender->useFile("create-demo", $emailData);
+        $send = $emailSender->send();
 
         exit(json_encode([
             'status'    => true,
@@ -438,12 +284,6 @@ class AppRegol {
 
     public function accountType($data, $user) {
         $this->checkCsrfToken($data);
-        
-        loadModel("Account");
-        loadModel("Helper");
-        $classAcc = new Account();
-        $helperClass = new Helper();
-
         if(empty($data['account-type'])) {
             exit(json_encode([
                 'status'    => false,
@@ -454,7 +294,7 @@ class AppRegol {
 
         /** Account Suffix */
         $suffix = $data['account-type'];
-        $raccType = $classAcc->checkAccountSuffix($suffix);
+        $raccType = Account::checkAccountSuffix($suffix);
         if(empty($raccType)) {
             exit(json_encode([
                 'status'    => false,
@@ -497,7 +337,7 @@ class AppRegol {
         }
 
         /** Check max account */
-        $realAcc = myAccount(md5(md5($user['MBR_ID'])), "real");
+        $realAcc = Account::myAccount($user['MBR_ID']);
         $microAcc = [];
         foreach($realAcc as $acc) {
             if(strtolower($acc['RTYPE_TYPE']) == "micro") {
@@ -524,11 +364,11 @@ class AppRegol {
         }
 
         /** Get Progress Real Account */
-        $progressAccount = $classAcc->getProgressRealAccount($user['userid']);
+        $progressAccount = Account::getProgressRealAccount($user['userid']);
         if(empty($progressAccount)) {
             /** Jika sebelumnya sudah punya akun, dapat diduplicate */
-            if(!empty($classAcc->getLastAccount($user['userid']))) {
-                $duplicate = $classAcc->duplicateLastAccount($user['userid']);
+            if(!empty(Account::getLastAccount($user['userid']))) {
+                $duplicate = Account::duplicateLastAccount($user['userid']);
                 if(empty($duplicate) || !is_array($duplicate)) {
                     exit(json_encode([
                         'status'    => false,
@@ -539,7 +379,7 @@ class AppRegol {
 
             }else {
                 /** Insert row baru, Jika belum punya akun sama sekali / baru pertama create akun */
-                $insert = $helperClass->insertWithArray("tb_racc", [
+                $insert = Database::insert("tb_racc", [
                     'ACC_MBR'   => $user['MBR_ID'],
                     'ACC_TYPE'  => $raccType['ID_RTYPE'],
                     'ACC_DERE'  => 1,
@@ -558,7 +398,7 @@ class AppRegol {
         }
         
         /** Get Ulang Progress real account */
-        $progressAccount = $classAcc->getProgressRealAccount($user['userid']);
+        $progressAccount = Account::getProgressRealAccount($user['userid']);
 
         /** Check Status */
         $this->isAllowToEdit(status: $progressAccount['ACC_STS']);
@@ -576,15 +416,6 @@ class AppRegol {
             }
         }
 
-        newInsertLog([
-            'mbrid' => $user['MBR_ID'],
-            'module' => "create-account",
-            'ref' => $progressAccount['ID_ACC'],
-            'message' => "Progress Real Account (Account Type)",
-            'device' => "mobile",
-            'data'  => json_encode($data)
-        ]);
-
         exit(json_encode([
             'status'    => true,
             'redirect'  => "verifikasi-identitas",
@@ -594,12 +425,9 @@ class AppRegol {
     }
 
     public function verifikasiIdentitas($data, $user) {
-        global $aws_folder;
         $this->checkCsrfToken($data);
         $progressAccount = $this->checkProgressAccount(md5(md5($user['MBR_ID'])));
 
-        loadModel("Helper");
-        $helperClass = new Helper();
         $required = $this->required(['country', 'id_type', 'number'], $data);
         if($required !== TRUE) {
             exit(json_encode([
@@ -669,7 +497,7 @@ class AppRegol {
         }
         
         /** Check Status */
-        $this->isAllowToEdit(status: $progressAccount['ACC_STS']);
+        $this->isAllowToEdit($progressAccount['ACC_STS']);
         
         /** Upload Selfie Photo */
         $this->uploadSelfiePhoto($data, $user);
@@ -677,28 +505,30 @@ class AppRegol {
         /** Upload KTP Photo */
         $this->uploadKtpPhoto($data, $user);
         
-        /** Verifikasi ke Verihub (Jika belum pernah berhasil) */
-        $statusVerifikasiVerihub = $progressAccount['ACC_DOC_VERIF'] ?? 0;
-        if($statusVerifikasiVerihub == 0) {
-            // $verif = $this->verifikasiVerihub($data, $user, $progressAccount);
-            $verif = 1;
-            $statusVerifikasiVerihub = -1;
-            $data['reference_id'] = $verif;
-        }
+        // /** Verifikasi ke Verihub (Jika belum pernah berhasil) */
+        // $statusVerifikasiVerihub = $progressAccount['ACC_DOC_VERIF'] ?? 0;
+        // if($statusVerifikasiVerihub == 0) {
+        //     // $verif = $this->verifikasiVerihub($data, $user, $progressAccount);
+        //     $verif = 1;
+        //     $statusVerifikasiVerihub = -1;
+        //     $data['reference_id'] = $verif;
+        // }
 
+        
+
+        // /** Update Status Verifikasi (Jika berbeda dari sebelumnya) */
+        // if($statusVerifikasiVerihub != $progressAccount['ACC_DOC_VERIF']) {
+        //     $updateData['ACC_DOC_VERIF'] = $statusVerifikasiVerihub;
+        // }
+
+        /** Update Progress Account */
         $updateData = [
             'ACC_COUNTRY' => $data['country'],
             'ACC_TYPE_IDT' => strtoupper($data['id_type']),
             'ACC_NO_IDT' => $data['number']
         ];
 
-        /** Update Status Verifikasi (Jika berbeda dari sebelumnya) */
-        if($statusVerifikasiVerihub != $progressAccount['ACC_DOC_VERIF']) {
-            $updateData['ACC_DOC_VERIF'] = $statusVerifikasiVerihub;
-        }
-
-        /** Update Progress Account */
-        $update = $helperClass->updateWithArray("tb_racc", $updateData, ['ID_ACC' => $progressAccount['ID_ACC']]);
+        $update = Database::update("tb_racc", $updateData, ['ID_ACC' => $progressAccount['ID_ACC']]);
         if($update !== TRUE) {
             exit(json_encode([
                 'status'    => false,
@@ -706,15 +536,6 @@ class AppRegol {
                 'response'  => []
             ]));
         }
-
-        newInsertLog([
-            'mbrid' => $user['MBR_ID'],
-            'module' => "create-account",
-            'ref' => $progressAccount['ID_ACC'],
-            'message' => "Progress Real Account (Verifikasi Identitas)",
-            'device' => "mobile",
-            'data' => json_encode($data)
-        ]);
 
         exit(json_encode([
             'status'    => true,
@@ -725,11 +546,9 @@ class AppRegol {
     }
 
     private function uploadSelfiePhoto($data, $user) {
-        global $region, $IAM_KEY, $IAM_SECRET, $bucketName, $folder, $aws_folder;
-        loadModel("Helper");
-        $helperClass = new Helper();
-        $verihub = new Verihubs();
-        $progressAccount = $this->checkProgressAccount(md5(md5($user['MBR_ID'])));
+        global $region, $IAM_KEY, $IAM_SECRET, $bucketName, $folder;
+        $progressAccount = $this->checkProgressAccount($user['userid']);
+        $verihub = VerihubFactory::init();
 
         /** Upload Dokumen Foto Terbaru */
         if(empty($_FILES['app_foto_terbaru']) || $_FILES['app_foto_terbaru']['error'] != 0) {
@@ -781,21 +600,21 @@ class AppRegol {
             ]));
         }
 
-
+        $awsCredential = FileUpload::credential();
         $s3 = new Aws\S3\S3Client([
-            'region'  => $region,
+            'region'  => $awsCredential['region'],
             'version' => 'latest',
             'credentials' => [
-                'key'    => $IAM_KEY,
-                'secret' => $IAM_SECRET,
+                'key'    => $awsCredential['key'],
+                'secret' => $awsCredential['secretKey'],
             ]
         ]);
 
         try {
             /** Upload to AWS */
             $result = $s3->putObject([
-                'Bucket' => $bucketName,
-                'Key'    => $folder ."/".$newFileName,
+                'Bucket' => $awsCredential['bucketName'],
+                'Key'    => $awsCredential['folder'] ."/".$newFileName,
                 'Body'   => fopen($target_dir, 'r'),
                 'ACL'    => 'public-read', // make file 'public'
             ]);
@@ -834,7 +653,7 @@ class AppRegol {
             'ACC_F_APP_FILE_FOTO_MIME' => $checkSelfie['type']
         ];
 
-        $updateImage = $helperClass->updateWithArray("tb_racc", $data, ['ID_ACC' => $progressAccount['ID_ACC']]);
+        $updateImage = Database::update("tb_racc", $data, ['ID_ACC' => $progressAccount['ID_ACC']]);
         if($updateImage !== TRUE) {
             exit(json_encode([
                 'status'    => false,
@@ -855,10 +674,8 @@ class AppRegol {
 
     private function uploadKtpPhoto($data, $user) {
         global $region, $IAM_KEY, $IAM_SECRET, $bucketName, $folder;
-        loadModel("Helper");
-        $helperClass = new Helper();
-        $verihub = new Verihubs();
         $progressAccount = $this->checkProgressAccount(md5(md5($user['MBR_ID'])));
+        $verihub = VerihubFactory::init();
         
         /** Upload Dokumen Foto KTP */
         if(empty($_FILES['app_foto_identitas']) || $_FILES['app_foto_identitas']['error'] != 0) {
@@ -873,13 +690,13 @@ class AppRegol {
             ]));
         }
 
-        if($progressAccount['ACC_DOC_VERIF'] == -1) {
-            exit(json_encode([
-                'status'    => false,
-                'message'   => "Dokumen telah diverifikasi, tidak dapat dirubah",
-                'response'  => []
-            ]));
-        }
+        // if($progressAccount['ACC_DOC_VERIF'] == -1) {
+        //     exit(json_encode([
+        //         'status'    => false,
+        //         'message'   => "Dokumen telah diverifikasi, tidak dapat dirubah",
+        //         'response'  => []
+        //     ]));
+        // }
 
         /** validasi file sebelum di upload */
         $validKtp = $verihub->validate_photoKtp($_FILES['app_foto_identitas']);
@@ -912,20 +729,21 @@ class AppRegol {
         }
 
 
+        $awsCredential = FileUpload::credential();
         $s3 = new Aws\S3\S3Client([
-            'region'  => $region,
+            'region'  => $awsCredential['region'],
             'version' => 'latest',
             'credentials' => [
-                'key'    => $IAM_KEY,
-                'secret' => $IAM_SECRET,
+                'key'    => $awsCredential['key'],
+                'secret' => $awsCredential['secretKey'],
             ]
         ]);
 
         try {
             /** Upload to AWS */
             $result = $s3->putObject([
-                'Bucket' => $bucketName,
-                'Key'    => $folder ."/".$newFileName,
+                'Bucket' => $awsCredential['bucketName'],
+                'Key'    => $awsCredential['folder'] ."/".$newFileName,
                 'Body'   => fopen($target_dir, 'r'),
                 'ACL'    => 'public-read', // make file 'public'
             ]);
@@ -948,7 +766,7 @@ class AppRegol {
             'ACC_F_APP_FILE_ID_MIME' => "image/jpeg"
         ];
 
-        $updateImage = $helperClass->updateWithArray("tb_racc", $data, ['ID_ACC' => $progressAccount['ID_ACC']]);
+        $updateImage = Database::update("tb_racc", $data, ['ID_ACC' => $progressAccount['ID_ACC']]);
         if($updateImage !== TRUE) {
             exit(json_encode([
                 'status'    => false,
@@ -969,13 +787,14 @@ class AppRegol {
 
     private function verifikasiVerihub($data, $user, $progressAccount) {
         global $aws_folder;
-        $verihub            = new Verihubs();
-        $uniqid             = uniqid();
-        $reference_id       = md5($user['MBR_ID'] . $uniqid);
-        $fileContentKTP     = file_get_contents($aws_folder . $progressAccount['ACC_F_APP_FILE_ID']);
-        $fileContentSelfie  = file_get_contents($aws_folder . $progressAccount['ACC_F_APP_FILE_FOTO']);
-        $sendVerification   = $verihub->send_idVerification([
+        $verihub = VerihubFactory::init();
+        $uniqid = uniqid();
+        $reference_id = md5($user['MBR_ID'] . $uniqid);
+        $fileContentKTP = file_get_contents($aws_folder . $progressAccount['ACC_F_APP_FILE_ID']);
+        $fileContentSelfie = file_get_contents($aws_folder . $progressAccount['ACC_F_APP_FILE_FOTO']);
+        $sendVerification = $verihub->send_idVerification([
             'mbrid' => $user['MBR_ID'],
+            'account_id' => md5($progressAccount['ID_ACC']),
             'nik'   => $progressAccount['ACC_NO_IDT'],
             'name'  => $progressAccount['ACC_FULLNAME'],
             'birth_date' => $progressAccount['ACC_TANGGAL_LAHIR'],
@@ -1018,14 +837,12 @@ class AppRegol {
             }
         }
 
-        loadModel("Helper");
-        $helperClass = new Helper();
         $progressAccount = $this->checkProgressAccount(md5(md5($user['MBR_ID'])));
 
         /** Validasi Nomor NPWP */
         $npwp = 0;
         if($progressAccount['RTYPE_TYPE'] != "MICRO") {
-            $npwp = $helperClass->stringTonumber($data['app_npwp']);
+            $npwp = Helper::stringTonumber($data['app_npwp']);
             if($npwp == 0) {
                 exit(json_encode([
                     'status' => false,
@@ -1044,8 +861,8 @@ class AppRegol {
         }
 
         /** Validasi Nomor Telepon */
-        $data['app_phone_code'] = $helperClass->stringTonumber($data['app_phone_code']);
-        $data['app_phone'] = $helperClass->stringTonumber($data['app_phone']);
+        $data['app_phone_code'] = Helper::stringTonumber($data['app_phone_code']);
+        $data['app_phone'] = Helper::stringTonumber($data['app_phone']);
 
         if(substr($data['app_phone'], 0, 1) == "0") {
             $data['app_phone'] = substr($data['app_phone'], 1);
@@ -1090,7 +907,7 @@ class AppRegol {
             'ACC_TANGGAL_LAHIR' => $data['app_date_of_birth'],
         ];
 
-        $update = $helperClass->updateWithArray("tb_racc", $updateData, ['ID_ACC' => $progressAccount['ID_ACC']]);
+        $update = Database::update("tb_racc", $updateData, ['ID_ACC' => $progressAccount['ID_ACC']]);
         if($update !== TRUE) {
             exit(json_encode([
                 'status' => false,
@@ -1098,15 +915,6 @@ class AppRegol {
                 'response' => []
             ]));
         }
-
-        newInsertLog([
-            'mbrid' => $user['MBR_ID'],
-            'module' => "create-account",
-            'ref' => $progressAccount['ID_ACC'],
-            'message' => "Progress Real Account (Pengumpulan Data Pribadi)",
-            'device' => "mobile",
-            'data'  => json_encode($data)
-        ]);
 
         exit(json_encode([
             'status' => true,
@@ -1117,11 +925,6 @@ class AppRegol {
     }
 
     public function pernyataan_simulasi($data, $user) {
-        loadModel("Helper");
-        loadModel("Account");
-        $classAcc = new Account();
-        $helperClass = new Helper();
-
         /** Progress Account */
         $progressAccount = $this->checkProgressAccount(md5(md5($user['MBR_ID'])));
         
@@ -1149,12 +952,10 @@ class AppRegol {
             }
         }
 
-        loadModel("Helper");
-        $helperClass = new Helper();
-        $progressAccount = $this->checkProgressAccount(md5(md5($user['MBR_ID'])));
+        $progressAccount = $this->checkProgressAccount($user['userid']);
 
         /** Check Peresetujuan */
-        $data['app_agree'] = strtolower($data['app_agree']);
+        $data['app_agree'] = strtolower($data['app_agree'] ?? "");
         $agree = $data['app_agree'] ?? "tidak";
         if(strtolower($agree) != "ya") {
             exit(json_encode([
@@ -1164,7 +965,7 @@ class AppRegol {
             ]));
         }
 
-        $demoAccount = $classAcc->getDemoAccount(md5(md5($user['MBR_ID'])));
+        $demoAccount = Account::getDemoAccount($user['userid']);
         if(empty($demoAccount)) {
             exit(json_encode([
                 'status' => false,
@@ -1173,35 +974,14 @@ class AppRegol {
             ]));
         }
 
-        /** Upload File */
-        if(empty($progressAccount['ACC_F_SIMULASI_IMG'])) {
-            /** Check file */
-            if(empty($_FILES['app_demofile']) || $_FILES['app_demofile']['error'] != 0) {
-                exit(json_encode([
-                    'status' => false,
-                    'message' => "Mohon upload file demo account",
-                    'response' => []
-                ]));
-            }
-
-            $uploadFile = upload_myfile($_FILES['app_demofile'], "demo_img_");
-            if(!is_array($uploadFile) || !array_key_exists("filename", $uploadFile)) {
-                exit(json_encode([
-                    'status' => false,
-                    'message' => "Gagal mengunggah file, {$uploadFile}",
-                    'response' => []
-                ]));
-            }
-
-            /** Update Image */
-            $updateImage = $helperClass->updateWithArray("tb_racc", ['ACC_F_SIMULASI_IMG' => $uploadFile['filename']], ['ID_ACC' => $progressAccount['ID_ACC']]);
-            if($updateImage !== TRUE) {
-                exit(json_encode([
-                    'status' => false,
-                    'message' => "Gagal menyimpan file, {$updateImage}",
-                    'response' => []
-                ]));
-            }
+        /** check apakah sudah pernah transaksi dengan akun demo */
+        $sqlGet = $this->db->query("SELECT TICKET FROM mt5_trades WHERE `LOGIN` = " . $demoAccount['ACC_LOGIN']);
+        if($sqlGet->num_rows == 0) {
+            exit(json_encode([
+                'status' => false,
+                'message' => "Anda belum melakukan transaksi dengan akun demo",
+                'response' => []
+            ]));
         }
 
         /** Check Alamat */
@@ -1222,7 +1002,7 @@ class AppRegol {
         /** Update tb_racc */
         $updateData = [
             'ACC_F_SIMULASI'        => 1,
-            'ACC_F_SIMULASI_IP'     => $helperClass->get_ip_address(),
+            'ACC_F_SIMULASI_IP'     => Helper::get_ip_address(),
             'ACC_F_SIMULASI_PERYT'  => "Ya",
             'ACC_F_SIMULASI_DATE'   => date("Y-m-d H:i:s"),
             'ACC_PROVINCE'          => $province,
@@ -1236,7 +1016,7 @@ class AppRegol {
             'ACC_DEMO'              => $demoAccount['ACC_LOGIN']
         ];
 
-        $updateRacc = $helperClass->updateWithArray("tb_racc", $updateData, ['ID_ACC' => $progressAccount['ID_ACC']]);
+        $updateRacc = Database::update("tb_racc", $updateData, ['ID_ACC' => $progressAccount['ID_ACC']]);
         if($updateRacc !== TRUE) {
             exit(json_encode([
                 'status' => false,
@@ -1244,15 +1024,6 @@ class AppRegol {
                 'response' => []
             ]));
         }
-
-        newInsertLog([
-            'mbrid' => $user['MBR_ID'],
-            'module' => "create-account",
-            'ref' => $progressAccount['ID_ACC'],
-            'message' => "Progress Real Account (Pernyataan Simulasi)",
-            'device' => "mobile",
-            'data'  => json_encode($data)
-        ]);
 
         exit(json_encode([
             'status' => true,
