@@ -16,6 +16,8 @@ $sqlGetAccounts = $db->query("
         RTYPE_MINTOPUP,
         RTYPE_MINWITHDRAWAL,
         RTYPE_MAXWITHDRAWAL,
+        IFNULL(mt5u.BALANCE, 0) as BALANCE,
+		IFNULL(mt5u.MARGIN_FREE, 0) as FREE_MARGIN,
         IFNULL((
             SELECT 
                 SUM(td.DPWD_AMOUNT_SOURCE)
@@ -36,6 +38,7 @@ $sqlGetAccounts = $db->query("
         ), 0) as TOTAL_WITHDRAWAL
     FROM tb_racc tr
     JOIN tb_racctype trc ON (trc.ID_RTYPE = tr.ACC_TYPE)
+    JOIN mt5_users mt5u ON (mt5u.LOGIN = tr.ACC_LOGIN)
     WHERE tr.ACC_DERE = 1
     AND tr.ACC_LOGIN != 0
     AND tr.ACC_STS = -1

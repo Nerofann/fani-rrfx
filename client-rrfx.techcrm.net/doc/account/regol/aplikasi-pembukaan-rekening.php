@@ -481,7 +481,7 @@ $_SESSION['modal'] = ['create-bank'];
                                             <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
                                                 <select name="app_penghasilan" id="app_penghasilan" class="form-control">
-                                                    <?php foreach(['Antara 100-250 juta', 'Antara 250-500 juta', '> 500 juta'] as $penghasilan) : ?>
+                                                    <?php foreach(App\Models\Regol::$listPendapatan as $penghasilan) : ?>
                                                         <option value="<?= $penghasilan ?>" <?= (strtolower($realAccount['ACC_F_APP_KEKYAN'] ?? "") == strtolower($penghasilan))? "selected" : ""; ?>><?= $penghasilan ?></option>
                                                     <?php endforeach; ?>
                                                 </select>
@@ -495,24 +495,24 @@ $_SESSION['modal'] = ['create-bank'];
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td width="8%" class="top-align fw-bold">Nilai NJOP<span class="text-danger">*</span></td>
+                                            <td width="8%" class="top-align fw-bold">Nilai NJOP</td>
                                             <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="number" autocomplete="off" placeholder="Nilai NJOP" name="app_nilai_njop" id="app_nilai_njop" value="<?= $realAccount['ACC_F_APP_KEKYAN_NJOP'] ?? "" ?>" class="form-control" required>
+                                                <input type="number" autocomplete="off" placeholder="Nilai NJOP" name="app_nilai_njop" id="app_nilai_njop" value="<?= $realAccount['ACC_F_APP_KEKYAN_NJOP'] ?? "" ?>" class="form-control">
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td width="8%" class="top-align fw-bold">Deposit Bank<span class="text-danger">*</span></td>
+                                            <td width="8%" class="top-align fw-bold">Deposit Bank</td>
                                             <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="number" autocomplete="off" placeholder="Deposit Bank" name="app_deposit_bank" id="app_deposit_bank" value="<?= $realAccount['ACC_F_APP_KEKYAN_DPST'] ?? "" ?>" class="form-control" required>
+                                                <input type="number" autocomplete="off" placeholder="Deposit Bank" name="app_deposit_bank" id="app_deposit_bank" value="<?= $realAccount['ACC_F_APP_KEKYAN_DPST'] ?? "" ?>" class="form-control">
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td width="8%" class="top-align fw-bold">Lainnya<span class="text-danger">*</span></td>
+                                            <td width="8%" class="top-align fw-bold">Lainnya</td>
                                             <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="text" autocomplete="off" placeholder="Lainnya" name="app_kekayaan_lainnya" id="app_kekayaan_lainnya" value="<?= $realAccount['ACC_F_APP_KEKYAN_LAIN'] ?? "" ?>" class="form-control" required>
+                                                <input type="text" autocomplete="off" placeholder="Lainnya" name="app_kekayaan_lainnya" id="app_kekayaan_lainnya" value="<?= $realAccount['ACC_F_APP_KEKYAN_LAIN'] ?? "" ?>" class="form-control">
                                             </td>
                                         </tr>
                                         <tr>

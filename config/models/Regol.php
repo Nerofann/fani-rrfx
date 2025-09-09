@@ -25,6 +25,11 @@ class Regol {
         'Lainnya',
     ];
 
+    public static $listPendapatan = [
+        'Antara 100-250 juta', 
+        'Antara 250-500 juta', 
+        '> 500 juta'
+    ];
 
     public static function generatePassword(int $len = 8) {
         $lower = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z');

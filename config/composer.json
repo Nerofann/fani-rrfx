@@ -18,7 +18,8 @@
         "psr-4": {
             "Config\\Core\\": "core/",
             "App\\Models\\": "models/",
-            "App\\Factory\\": "factory/"
+            "App\\Factory\\": "factory/",
+            "App\\PaymentSystem\\": "PaymentSystem/"
         }
     },
     "authors": [
