@@ -4,6 +4,7 @@ use App\Factory\MetatraderFactory;
 use App\Models\Account;
 use App\Models\Helper;
 use App\Models\Logger;
+use App\Models\ProfilePerusahaan;
 use Config\Core\Database;
 use Config\Core\EmailSender;
 
@@ -154,6 +155,7 @@ switch($statusDeposit) {
         
         $emailSender = EmailSender::init(['email' => $user['MBR_EMAIL'], 'name' => $user['MBR_NAME']]);
         $emailSender->useFile("internal-transfer-success", $emailData);
+        $emailSender->addBcc(ProfilePerusahaan::$emailDealing , ProfilePerusahaan::$namaDealing);
         $send = $emailSender->send();
         break;
 
@@ -167,6 +169,7 @@ switch($statusDeposit) {
         
         $emailSender = EmailSender::init(['email' => $user['MBR_EMAIL'], 'name' => $user['MBR_NAME']]);
         $emailSender->useFile("internal-transfer-failed", $emailData);
+        $emailSender->addBcc(ProfilePerusahaan::$emailDealing , ProfilePerusahaan::$namaDealing);
         $send = $emailSender->send();
         break;
 }
