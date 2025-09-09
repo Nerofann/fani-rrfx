@@ -155,8 +155,10 @@ class AppRegol {
         $demoFile = empty($progressAccount['ACC_F_SIMULASI_IMG']) ? null : FileUpload::awsFile($progressAccount['ACC_F_SIMULASI_IMG']);
         $fotoIdentitas = (empty($progressAccount['ACC_F_APP_FILE_ID'])) ? null : FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_ID']);
         $fotoTerbaru = (empty($progressAccount['ACC_F_APP_FILE_FOTO'])) ? null : FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_FOTO']);
-        $fotoPendukung = (empty($progressAccount['ACC_F_APP_FILE_IMG'])) ? null : FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_IMG']);
-        $fotoPendukungLainnya = (empty($progressAccount['ACC_F_APP_FILE_IMG2'])) ? null : FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_IMG2']);
+        $fotoPendukung1 = (empty($progressAccount['ACC_F_APP_FILE_IMG'])) ? null : FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_IMG']);
+        $fotoPendukung2 = (empty($progressAccount['ACC_F_APP_FILE_IMG2'])) ? null : FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_IMG2']);
+        $fotoPendukung3 = (empty($progressAccount['ACC_F_APP_FILE_IMG3'])) ? null : FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_IMG3']);
+        $fotoPendukung4 = (empty($progressAccount['ACC_F_APP_FILE_IMG4'])) ? null : FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_IMG4']);
 
         exit(json_encode([
             'status'    => true,
@@ -172,8 +174,10 @@ class AppRegol {
                 'app_foto_simulasi' => $demoFile,
                 'app_foto_identitas' => $fotoIdentitas,
                 'app_foto_terbaru' => $fotoTerbaru,
-                'app_foto_pendukung' => $fotoPendukung,
-                'app_foto_pendukung_lainnya' => $fotoPendukungLainnya,
+                'app_foto_image1' => $fotoPendukung1,
+                'app_foto_image2' => $fotoPendukung2,
+                'app_foto_image3' => $fotoPendukung3,
+                'app_foto_image4' => $fotoPendukung4,
                 'npwp' => $progressAccount['ACC_F_APP_PRIBADI_NPWP'],
                 'date_of_birth' => $progressAccount['ACC_TANGGAL_LAHIR'],
                 'place_of_birth' => $progressAccount['ACC_TEMPAT_LAHIR'],
@@ -220,7 +224,8 @@ class AppRegol {
                 'kekayaan_lain' => $progressAccount['ACC_F_APP_KEKYAN_LAIN']
             ],
             'data' => [
-                'list_pekerjaan' => Regol::$listPekerjaan
+                'list_pekerjaan' => Regol::$listPekerjaan,
+                'list_pendapatan' => Regol::$listPendapatan,
             ]
         ]));
     }
@@ -1417,6 +1422,15 @@ class AppRegol {
             }
         }
 
+        /** check list pendapatan */
+        if(!in_array(strtolower($data['annual_income']), array_map(fn($ar): string => strtolower($ar), Regol::$listPendapatan))) {
+            exit(json_encode([
+                'status' => false,
+                'message' => "Pendapatan Tahunan tidak valid",
+                'response' => []
+            ]));
+        }
+
         /** Validasi Numeric */
         $data['njop'] = $data['njop'] ?? 0;
         $data['deposit'] = $data['deposit'] ?? 0;
@@ -1446,11 +1460,7 @@ class AppRegol {
             ]));
         }
 
-        loadModel("Helper");
-        $helperClass = new Helper();
         $progressAccount = $this->checkProgressAccount(md5(md5($user['MBR_ID'])));
-        
-
         $updateData = [
             'ACC_F_APP_KEKYAN' => $data['annual_income'],
             'ACC_F_APP_KEKYAN_RMHLKS' => $data['lokasi_rumah'],
@@ -1460,7 +1470,7 @@ class AppRegol {
             'ACC_F_APP_KEKYAN_NILAI' => $data['njop'] + $data['deposit'] + $data['lainnya'],
         ];
 
-        $update = $helperClass->updateWithArray("tb_racc", $updateData, ['ID_ACC' => $progressAccount['ID_ACC']]);
+        $update = Database::update("tb_racc", $updateData, ['ID_ACC' => $progressAccount['ID_ACC']]);
         if($update !== TRUE) {
             exit(json_encode([
                 'status' => false,
@@ -1468,15 +1478,6 @@ class AppRegol {
                 'response' => []
             ]));
         }
-
-        newInsertLog([
-            'mbrid' => $user['MBR_ID'],
-            'module' => "create-account",
-            'ref' => $progressAccount['ID_ACC'],
-            'message' => "Progress Real Account (Kekayaan)",
-            'device' => "mobile",
-            'data'  => json_encode($data)
-        ]);
 
         exit(json_encode([
             'status' => true,
@@ -1486,75 +1487,178 @@ class AppRegol {
     }    
 
     public function apr_dokumen_pendukung($data, $user) {
-        $data['tipe'] = strtolower($data['tipe']);
-        if(!in_array($data['tipe'], $dokumenPendukung)) {
-            exit(json_encode([
-                'status' => false,
-                'message' => "Dokumen Pendukung (".$data['tipe'].") tidak valid/tersedia",
-                'response' => []
-            ]));
-        }
-
-        loadModel("Helper");
-        $helperClass = new Helper();
         $progressAccount = $this->checkProgressAccount(md5(md5($user['MBR_ID'])));
-        
-        /** Upload Dokumen Pendukung */
-        if(empty($_FILES['dokumen']) || $_FILES['dokumen']['error'] != 0) {
+
+        /** Check Status */
+        $this->isAllowToEdit($progressAccount['ACC_STS']);
+
+        /** Upload Dokumen 1 */
+        if(empty($_FILES['app_image_1']) || $_FILES['app_image_1']['error'] != 0) {
             if(empty($progressAccount['ACC_F_APP_FILE_IMG'])) {
                 exit(json_encode([
-                    'status' => false,
-                    'message' => "Mohon upload dokumen pendukung",
-                    'response' => []
-                ]));
-            }
-
-        }else {
-            $uploadDokumenPendukung = upload_myfile($_FILES['dokumen'], "regol");
-            if(!is_array($uploadDokumenPendukung) || !array_key_exists("filename", $uploadDokumenPendukung)) {
-                exit(json_encode([
-                    'status' => false,
-                    'message' => $uploadDokumenPendukung ?? "Gagal mengunggah file dokumen pendukung",
-                    'response' => []
-                ]));
-            }
-
-            $updateImage = $helperClass->updateWithArray("tb_racc", ['ACC_F_APP_FILE_IMG' => $uploadDokumenPendukung['filename']], ['ID_ACC' => $progressAccount['ID_ACC']]);
-            if($updateImage !== TRUE) {
-                exit(json_encode([
-                    'status' => false,
-                    'message' => $updateImage ?? "Gagal memperbarui dokumen pendukung, mohon coba lagi",
-                    'response' => []
-                ]));
-            }
-        }
-
-        /** Upload Dokumen Pendukung Lainnya */
-        if(empty($_FILES['dokumen_lainnya']) || $_FILES['dokumen_lainnya']['error'] != 0) {
-            if(empty($progressAccount['ACC_F_APP_FILE_IMG2'])) {
-                exit(json_encode([
-                    'status' => false,
-                    'message' => $updateImage ?? "Gagal memperbarui dokumen pendukung, mohon coba lagi",
-                    'response' => []
+                    'success' => false,
+                    'alert' => [
+                        'title' => "Gagal",
+                        'text'  => "Mohon upload dokumen Rekening Koran Bank / Tagihan Kartu Kredit",
+                        'icon'  => "error"
+                    ] 
                 ]));
             }
         
         }else {
-            $uploadDokumenPendukung2 = upload_myfile($_FILES['dokumen_lainnya'], "regol");
-            if(!is_array($uploadDokumenPendukung2) || !array_key_exists("filename", $uploadDokumenPendukung2)) {
+            $uploadDokumenPendukung = FileUpload::upload_myfile($_FILES['app_image_1'], "regol");
+            if(!is_array($uploadDokumenPendukung) || !array_key_exists("filename", $uploadDokumenPendukung)) {
                 exit(json_encode([
-                    'status' => false,
-                    'message' => $uploadDokumenPendukung2 ?? "Gagal mengunggah file dokumen pendukung lainnya",
-                    'response' => []
+                    'success' => false,
+                    'alert' => [
+                        'title' => "Gagal",
+                        'text'  => $uploadDokumenPendukung ?? "Gagal mengunggah dokumen Rekening Koran Bank / Tagihan Kartu Kredit",
+                        'icon'  => "error"
+                    ] 
                 ]));
             }
-
-            $updateImage = $helperClass->updateWithArray("tb_racc", ['ACC_F_APP_FILE_IMG2' => $uploadDokumenPendukung2['filename']], ['ID_ACC' => $progressAccount['ID_ACC']]);
+    
+            $updateImage = Database::update("tb_racc", ['ACC_F_APP_FILE_IMG' => $uploadDokumenPendukung['filename']], ['ID_ACC' => $progressAccount['ID_ACC']]);
             if($updateImage !== TRUE) {
                 exit(json_encode([
-                    'status' => false,
-                    'message' => $updateImage ?? "Gagal memperbarui dokumen pendukung lainnya, mohon coba lagi",
-                    'response' => []
+                    'success' => false,
+                    'alert' => [
+                        'title' => "Gagal",
+                        'text'  => $updateImage ?? "Gagal memperbarui dokumen Rekening Koran Bank / Tagihan Kartu Kredit, mohon coba lagi",
+                        'icon'  => "error"
+                    ] 
+                ]));
+            }
+        }
+
+        /** Upload Dokumen 2 */
+        if(empty($_FILES['app_image_2']) || $_FILES['app_image_2']['error'] != 0) {
+            if(empty($progressAccount['ACC_F_APP_FILE_IMG2'])) {
+                exit(json_encode([
+                    'success' => false,
+                    'alert' => [
+                        'title' => "Gagal",
+                        'text'  => "Mohon upload dokumen Rekening Listrik / Telepon",
+                        'icon'  => "error"
+                    ] 
+                ]));
+            }
+        
+        }else {
+            $uploadDokumenPendukung = FileUpload::upload_myfile($_FILES['app_image_2'], "regol");
+            if(!is_array($uploadDokumenPendukung) || !array_key_exists("filename", $uploadDokumenPendukung)) {
+                exit(json_encode([
+                    'success' => false,
+                    'alert' => [
+                        'title' => "Gagal",
+                        'text'  => $uploadDokumenPendukung ?? "Gagal mengunggah dokumen Rekening Listrik / Telepon",
+                        'icon'  => "error"
+                    ] 
+                ]));
+            }
+    
+            $updateImage = Database::update("tb_racc", ['ACC_F_APP_FILE_IMG2' => $uploadDokumenPendukung['filename']], ['ID_ACC' => $progressAccount['ID_ACC']]);
+            if($updateImage !== TRUE) {
+                exit(json_encode([
+                    'success' => false,
+                    'alert' => [
+                        'title' => "Gagal",
+                        'text'  => $updateImage ?? "Gagal memperbarui dokumen Rekening Listrik / Telepon, mohon coba lagi",
+                        'icon'  => "error"
+                    ] 
+                ]));
+            }
+        }
+
+        /** Upload Dokumen NPWP */
+        if(empty($_FILES['app_image_npwp']) || $_FILES['app_image_npwp']['error'] != 0) {
+            if(empty($progressAccount['ACC_F_APP_FILE_NPWP'])) {
+                exit(json_encode([
+                    'success' => false,
+                    'alert' => [
+                        'title' => "Gagal",
+                        'text'  => "Mohon upload dokumen NPWP",
+                        'icon'  => "error"
+                    ] 
+                ]));
+            }
+        
+        }else {
+            $uploadDokumenPendukung = FileUpload::upload_myfile($_FILES['app_image_npwp'], "regol");
+            if(!is_array($uploadDokumenPendukung) || !array_key_exists("filename", $uploadDokumenPendukung)) {
+                exit(json_encode([
+                    'success' => false,
+                    'alert' => [
+                        'title' => "Gagal",
+                        'text'  => $uploadDokumenPendukung ?? "Gagal mengunggah file dokumen NPWP",
+                        'icon'  => "error"
+                    ] 
+                ]));
+            }
+    
+            $updateImage = Database::update("tb_racc", ['ACC_F_APP_FILE_NPWP' => $uploadDokumenPendukung['filename']], ['ID_ACC' => $progressAccount['ID_ACC']]);
+            if($updateImage !== TRUE) {
+                exit(json_encode([
+                    'success' => false,
+                    'alert' => [
+                        'title' => "Gagal",
+                        'text'  => $updateImage ?? "Gagal memperbarui dokumen NPWP, mohon coba lagi",
+                        'icon'  => "error"
+                    ] 
+                ]));
+            }
+        }
+
+        /** Upload Dokumen 3 (Optional) */
+        if(!empty($_FILES['app_image_3']) && $_FILES['app_image_3']['error'] == 0) {
+            $uploadDokumenPendukung = FileUpload::upload_myfile($_FILES['app_image_3'], "regol");
+            if(!is_array($uploadDokumenPendukung) || !array_key_exists("filename", $uploadDokumenPendukung)) {
+                exit(json_encode([
+                    'success' => false,
+                    'alert' => [
+                        'title' => "Gagal",
+                        'text'  => $uploadDokumenPendukung ?? "Gagal mengunggah file dokumen pendukung 3",
+                        'icon'  => "error"
+                    ] 
+                ]));
+            }
+    
+            $updateImage = Database::update("tb_racc", ['ACC_F_APP_FILE_IMG3' => $uploadDokumenPendukung['filename']], ['ID_ACC' => $progressAccount['ID_ACC']]);
+            if($updateImage !== TRUE) {
+                exit(json_encode([
+                    'success' => false,
+                    'alert' => [
+                        'title' => "Gagal",
+                        'text'  => $updateImage ?? "Gagal memperbarui dokumen pendukung 3, mohon coba lagi",
+                        'icon'  => "error"
+                    ] 
+                ]));
+            }
+        }
+
+        /** Upload Dokumen 4 (Optional) */
+        if(!empty($_FILES['app_image_4']) && $_FILES['app_image_4']['error'] == 0) {
+            $uploadDokumenPendukung = FileUpload::upload_myfile($_FILES['app_image_4'], "regol");
+            if(!is_array($uploadDokumenPendukung) || !array_key_exists("filename", $uploadDokumenPendukung)) {
+                exit(json_encode([
+                    'success' => false,
+                    'alert' => [
+                        'title' => "Gagal",
+                        'text'  => $uploadDokumenPendukung ?? "Gagal mengunggah file dokumen pendukung 4",
+                        'icon'  => "error"
+                    ] 
+                ]));
+            }
+    
+            $updateImage = Database::update("tb_racc", ['ACC_F_APP_FILE_IMG4' => $uploadDokumenPendukung['filename']], ['ID_ACC' => $progressAccount['ID_ACC']]);
+            if($updateImage !== TRUE) {
+                exit(json_encode([
+                    'success' => false,
+                    'alert' => [
+                        'title' => "Gagal",
+                        'text'  => $updateImage ?? "Gagal memperbarui dokumen pendukung 4, mohon coba lagi",
+                        'icon'  => "error"
+                    ] 
                 ]));
             }
         }
@@ -1562,16 +1666,15 @@ class AppRegol {
         /** Update Tipe Dokumen Pendukung */
         $updateData = [
             'ACC_F_APP' => 1,
-            'ACC_F_APP_IP' => $helperClass->get_ip_address(),
-            'ACC_F_APP_FILE_TYPE' => $data['tipe'],
-            'ACC_F_APPPEMBUKAAN_IP' => $helperClass->get_ip_address(),
+            'ACC_F_APP_IP' => Helper::get_ip_address(),
+            'ACC_F_APPPEMBUKAAN_IP' => Helper::get_ip_address(),
             'ACC_F_APP_PERYT' => "Ya",
             'ACC_F_APPPEMBUKAAN_PERYT' => "Ya",
             'ACC_F_APP_DATE' => date("Y-m-d H:i:s"),
             'ACC_F_APPPEMBUKAAN_DATE' => date("Y-m-d H:i:s"),
         ];
 
-        $update = $helperClass->updateWithArray("tb_racc", $updateData, ['ID_ACC' => $progressAccount['ID_ACC']]);
+        $update = Database::update("tb_racc", $updateData, ['ID_ACC' => $progressAccount['ID_ACC']]);
         if($update !== TRUE) {
             exit(json_encode([
                 'status' => false,
@@ -1579,15 +1682,6 @@ class AppRegol {
                 'response' => []
             ]));    
         }
-
-        newInsertLog([
-            'mbrid' => $user['MBR_ID'],
-            'module' => "create-account",
-            'ref' => $progressAccount['ID_ACC'],
-            'message' => "Progress Real Account (Dokumen Pendukung)",
-            'device' => "mobile",
-            'data'  => json_encode($data)
-        ]);
 
         exit(json_encode([
             'status' => true,
