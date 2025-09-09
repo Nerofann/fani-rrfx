@@ -527,7 +527,8 @@ class Account {
                         RTYPE_CURR,
                         RTYPE_LEVERAGE,
                         RTYPE_STS,
-                        RTYPE_KOMISI
+                        RTYPE_KOMISI,
+                        RTYPE_ISFLOATING
                     FROM tb_racctype
                     WHERE UPPER(RTYPE_TYPE) != 'DEMO'
                 ) as tra ON ((tra.RTYPE_SUFFIX = tm.MBR_SUFFIX OR tm.MBR_SUFFIX IS NULL) AND tra.RTYPE_STS = -1)

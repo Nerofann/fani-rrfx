@@ -55,6 +55,51 @@ try {
             require __DIR__ . "/routes/{$filepath}.php";
             break;
 
+        case "regol":
+            if(empty($getInput['b'])) {
+                ApiResponse([
+                    'status' => false,
+                    'message' => "Invalid Route",
+                    'response' => []
+                ], 400);
+            }
+
+            $filepath = implode("/", [$getInput['a'], $getInput['b']]);
+            if(!file_exists(__DIR__ . "/routes/{$filepath}.php")) {
+                ApiResponse([
+                    'status' => false,
+                    'message' => "Invalid Path",
+                    'response' => []
+                ], 400);
+            }
+
+            $userToken = $_SERVER['HTTP_AUTHORIZATION'] ?? "";
+            $userToken = str_replace("Bearer ", "", $userToken);
+            $isValid = Token::verifyToken($userToken);
+            if(!$isValid || !is_array($isValid)) {
+                ApiResponse([
+                    'status' => false,
+                    'message' => "Invalid Token",
+                    'response' => []
+                ], 300);
+            }
+
+            $user = User::findByMemberId($isValid['user_id']);
+            $userId = md5(md5($isValid['user_id']));
+            if(empty($user)) {
+                ApiResponse([
+                    'status' => false,
+                    'message' => "Invalid User",
+                    'response' => []
+                ], 400);
+            }
+
+            /** Avatar */
+            $avatar = User::avatar($user['MBR_AVATAR']);
+
+            require __DIR__ . "/routes/{$filepath}.php";
+            break;
+
         default: 
             $userToken = $_SERVER['HTTP_AUTHORIZATION'] ?? "";
             $userToken = str_replace("Bearer ", "", $userToken);
