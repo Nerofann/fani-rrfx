@@ -114,30 +114,6 @@
             <table class="table table-hover table-bordered">
                 <thead>
                     <tr>
-                        <th colspan="3" class="bg-secondary text-muted">User Bank</th>
-                    </tr>
-                    <tr>
-                        <th>Nama Bank</th>
-                        <th>No. Rekening</th>
-                        <th>Nama</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach($userBanks as $bank) : ?>
-                        <tr>
-                            <td><?= $bank['MBANK_NAME'] ?></td>
-                            <td><?= $bank['MBANK_ACCOUNT'] ?></td>
-                            <td><?= $bank['MBANK_HOLDER'] ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="table-responsive">
-            <table class="table table-hover table-bordered">
-                <thead>
-                    <tr>
                         <th colspan="3" class="bg-secondary text-muted">Log Verihub</th>
                     </tr>
                     <tr>
