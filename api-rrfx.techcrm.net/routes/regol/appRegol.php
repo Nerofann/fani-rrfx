@@ -1171,8 +1171,6 @@ class AppRegol {
             ]));
         }
 
-        loadModel("Helper");
-        $helperClass = new Helper();
         $progressAccount = $this->checkProgressAccount(md5(md5($user['MBR_ID'])));
         $data['app_tujuan_investasi'] = strtolower($data['app_tujuan_investasi']);
         if(!in_array($data['app_tujuan_investasi'], ['lindungi nilai', 'gain', 'spekulasi', 'lainnya'])) {
@@ -1183,7 +1181,7 @@ class AppRegol {
             ]));
         }
 
-        $update = $helperClass->updateWithArray("tb_racc", ['ACC_F_APP_TUJUANBUKA' => $data['app_tujuan_investasi']], ['ID_ACC' => $progressAccount['ID_ACC']]);
+        $update = Database::update("tb_racc", ['ACC_F_APP_TUJUANBUKA' => $data['app_tujuan_investasi']], ['ID_ACC' => $progressAccount['ID_ACC']]);
         if($update !== TRUE) {
             exit(json_encode([
                 'status' => false,
@@ -1191,15 +1189,6 @@ class AppRegol {
                 'response' => []
             ]));
         }
-
-        newInsertLog([
-            'mbrid' => $user['MBR_ID'],
-            'module' => "create-account",
-            'ref' => $progressAccount['ID_ACC'],
-            'message' => "Progress Real Account (Tujuan Investasi)",
-            'device' => "mobile",
-            'data'  => json_encode($data)
-        ]);
 
         exit(json_encode([
             'status' => true,
