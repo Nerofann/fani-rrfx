@@ -1,6 +1,8 @@
 <?php
 
-$dpwdId = form_input($_GET['id'] ?? "-");
+use App\Models\Helper;
+
+$dpwdId = Helper::form_input($_GET['id'] ?? "-");
 $sqlGet = $db->query("
     SELECT 
         td.ID_DPWD,
@@ -44,11 +46,11 @@ switch($dpwd['DPWD_STS']) {
     default: $status = "-";
 }
 
-$amount = $dpwd['DPWD_CURR_FROM'] ." ". $helperClass->formatCurrency($dpwd['DPWD_AMOUNT_SOURCE']) ?? 0;
-$amountReceived = $dpwd['DPWD_CURR_TO'] ." ". $helperClass->formatCurrency($dpwd['DPWD_AMOUNT']) ?? 0;
+$amount = $dpwd['DPWD_CURR_FROM'] ." ". Helper::formatCurrency($dpwd['DPWD_AMOUNT_SOURCE']) ?? 0;
+$amountReceived = $dpwd['DPWD_CURR_TO'] ." ". Helper::formatCurrency($dpwd['DPWD_AMOUNT']) ?? 0;
 
-$bankUser = explode("/", $dpwd['DPWD_BANKSRC']);
-$bankAdmin = explode("/", $dpwd['DPWD_BANK']); 
+$bankUser = explode("/", $dpwd['DPWD_BANKSRC'] ?? "");
+$bankAdmin = explode("/", $dpwd['DPWD_BANK'] ?? ""); 
 
 ApiResponse([
     'status' => true,
@@ -64,12 +66,12 @@ ApiResponse([
         'bank_user' => [
             'name' => $bankUser[0] ?? "-",
             'account_number' => $bankUser[1] ?? 0,
-            'account_name' => $bankUser[2]
+            'account_name' => $bankUser[2] ?? "-"
         ],
         'bank_admin' => [
             'name' => $bankAdmin[0] ?? "-",
             'account_number' => $bankAdmin[1] ?? 0,
-            'account_name' => $bankAdmin[2]
+            'account_name' => $bankAdmin[2] ?? "-"
         ]
     ]
 ]);
