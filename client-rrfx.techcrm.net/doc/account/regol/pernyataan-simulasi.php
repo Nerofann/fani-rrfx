@@ -1,6 +1,5 @@
 <?php
-
-$tanggalLahir = ($progressAccount['ACC_TANGGAL_LAHIR'] ?? $user['MBR_TGLLAHIR']);
+$tanggalLahir = ($realAccount['ACC_TANGGAL_LAHIR'] ?? $user['MBR_TGLLAHIR']);
 
 ?>
 <div class="row">

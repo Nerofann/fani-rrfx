@@ -136,4 +136,75 @@ class Regol {
     public static function urlTradingRule($filename) {
         return "/assets/trading-rules/" . $filename;
     }
+
+    public static function getAccountHistoryNote(int $idAcc): array  {
+        try {
+            global $db;
+            $sqlGet = $db->query("
+                SELECT 
+                    tn.*
+                FROM tb_note tn
+                JOIN tb_racc tr ON (tr.ID_ACC = tn.NOTE_RACC)
+                WHERE tr.ID_ACC = {$idAcc}
+                ORDER BY tn.ID_NOTE DESC
+            ");
+
+            return $sqlGet->fetch_all(MYSQLI_ASSOC) ?? [];
+
+        } catch (Exception $e) {
+            if(SystemInfo::isDevelopment()) {
+                throw $e;
+            }
+
+            return [];
+        }
+    }
+
+    public static function getAccountHistoryNoteReject(int $idAcc): array  {
+        try {
+            global $db;
+            $sqlGet = $db->query("
+                SELECT 
+                    tn.*
+                FROM tb_note tn
+                JOIN tb_racc tr ON (tr.ID_ACC = tn.NOTE_RACC)
+                WHERE tr.ID_ACC = {$idAcc}
+                AND NOTE_TYPE LIKE 'WP VER REJECT%'
+                ORDER BY tn.ID_NOTE DESC
+            ");
+
+            return $sqlGet->fetch_all(MYSQLI_ASSOC) ?? [];
+
+        } catch (Exception $e) {
+            if(SystemInfo::isDevelopment()) {
+                throw $e;
+            }
+
+            return [];
+        }
+    }
+
+    public static function getAccountHistoryLastNote(int $idAcc): array|bool  {
+        try {
+            global $db;
+            $sqlGet = $db->query("
+                SELECT 
+                    tn.*
+                FROM tb_note tn
+                JOIN tb_racc tr ON (tr.ID_ACC = tn.NOTE_RACC)
+                WHERE tr.ID_ACC = {$idAcc}
+                ORDER BY tn.ID_NOTE DESC
+                LIMIT 1
+            ");
+
+            return $sqlGet->fetch_assoc() ?? false;
+
+        } catch (Exception $e) {
+            if(SystemInfo::isDevelopment()) {
+                throw $e;
+            }
+
+            return false;
+        }
+    }
 }

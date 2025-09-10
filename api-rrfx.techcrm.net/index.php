@@ -6,17 +6,18 @@ use App\Models\Logger;
 use App\Models\Token;
 use App\Models\TokenGenerator;
 use App\Models\User;
+use Config\Core\SystemInfo;
+
+function ApiResponse(array $array, int $code = 200) {
+    http_response_code($code);
+    exit(json_encode($array, JSON_PRETTY_PRINT));
+}
 
 try {
     require_once __DIR__ . "/../config/setting.php";
 
     header("Access-Control-Allow-Origin: *");
     header('Content-Type: application/json');
-
-    function ApiResponse(array $array, int $code = 200) {
-        http_response_code($code);
-        exit(json_encode($array, JSON_PRETTY_PRINT));
-    }
 
     $getInput = array_filter($_GET, fn($key) => in_array($key, range('a', 'f'), true), ARRAY_FILTER_USE_KEY);
     $filepath = UrlParser::urlToPath($getInput);
@@ -149,7 +150,7 @@ try {
 } catch (Exception $e) {
     ApiResponse([
         'status' => false,
-        'message' => (ini_get("display_errors") == "1")? $e->getMessage() : "Internal Server Error (500)",
+        'message' => (SystemInfo::isDevelopment())? $e->getMessage() : "Internal Server Error (500)",
         'response' => []
     ], 400);
 }

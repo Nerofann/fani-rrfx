@@ -76,6 +76,7 @@ $insert = Database::insert("tb_member_bank", [
     'MBANK_HOLDER' => $data['name'],
     'MBANK_NAME' => $data['bank-name'],
     'MBANK_ACCOUNT' => $rekening,
+    'MBANK_IMG' => "",
     'MBANK_DATETIME' => date("Y-m-d H:i:s")
 ]);
 

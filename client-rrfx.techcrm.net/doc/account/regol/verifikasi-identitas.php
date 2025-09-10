@@ -14,6 +14,9 @@
                             <label for="app_foto_terbaru" class="form-label">Foto Terbaru (Selfie) <span class="text-danger">*</span></label>
                             <input type="file" class="dropify" id="app_foto_terbaru" name="app_foto_terbaru" 
                                 data-max-file-size="4M"
+                                data-min-width="480"
+                                data-min-height="640"
+                                data-show-remove="false"
                                 data-allowed-file-extensions="png jpg jpeg" 
                                 data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_FOTO'] ?? ""); ?>">
                         </div>
@@ -21,6 +24,9 @@
                             <label for="app_foto_identitas" class="form-label">Foto KTP <span class="text-danger">*</span></label>
                             <input type="file" class="dropify" id="app_foto_identitas" name="app_foto_identitas" 
                                 data-max-file-size="2M"
+                                data-min-width="480"
+                                data-min-height="320"
+                                data-show-remove="false"
                                 data-allowed-file-extensions="png jpg jpeg" 
                                 data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_ID'] ?? ""); ?>">
                         </div>

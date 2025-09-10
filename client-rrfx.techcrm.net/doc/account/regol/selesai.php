@@ -18,7 +18,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php $noteHistory = App\Models\Account::getAccountHistoryNote($realAccount['ID_ACC']); ?>
+                            <?php $noteHistory = App\Models\Regol::getAccountHistoryNoteReject($realAccount['ID_ACC']); ?>
                             <?php if(empty($noteHistory)) : ?>
                                 <tr>
                                     <td colspan="2" class="top-align text-start">Belum ada</td>

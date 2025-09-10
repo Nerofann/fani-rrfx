@@ -148,6 +148,7 @@ switch ($data["sbmt_act"]) {
         break;
 
     case 'reject':
+        $UPDATE_RACC['ACC_F_CMPLT'] = 0;
         $UPDATE_RACC["ACC_DOC_VERIF"] = 0;
         $UPDATE_RACC["ACC_STS"] = 2;
         break;
