@@ -1891,12 +1891,12 @@ class AppPost {
 
         /** Upload Dokumen NPWP */
         if(empty($_FILES['app_image_npwp']) || $_FILES['app_image_npwp']['error'] != 0) {
-            if(empty($progressAccount['ACC_F_APP_FILE_NPWP'])) {
+            if(empty($progressAccount['ACC_F_APP_FILE_NPWP']) && $progressAccount['ACC_CDD'] == Regol::$cddTypeStandard) {
                 exit(json_encode([
                     'success' => false,
                     'alert' => [
                         'title' => "Gagal",
-                        'text'  => "Mohon upload dokumen pendukung",
+                        'text'  => "Mohon upload dokumen NPWP",
                         'icon'  => "error"
                     ] 
                 ]));
@@ -1909,7 +1909,7 @@ class AppPost {
                     'success' => false,
                     'alert' => [
                         'title' => "Gagal",
-                        'text'  => $uploadDokumenPendukung ?? "Gagal mengunggah file dokumen pendukung",
+                        'text'  => $uploadDokumenPendukung ?? "Gagal mengunggah file dokumen NPWP",
                         'icon'  => "error"
                     ] 
                 ]));
@@ -1921,7 +1921,7 @@ class AppPost {
                     'success' => false,
                     'alert' => [
                         'title' => "Gagal",
-                        'text'  => $updateImage ?? "Gagal memperbarui dokumen pendukung, mohon coba lagi",
+                        'text'  => $updateImage ?? "Gagal memperbarui dokumen NPWP, mohon coba lagi",
                         'icon'  => "error"
                     ] 
                 ]));
