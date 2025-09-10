@@ -788,7 +788,7 @@ class AppPost {
             'ACC_ADDRESS'           => $data['smls_almtrmh'],
             'ACC_FULLNAME'          => $data['smls_namleng'],
             'ACC_TEMPAT_LAHIR'      => $data['smls_tmptlhr'],
-            'ACC_TANGGAL_LAHIR'     => $data['smls_tgllhr'],
+            'ACC_TANGGAL_LAHIR'     => date("Y-m-d", strtotime($data['smls_tgllhr'])),
             'ACC_TYPE_IDT'          => $data['smls_tipeidt'],
             'ACC_NO_IDT'            => $data['smls_nomidt'],
             'ACC_DEMO'              => $demoAccount['ACC_LOGIN'],
