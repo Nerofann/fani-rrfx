@@ -9,6 +9,7 @@ use App\Models\FileUpload;
 use App\Models\Helper;
 use App\Models\Logger;
 use App\Models\ProfilePerusahaan;
+use App\Models\Regol;
 use App\Models\SendEmail;
 use App\Models\User;
 use Config\Core\Database;
@@ -332,6 +333,29 @@ class AppPost {
 
     public function accountType($data, $user) {
         $this->checkCsrfToken($data);
+
+        if(empty($data['cdd-type'])) {
+            exit(json_encode([
+                'success'   => false,
+                'alert'     => [
+                    'title' => "Gagal",
+                    'text'  => "CDD Tipe diperlukan",
+                    'icon'  => "error"
+                ]
+            ]));
+        }
+
+        if(!in_array($data['cdd-type'], Regol::cddTypeArray())) {
+            exit(json_encode([
+                'success'   => false,
+                'alert'     => [
+                    'title' => "Gagal",
+                    'text'  => "CDD Tipe tidak valid",
+                    'icon'  => "error"
+                ]
+            ]));
+        }
+
         if(empty($data['account-type'])) {
             exit(json_encode([
                 'success'   => false,
@@ -482,6 +506,7 @@ class AppPost {
         if($progressAccount['ACC_TYPE'] != $raccType['ID_RTYPE']) {
             $updateData = [
                 'ACC_TYPE' => $raccType['ID_RTYPE'],
+                'ACC_CDD' => $data['cdd-type'],
                 'ACC_LAST_STEP' => "profile-perusahaan",
             ];
 
