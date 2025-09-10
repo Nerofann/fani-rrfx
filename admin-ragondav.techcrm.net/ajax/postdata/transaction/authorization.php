@@ -200,8 +200,7 @@ use Config\Core\SystemInfo;
         }
 
 
-        $db->rollback();
-        // mysqli_commit($db);
+        mysqli_commit($db);
     } catch (Exception | mysqli_sql_exception $e) {
         mysqli_rollback($db);
         JsonResponse([
