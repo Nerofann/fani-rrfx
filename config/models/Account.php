@@ -358,6 +358,7 @@ class Account {
                 FROM tb_note tn
                 JOIN tb_racc tr ON (tr.ID_ACC = tn.NOTE_RACC)
                 WHERE tr.ID_ACC = {$idAcc}
+                AND NOTE_TYPE LIKE 'WP VER REJECT%'
                 ORDER BY tn.ID_NOTE DESC
             ");
 
