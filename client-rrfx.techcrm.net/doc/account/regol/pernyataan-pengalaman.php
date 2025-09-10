@@ -1,3 +1,13 @@
+<style>
+    .light-theme .swal2-popup .swal2-input {
+        color: black;
+    }
+
+    .dark-theme .swal2-popup .swal2-input {
+        color: white;
+    }
+</style>
+
 <div class="row">
     <div class="col-md-8 mx-auto mb-3">
         <form method="post" id="form-pernyataan-pengalaman">
@@ -145,6 +155,10 @@
                     input: "text",
                     inputLabel: "Perusahaan pialang berjangka",
                     inputValue: "<?= App\Models\ProfilePerusahaan::get()['PROF_COMPANY_NAME']; ?>",
+                    customClass: {
+                        inputLabel: 'swal2-title fs-6',
+                        inputValue: 'swal2-title'
+                    },
                     showCancelButton: true,
                     reverseButtons: true,
                     inputValidator: (value) => {
