@@ -2626,6 +2626,144 @@ class AppPost {
         // ]));
     }
 
+    private function uploadSelfiePhoto_simple($data, $user) {
+        $progressAccount = $this->checkProgressAccount(md5(md5($user['MBR_ID'])));
+        
+        /** Upload Dokumen Foto KTP */
+        if(empty($_FILES['app_foto_terbaru']) || $_FILES['app_foto_terbaru']['error'] != 0) {
+            if(!empty($progressAccount['ACC_F_APP_FILE_ID'])) {
+                return false;
+            }
+
+            exit(json_encode([
+                'success' => false,
+                'alert' => [
+                    'title' => "Gagal",
+                    'text'  => "Mohon upload foto Selfie",
+                    'icon'  => "error"
+                ] 
+            ]));
+        }
+
+        if($progressAccount['ACC_DOC_VERIF'] == -1) {
+            exit(json_encode([
+                'success' => false,
+                'alert' => [
+                    'title' => "Gagal",
+                    'text'  => "Dokumen telah diverifikasi, tidak dapat dirubah",
+                    'icon'  => "error"
+                ] 
+            ]));
+        }
+
+        $uploadSelfie = FileUpload::upload_myfile($_FILES['app_foto_terbaru'], "regol_ktp");
+        if(!is_array($uploadSelfie) || !array_key_exists("filename", $uploadSelfie)) {
+            exit(json_encode([
+                'success' => false,
+                'alert' => [
+                    'title' => "Gagal",
+                    'text'  => $uploadSelfie ?? "Gagal mengunggah file dokumen pendukung",
+                    'icon'  => "error"
+                ] 
+            ]));
+        }
+
+        $data = [
+            'ACC_F_APP_FILE_FOTO' => $uploadSelfie['filename'],
+            'ACC_F_APP_FILE_FOTO_MIME' => $uploadSelfie['mime']
+        ];
+
+        $updateImage = Database::update("tb_racc", $data, ['ID_ACC' => $progressAccount['ID_ACC']]);
+        if($updateImage !== TRUE) {
+            exit(json_encode([
+                'success' => false,
+                'alert' => [
+                    'title' => "Gagal",
+                    'text'  => $updateImage ?? "Gagal memperbarui foto Selfie, mohon coba lagi",
+                    'icon'  => "error"
+                ] 
+            ]));
+        }
+
+        // exit(json_encode([
+        //     'success' => true,
+        //     'alert' => [
+        //         'title' => "Berhasil",
+        //         'text'  => "Foto KTP berhasil disimpan",
+        //         'icon'  => "success"
+        //     ] 
+        // ]));
+    }
+
+    private function uploadKtpPhoto_simple($data, $user) {
+        $progressAccount = $this->checkProgressAccount(md5(md5($user['MBR_ID'])));
+        
+        /** Upload Dokumen Foto KTP */
+        if(empty($_FILES['app_foto_identitas']) || $_FILES['app_foto_identitas']['error'] != 0) {
+            if(!empty($progressAccount['ACC_F_APP_FILE_ID'])) {
+                return false;
+            }
+
+            exit(json_encode([
+                'success' => false,
+                'alert' => [
+                    'title' => "Gagal",
+                    'text'  => "Mohon upload foto KTP",
+                    'icon'  => "error"
+                ] 
+            ]));
+        }
+
+        if($progressAccount['ACC_DOC_VERIF'] == -1) {
+            exit(json_encode([
+                'success' => false,
+                'alert' => [
+                    'title' => "Gagal",
+                    'text'  => "Dokumen telah diverifikasi, tidak dapat dirubah",
+                    'icon'  => "error"
+                ] 
+            ]));
+        }
+
+        $uploadKtp = FileUpload::upload_myfile($_FILES['app_foto_identitas'], "regol_ktp");
+        if(!is_array($uploadKtp) || !array_key_exists("filename", $uploadKtp)) {
+            exit(json_encode([
+                'success' => false,
+                'alert' => [
+                    'title' => "Gagal",
+                    'text'  => $uploadKtp ?? "Gagal mengunggah file dokumen pendukung",
+                    'icon'  => "error"
+                ] 
+            ]));
+        }
+
+        $data = [
+            'ACC_F_APP_FILE_ID' => $uploadKtp['filename'],
+            'ACC_F_APP_FILE_ID_MIME' => $uploadKtp['mime']
+        ];
+
+        $updateImage = Database::update("tb_racc", $data, ['ID_ACC' => $progressAccount['ID_ACC']]);
+        if($updateImage !== TRUE) {
+            exit(json_encode([
+                'success' => false,
+                'alert' => [
+                    'title' => "Gagal",
+                    'text'  => $updateImage ?? "Gagal memperbarui foto KTP, mohon coba lagi",
+                    'icon'  => "error"
+                ] 
+            ]));
+        }
+
+        // exit(json_encode([
+        //     'success' => true,
+        //     'alert' => [
+        //         'title' => "Berhasil",
+        //         'text'  => "Foto KTP berhasil disimpan",
+        //         'icon'  => "success"
+        //     ] 
+        // ]));
+    }
+
     public function verifikasiIdentitas($data, $user) {
         $this->checkCsrfToken($data);
         $progressAccount = $this->checkProgressAccount(md5(md5($user['MBR_ID'])));
@@ -2634,10 +2772,12 @@ class AppPost {
         $this->isAllowToEdit($progressAccount['ACC_STS']);
         
         /** Upload Selfie Photo */
-        $this->uploadSelfiePhoto($data, $user);
+        // $this->uploadSelfiePhoto($data, $user);
+        $this->uploadSelfiePhoto_simple($data, $user);
 
         /** Upload KTP Photo */
-        $this->uploadKtpPhoto($data, $user);
+        // $this->uploadKtpPhoto($data, $user);
+        $this->uploadKtpPhoto_simple($data, $user);
         
         /** Verifikasi ke Verihub (Jika belum pernah berhasil) */
         $statusVerifikasiVerihub = $progressAccount['ACC_DOC_VERIF'] ?? 0;

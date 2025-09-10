@@ -4,13 +4,17 @@
     use App\Models\Helper;
     use App\Models\FileUpload;
     $data = Helper::getSafeInput($_GET);
+    $id_acc = $data["d"] ?? "";
 
-    $COMPANY         = App\Models\CompanyProfile::$name;
-    $page_title      = 'Progress Real Account';
-    $web_name_full   = $COMPANY;
-    $progressAccount = Account::realAccountDetail($data["d"]);
-    $id_acc          = $data["d"];
-    $userBanks       = (!empty($progressAccount["MBR_BKJSN"])) ? json_decode($progressAccount["MBR_BKJSN"], true) : [];
+    $COMPANY = App\Models\CompanyProfile::$name;
+    $page_title = 'Progress Real Account';
+    $web_name_full = $COMPANY;
+    $progressAccount = Account::realAccountDetail($id_acc);
+    $userBanks = (!empty($progressAccount["MBR_BKJSN"])) ? json_decode($progressAccount["MBR_BKJSN"], true) : [];
+
+    if(!$progressAccount) {
+        die("<script>alert('Invalid code'); location.href = '/account/progress_real_account/view'; </script>");
+    }
 ?>
 <div class="page-header">
 	<div>
@@ -158,7 +162,73 @@
                         <?php require_once __DIR__ . "/summary.php" ?>
                     </div>
                     <div class="col-md-4">
-                        <?php require_once __DIR__ . "/summary_photo.php" ?>
+                        <form action="" method="post" enctype="multipart/form-data" id="form-document">
+                            <input type="hidden" name="account" value="<?= $id_acc ?>">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <input type="file" class="dropify" name="app_image_1" id="app_image_1" data-max-file-size="2M" data-show-remove="false" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?php echo App\Models\FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_IMG']); ?>">
+                                    <label for="app_image_1" class="form-control-label">
+                                        <a target="_blank" href="<?php echo App\Models\FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_IMG']); ?>">
+                                            Rekening Koran Bank / Tagihan Kartu Kredit
+                                        </a>
+                                    </label>
+                                </div>
+    
+                                <div class="col-md-6 mb-3">
+                                    <input type="file" class="dropify" name="app_image_2" id="app_image_2" data-max-file-size="2M" data-show-remove="false" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?php echo App\Models\FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_IMG2']); ?>">
+                                    <label for="app_image_2" class="form-control-label">
+                                        <a target="_blank" href="<?php echo App\Models\FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_IMG2']); ?>">
+                                            Rekening Listrik / Telepon
+                                        </a>
+                                    </label>
+                                </div>
+    
+                                <div class="col-md-6 mb-3">
+                                    <input type="file" class="dropify" name="app_image_npwp" id="app_image_npwp" data-max-file-size="2M" data-show-remove="false" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?php echo App\Models\FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_NPWP']); ?>">
+                                    <label for="app_image_npwp" class="form-control-label">
+                                        <a target="_blank" href="<?php echo App\Models\FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_NPWP']); ?>">
+                                           NPWP
+                                        </a>
+                                    </label>
+                                </div>
+    
+                                <div class="col-md-6 mb-3">
+                                    <input type="file" class="dropify" name="app_image_selfie" id="app_image_selfie" data-max-file-size="4M" data-min-width="480" data-min-height="640" data-show-remove="false" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?php echo App\Models\FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_FOTO']); ?>">
+                                    <label for="app_image_selfie" class="form-control-label">
+                                        <a target="_blank" href="<?php echo App\Models\FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_FOTO']); ?>">
+                                           Foto Terbaru (Selfie)
+                                        </a>
+                                    </label>
+                                </div>
+    
+                                <div class="col-md-6 mb-3">
+                                    <input type="file" class="dropify" name="app_image_identitas" id="app_image_identitas" data-max-file-size="2M"  data-min-width="480" data-min-height="320" data-show-remove="false" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?php echo App\Models\FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_ID']); ?>">
+                                    <label for="app_image_identitas" class="form-control-label">
+                                        <a target="_blank" href="<?php echo App\Models\FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_ID']); ?>">
+                                           Foto Identitas
+                                        </a>
+                                    </label>
+                                </div>
+                             
+                                <div class="col-md-6 mb-3">
+                                    <input type="file" class="dropify" name="app_image_3" id="app_image_3" data-max-file-size="2M" data-show-remove="false" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?php echo App\Models\FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_IMG3']); ?>">
+                                    <label for="app_image_3" class="form-control-label">
+                                        <a target="_blank" href="<?php echo App\Models\FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_IMG3']); ?>">
+                                            Dokumen Lainnya
+                                        </a>
+                                    </label>
+                                </div>
+    
+                                <div class="col-md-6 mb-3">
+                                    <input type="file" class="dropify" name="app_image_4" id="app_image_4" data-max-file-size="2M" data-show-remove="false" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?php echo App\Models\FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_IMG4']); ?>">
+                                    <label for="app_image_4" class="form-control-label">
+                                        <a target="_blank" href="<?php echo App\Models\FileUpload::awsFile($progressAccount['ACC_F_APP_FILE_IMG4']); ?>">
+                                            Dokumen Lainnya
+                                        </a>
+                                    </label>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -169,6 +239,9 @@
                 <div class="d-flex flex-wrap justify-content-center align-items-center gap-3">
                     <?php if($progressAccount['ACC_STS'] == 1 && $progressAccount['ACC_WPCHECK'] == 0) : ?>
                         <button type="button" id="verif_verihub" class="btn btn-primary">Verifikasi Verihub</button>
+                        <?php if($permisUpdate = $adminPermissionCore->isHavePermission($moduleId, "update.document")) : ?>
+                            <a href="javascript:void(0)" id="update-document" data-url="<?= $permisUpdate['link'] ?>" class="btn btn-primary">Update Document</a>
+                        <?php endif; ?>
                         <button type="button" data-act="reject" class="btnAct btn btn-danger px-5">Reject</button>
                         <button type="button" data-act="accept" class="btnAct btn btn-success px-5">Accept</button>
                     <?php endif; ?>
@@ -196,7 +269,7 @@
                         }
                     })
 
-                    $.post("/ajax/post/account/verifikasi_verihub", {account: '<?= $data['d']; ?>'}, (resp) => {
+                    $.post("/ajax/post/account/verifikasi_verihub", {account: '<?= $id_acc; ?>'}, (resp) => {
                         Swal.fire(resp.alert)
                     }, 'json')
                 }
@@ -226,7 +299,7 @@
                         }
                     });
 
-                    let id  = '<?= $data["d"] ?>';
+                    let id  = '<?= $id_acc ?>';
                     let act = $(this).data('act');
                     $.post("/ajax/post/account/wp_verification_acion", {sbmt_id: id, sbmt_act: act, sbmt_note: result.value}, function(resp) {
                         Swal.fire(resp.alert).then(() => {
@@ -240,5 +313,42 @@
                 }
             });
         });
+
+        $('#update-document').on('click', function(event) {
+            let url = $(this).data('url')
+            Swal.fire({
+                title: "Update User Document",
+                text: "Konfirmasi untuk melanjutkan",
+                icon: "question",
+                showCancelButton: true,
+                reverseButtons: true
+            }).then((result) => {
+                if(result.isConfirmed) {
+                    Swal.fire({
+                        text: "Loading...",
+                        allowOutsideClick: false,
+                        didOpen: function() {
+                            Swal.showLoading();
+                        } 
+                    })
+
+                    $.ajax({
+                        url: `/ajax/post${url}`,
+                        type: "post",
+                        dataType: "json",
+                        data: new FormData($('#form-document')[0]),
+                        contentType: false,
+                        processData: false,
+                        cache: false
+                    }).done((resp) => {
+                        Swal.fire(resp.alert).then(() => {
+                            if(resp.success) {
+                                location.reload();
+                            }
+                        })
+                    })
+                }
+            })
+        })
     })
 </script>
