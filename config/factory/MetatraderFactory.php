@@ -21,11 +21,11 @@ class MetatraderFactory {
     }
 
     public static function apiTerminal(): ApiTerminal {
-        return new ApiTerminal("http://139.180.212.62:7004", self::$serverReal);
+        return new ApiTerminal(self::$serverReal);
     }
 
     public static function apiTerminalDemo(): ApiTerminal {
-        return new ApiTerminal("http://139.180.212.62:7004", self::$serverDemo);
+        return new ApiTerminal(self::$serverDemo);
     }
 
     public static function apiManagerDemo(): ApiManager {
