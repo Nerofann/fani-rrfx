@@ -1,4 +1,5 @@
 com_error.log
 com_access.log
 assets/vendor/
+assets/uploads/
 # assets/trading-rules/

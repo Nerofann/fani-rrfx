@@ -4,7 +4,7 @@
             <h5 class="panel-title">Tambah Bank</h5>
         </div>
         <div class="panel-body">
-            <form action="" method="post" id="form-tambah-bank">
+            <form action="" method="post" enctype="multipart/form-data" id="form-tambah-bank">
                 <div class="row">
                     <div class="col-md-12 mb-2">
                         <label for="bank-name" class="form-label">Nama Bank</label>
@@ -23,6 +23,10 @@
                         <input type="text" class="form-control" data-kind="bankaccount" inputmode="numeric" name="bank-number" id="bank-number" placeholder="Nomor Rekening" required>
                     </div>
                     <div class="col-md-12 mb-2">
+                        <label for="imagecover" class="form-label required">Cover Buku Tabungan</label>
+                        <input type="file" name="imagecover" id="imagecover" class="dropify" accept="image/jpg, image/jpeg, iamge/png" data-allowed-file-extensions="png jpg jpeg" required>
+                    </div>
+                    <div class="col-md-12 mb-2">
                         <button type="submit" class="btn btn-primary btn-sm btn-block w-100">Submit</button>
                     </div>
                 </div>
@@ -30,6 +34,12 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.dropify').dropify();
+    });
+</script>
 
 <script>
     (() => {
@@ -42,7 +52,6 @@
                 max: 16 
             },
         };
-
 
         // --- Filter nilai sesuai tipe ---
         function sanitizeByKind(val, kind) {
@@ -148,14 +157,22 @@
             let button = $(this).find('button[type="submit"]');
         
             button.addClass('loading');
-            $.post("/ajax/post/profile/create-bank", data, (resp) => {
-                button.removeClass('loading');
+
+            $.ajax({
+                url: "/ajax/post/profile/create-bank",
+                type: "POST",
+                dataType: "json",
+                data: new FormData(this),
+                contentType: false,
+                processData: false,
+                cache: false
+            }).done(function(resp) {
                 Swal.fire(resp.alert).then(() => {
                     if(resp.success) {
                         location.reload();
                     }
                 })
-            }, 'json')
+            })
         })
     })
 </script>

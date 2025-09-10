@@ -837,6 +837,7 @@ class AppRegol {
             'app_date_of_birth' => "Tanggal Lahir",
             'app_place_of_birth' => "Tempat Lahir",
             'app_gender' => "Jenis Kelamin",
+            'app_nama_ibu' => "Nama Ibu Kandung"
         ];
 
         foreach($required as $key => $text) {
@@ -911,6 +912,7 @@ class AppRegol {
 
         $updateData = [
             'ACC_FULLNAME' => $data['app_fullname'],
+            'ACC_F_APP_PRIBADI_IBU' => $data['app_nama_ibu'],
             'ACC_F_APP_PRIBADI_NAMA' => $data['app_fullname'],
             'ACC_F_APP_PRIBADI_NPWP' => $data['app_npwp'],
             'ACC_F_APP_PRIBADI_KELAMIN' => $data['app_gender'],
