@@ -175,7 +175,14 @@
                 </div>
             </div>
             <div class="card-body">
-                <?php require_once __DIR__ . "/summary.php"; ?>
+                <div class="row">
+                    <div class="col-md-8">
+                        <?php require_once __DIR__ . "/summary.php" ?>
+                    </div>
+                    <div class="col-md-4">
+                        <?php require_once __DIR__ . "/summary_photo.php" ?>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

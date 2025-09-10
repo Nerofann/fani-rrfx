@@ -87,6 +87,15 @@ $userid = md5(md5($user['MBR_ID'])) ?? "";
                 $('.select2').select2({
                     height: "resolve"
                 });
+
+                let datePickerInputs = $('.datepicker');
+                $.each(datePickerInputs, (i, el) => {
+                    $(el).datepicker({
+                        showOtherMonths: true,
+                        selectOtherMonths: true,
+                        maxDate: $(el).data('max')
+                    });
+                })
             })
 
             if ('serviceWorker' in navigator) {

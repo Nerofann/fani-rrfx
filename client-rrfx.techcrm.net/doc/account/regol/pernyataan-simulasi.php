@@ -34,7 +34,7 @@ $tanggalLahir = ($realAccount['ACC_TANGGAL_LAHIR'] ?? $user['MBR_TGLLAHIR']);
                                             <td width="20%" class="top-align fw-bold">Tanggal Lahir</td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="date" max="<?php echo date("Y-12-t", strtotime("-17 years")) ?>" name="smls_tgllhr" value="<?php echo (!empty($tanggalLahir)) ? date("Y-m-d", strtotime($tanggalLahir)) : NULL ?>" class="form-control" required>
+                                                <input type="text" name="smls_tgllhr" value="<?php echo (!empty($tanggalLahir)) ? date("m/d/Y", strtotime($tanggalLahir)) : NULL ?>" class="form-control datepicker" required data-max="<?= date("m/d/Y", strtotime("-18 years")) ?>">
                                             </td>
                                         </tr>
                                         <tr>

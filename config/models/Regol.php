@@ -31,26 +31,9 @@ class Regol {
         '> 500 juta'
     ];
 
-    public static function generatePassword(int $len = 8) {
-        $lower = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z');
-        $upper = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
-        $specials = array('!','#','$','%','&','(',')','*','+',',','-','.',':',';','=','?','@','[',']','^','_','{','|','}','~');
-        $digits = array('0','1','2','3','4','5','6','7','8','9');
-        $all = array($lower, $upper, $specials, $digits);
+    public static int $cddTypeStandard = 1;
 
-        $pwd = $lower[array_rand($lower, 1)];
-        $pwd = $pwd . $upper[array_rand($upper, 1)];
-        $pwd = $pwd . $specials[array_rand($specials, 1)];
-        $pwd = $pwd . $digits[array_rand($digits, 1)];
-
-        for($i = strlen($pwd); $i < max(8, $len); $i++)
-        {
-            $temp = $all[array_rand($all, 1)];
-            $pwd = $pwd . $temp[array_rand($temp, 1)];
-        }
-
-        return str_shuffle($pwd);
-    } 
+    public static int $cddTypeSederhana = 2;
 
     public static function getLastAccount(string $userid): array|bool {
         try {
@@ -205,6 +188,32 @@ class Regol {
             }
 
             return false;
+        }
+    }
+
+    public static function cddTypeArray() {
+        return [self::$cddTypeStandard, self::$cddTypeSederhana];
+    }
+
+    public static function cddType(int $type) {
+        switch($type) {
+            case self::$cddTypeStandard: 
+                return [
+                    'text' => "Standard",
+                    'html' => '<span class="badge bg-info">Standard</span>'
+                ];
+
+            case self::$cddTypeSederhana: 
+                return [
+                    'text' => "Sederhana",
+                    'html' => '<span class="badge bg-info">Sederhana</span>'
+                ];
+
+            default: 
+                return [
+                    'text' => "Unknown",
+                    'html' => '<span class="badge bg-dark">Unknown</span>'
+                ];
         }
     }
 }
