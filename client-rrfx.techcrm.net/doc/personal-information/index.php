@@ -62,7 +62,7 @@ function is_disable($inp) {
                             <div class="col-sm-4 mb-1">
                                 <label for="province" class="form-label required">Province</label>
                                 <select name="province" id="province" class="form-control form-select select2" required>
-                                    <option >Pilih</option>
+                                    <option value="">Pilih</option>
                                     <?php foreach(App\Models\Wilayah::provinces() as $province) : ?>
                                         <option value="<?= $province ?>" <?= $user['MBR_PROVINCE'] == $province? "selected" : ""; ?>><?= $province ?></option>
                                     <?php endforeach; ?>
@@ -156,18 +156,21 @@ function is_disable($inp) {
         const postalCode = $('#zip');
         
         province.on('change', function() {
-            city.empty();
-            $.post("/ajax/post/wilayah/regency", {province: this.value}, (resp) => {
-                if(resp.success) {
-                    $.each(resp.data, (i, val) => {
-                        city.append(`<option value="${val.name}" ${val.selected}>${val.name}</option>`);
-                    })
-
-                    if(city.find("option:selected").length) {
-                        city.change();
+            if(province.val()) {
+                console.log(province.val());
+                city.empty();
+                $.post("/ajax/post/wilayah/regency", {province: this.value}, (resp) => {
+                    if(resp.success) {
+                        $.each(resp.data, (i, val) => {
+                            city.append(`<option value="${val.name}" ${val.selected}>${val.name}</option>`);
+                        })
+    
+                        if(city.find("option:selected").length) {
+                            city.change();
+                        }
                     }
-                }
-            }, "json")
+                }, "json")
+            }
         }).change();
 
         city.on('change', function() {
