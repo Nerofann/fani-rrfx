@@ -16,7 +16,7 @@
                 </div>
                 <div class="modal-footer">
                     <input type="hidden" name="idotp" id="idotp" value="" readonly required>
-                    <a href="javascript:void(0)" id="resendcode" class="btn btn-info">Resend</a>
+                    <button type="button" class="btn btn-info" id="resendcode">Resend</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-primary">Confirm</button>
                 </div>
@@ -56,8 +56,14 @@
             })
         })
 
-        $('#resendcode').on('click', function() {
+        $('#resendcode').on('click', function(e) { 
+            e.preventDefault();
+            let button = $(this);
+
+            button.prop('disabled', true).text('Loading...');
+
             $.post("/ajax/post/profile/bank-otp-resend", {code: '1234'}, (resp) => {
+                button.prop('disabled', false).text('Resend');
                 Swal.fire(resp.alert).then(() => {
                     location.reload();
                 })
