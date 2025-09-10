@@ -503,7 +503,7 @@ class AppPost {
         $this->isAllowToEdit(status: $progressAccount['ACC_STS']);
 
         /** Update Type */
-        if($progressAccount['ACC_TYPE'] != $raccType['ID_RTYPE']) {
+        // if($progressAccount['ACC_TYPE'] != $raccType['ID_RTYPE']) {
             $updateData = [
                 'ACC_TYPE' => $raccType['ID_RTYPE'],
                 'ACC_CDD' => $data['cdd-type'],
@@ -521,7 +521,7 @@ class AppPost {
                     ]
                 ]));
             }
-        }
+        // }
 
         Logger::client_log([
             'mbrid' => $user['MBR_ID'],
