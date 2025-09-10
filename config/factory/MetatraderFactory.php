@@ -10,7 +10,7 @@ use Exception;
 
 class MetatraderFactory {
 
-    public static $serverReal = "RRFX-Live";
+    public static $serverReal = "RRFX-Demo";
     public static $serverDemo = "RRFX-Demo";
     public static $tokenManagerDemo = "5c585515-6500-4fc2-b7fb-ca3a7c276d4c-rrfx-demo";
     public static $tokenManagerReal = "02c89495-67a8-4ca0-9a81-af0d25e74135-rrfx-live";
@@ -21,11 +21,11 @@ class MetatraderFactory {
     }
 
     public static function apiTerminal(): ApiTerminal {
-        return new ApiTerminal(self::$serverReal);
+        return new ApiTerminal("http://139.180.212.62:7004", self::$serverReal);
     }
 
     public static function apiTerminalDemo(): ApiTerminal {
-        return new ApiTerminal(self::$serverDemo);
+        return new ApiTerminal("http://139.180.212.62:7004", self::$serverDemo);
     }
 
     public static function apiManagerDemo(): ApiManager {
