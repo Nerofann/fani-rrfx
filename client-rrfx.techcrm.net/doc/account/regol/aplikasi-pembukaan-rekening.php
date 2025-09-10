@@ -546,8 +546,8 @@ $_SESSION['modal'] = ['create-bank'];
                                     <input type="file" class="dropify" id="app_image_2" name="app_image_2" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_IMG2'] ?? "") ?>">
                                 </div>
                                 <div class="col-md-4 mb-3">
-                                    <label for="" class="form-label required">NPWP</label>
-                                    <input type="file" class="dropify" id="app_image_npwp" name="app_image_npwp" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_NPWP'] ?? "") ?>">
+                                    <label for="" class="form-label <?= ($realAccount['ACC_CDD'] == App\Models\Regol::$cddTypeStandard)? "required" : ""; ?>">NPWP</label>
+                                    <input type="file" class="dropify" id="app_image_npwp" name="app_image_npwp" data-allowed-file-extensions="png jpg jpeg" data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_NPWP'] ?? "") ?>" <?= ($realAccount['ACC_CDD'] == App\Models\Regol::$cddTypeStandard && empty($realAccount['ACC_F_APP_FILE_NPWP']))? "required" : ""; ?>>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label for="" class="form-label">Dokumen Lainnya</label>
