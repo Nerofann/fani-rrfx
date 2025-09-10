@@ -16,6 +16,7 @@
                                 data-max-file-size="4M"
                                 data-min-width="480"
                                 data-min-height="640"
+                                data-show-remove="false"
                                 data-allowed-file-extensions="png jpg jpeg" 
                                 data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_FOTO'] ?? ""); ?>">
                         </div>
@@ -25,6 +26,7 @@
                                 data-max-file-size="2M"
                                 data-min-width="480"
                                 data-min-height="320"
+                                data-show-remove="false"
                                 data-allowed-file-extensions="png jpg jpeg" 
                                 data-default-file="<?= App\Models\FileUpload::awsFile($realAccount['ACC_F_APP_FILE_ID'] ?? ""); ?>">
                         </div>
