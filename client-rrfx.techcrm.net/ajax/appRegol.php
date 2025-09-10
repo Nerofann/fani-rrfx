@@ -9,6 +9,7 @@ use App\Models\FileUpload;
 use App\Models\Helper;
 use App\Models\Logger;
 use App\Models\ProfilePerusahaan;
+use App\Models\Regol;
 use App\Models\SendEmail;
 use App\Models\User;
 use Config\Core\Database;
@@ -332,6 +333,29 @@ class AppPost {
 
     public function accountType($data, $user) {
         $this->checkCsrfToken($data);
+
+        if(empty($data['cdd-type'])) {
+            exit(json_encode([
+                'success'   => false,
+                'alert'     => [
+                    'title' => "Gagal",
+                    'text'  => "CDD Tipe diperlukan",
+                    'icon'  => "error"
+                ]
+            ]));
+        }
+
+        if(!in_array($data['cdd-type'], Regol::cddTypeArray())) {
+            exit(json_encode([
+                'success'   => false,
+                'alert'     => [
+                    'title' => "Gagal",
+                    'text'  => "CDD Tipe tidak valid",
+                    'icon'  => "error"
+                ]
+            ]));
+        }
+
         if(empty($data['account-type'])) {
             exit(json_encode([
                 'success'   => false,
@@ -479,9 +503,10 @@ class AppPost {
         $this->isAllowToEdit(status: $progressAccount['ACC_STS']);
 
         /** Update Type */
-        if($progressAccount['ACC_TYPE'] != $raccType['ID_RTYPE']) {
+        // if($progressAccount['ACC_TYPE'] != $raccType['ID_RTYPE']) {
             $updateData = [
                 'ACC_TYPE' => $raccType['ID_RTYPE'],
+                'ACC_CDD' => $data['cdd-type'],
                 'ACC_LAST_STEP' => "profile-perusahaan",
             ];
 
@@ -496,7 +521,7 @@ class AppPost {
                     ]
                 ]));
             }
-        }
+        // }
 
         Logger::client_log([
             'mbrid' => $user['MBR_ID'],
@@ -1866,12 +1891,12 @@ class AppPost {
 
         /** Upload Dokumen NPWP */
         if(empty($_FILES['app_image_npwp']) || $_FILES['app_image_npwp']['error'] != 0) {
-            if(empty($progressAccount['ACC_F_APP_FILE_NPWP'])) {
+            if(empty($progressAccount['ACC_F_APP_FILE_NPWP']) && $progressAccount['ACC_CDD'] == Regol::$cddTypeStandard) {
                 exit(json_encode([
                     'success' => false,
                     'alert' => [
                         'title' => "Gagal",
-                        'text'  => "Mohon upload dokumen pendukung",
+                        'text'  => "Mohon upload dokumen NPWP",
                         'icon'  => "error"
                     ] 
                 ]));
@@ -1884,7 +1909,7 @@ class AppPost {
                     'success' => false,
                     'alert' => [
                         'title' => "Gagal",
-                        'text'  => $uploadDokumenPendukung ?? "Gagal mengunggah file dokumen pendukung",
+                        'text'  => $uploadDokumenPendukung ?? "Gagal mengunggah file dokumen NPWP",
                         'icon'  => "error"
                     ] 
                 ]));
@@ -1896,7 +1921,7 @@ class AppPost {
                     'success' => false,
                     'alert' => [
                         'title' => "Gagal",
-                        'text'  => $updateImage ?? "Gagal memperbarui dokumen pendukung, mohon coba lagi",
+                        'text'  => $updateImage ?? "Gagal memperbarui dokumen NPWP, mohon coba lagi",
                         'icon'  => "error"
                     ] 
                 ]));

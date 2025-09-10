@@ -43,67 +43,79 @@ $accountTypes = [
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Account Type</label>
-                        <select id="acc-type" class="form-select mb-3">
-                            <?php foreach($accountCategories as $accType) : ?>
-                                <option data-type="<?= strtolower($accType) ?>" value="<?= strtoupper($accType) ?>" <?= strtoupper($realAccount['RTYPE_TYPE_AS'] ?? "") == strtoupper($accType)? "selected" : ""; ?>><?= $accType; ?></option>
+                        <label class="form-label">CDD Tipe</label>
+                        <select id="cdd-type" name="cdd-type" class="form-select mb-3">
+                            <option value="" selected disabled>Pilih</option>
+                            <?php foreach(App\Models\Regol::cddTypeArray() as $cdd) : ?>
+                                <option value="<?= $cdd ?>" <?= ($cdd == $realAccount['ACC_CDD'])? "selected" : ""; ?>><?= App\Models\Regol::cddType($cdd)['text'] ?? "-"; ?></option>
                             <?php endforeach; ?>
                         </select>
-                        
-                        <?php foreach($accountCategories as $type) : ?>
-                            <?php $lowerType = strtolower($type) ?>
-                            <div class="tab-categories" id="nav-<?= $lowerType ?>" <?= $lowerType != strtolower($realAccount['RTYPE_TYPE_AS'] ?? "")? "style='display: none;'" : ""; ?>>
-                                <nav class="mb-3">
-                                    <?php if($lowerType == "multilateral") : ?>
-                                        <div class="alert alert-warning">
-                                            <p>Hubungi CS Kami untuk mendaftar akun <b>Multilateral</b></p>
-                                        </div>
-                                    <?php endif; ?>
+                    </div>
 
-                                    <div class="btn-box d-flex flex-wrap gap-2" id="nav-tab" role="tablist">
+                    <div class="div-account-type">
+                        <div class="mb-3">
+                            <label class="form-label">Account Type</label>
+                            <select id="acc-type" class="form-select mb-3">
+                                <?php foreach($accountCategories as $accType) : ?>
+                                    <option data-type="<?= strtolower($accType) ?>" value="<?= strtoupper($accType) ?>" <?= strtoupper($realAccount['RTYPE_TYPE_AS'] ?? "") == strtoupper($accType)? "selected" : ""; ?>><?= $accType; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            
+                            <?php foreach($accountCategories as $type) : ?>
+                                <?php $lowerType = strtolower($type) ?>
+                                <div class="tab-categories" id="nav-<?= $lowerType ?>" <?= $lowerType != strtolower($realAccount['RTYPE_TYPE_AS'] ?? "")? "style='display: none;'" : ""; ?>>
+                                    <nav class="mb-3">
+                                        <?php if($lowerType == "multilateral") : ?>
+                                            <div class="alert alert-warning">
+                                                <p>Hubungi CS Kami untuk mendaftar akun <b>Multilateral</b></p>
+                                            </div>
+                                        <?php endif; ?>
+    
+                                        <div class="btn-box d-flex flex-wrap gap-2" id="nav-tab" role="tablist">
+                                            <?php foreach($accountTypes[ $lowerType ] ?? [] as $key => $category) : ?>
+                                                <button class="btn btn-sm btn-outline-primary <?= $key == 0? "active" : ""; ?>" id="<?= $lowerType.$category['type'] ?>-tab" data-bs-toggle="tab" data-bs-target="#tab-<?= $lowerType.$category['type'] ?>" type="button" role="tab" aria-controls="tab-<?= $lowerType.$category['type'] ?>" aria-selected="<?= $key == 0? "true" : "false"; ?>"><?= strtoupper($category['type']) ?></button>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </nav>
+        
+                                    <div class="tab-content profile-edit-tab">
                                         <?php foreach($accountTypes[ $lowerType ] ?? [] as $key => $category) : ?>
-                                            <button class="btn btn-sm btn-outline-primary <?= $key == 0? "active" : ""; ?>" id="<?= $lowerType.$category['type'] ?>-tab" data-bs-toggle="tab" data-bs-target="#tab-<?= $lowerType.$category['type'] ?>" type="button" role="tab" aria-controls="tab-<?= $lowerType.$category['type'] ?>" aria-selected="<?= $key == 0? "true" : "false"; ?>"><?= strtoupper($category['type']) ?></button>
+                                            <div class="tab-pane fade <?= $key == 0? "show active" : ""; ?>" id="tab-<?= $lowerType.$category['type'] ?>" role="tabpanel" aria-labelledby="tab-<?= $lowerType.$category['type'] ?>" tabindex="0">
+                                                <div class="row">
+                                                    <?php foreach($category['products'] as $accType) : ?>
+                                                        <?php if(strtoupper($accType['RTYPE_TYPE_AS']) == strtoupper($type)) : ?>
+                                                            <div class="col-md-4">
+                                                                <input type="radio" name="account-type" id="<?= $accType['RTYPE_SUFFIX'] ?>" value="<?= $accType['RTYPE_SUFFIX'] ?>" data-category="<?= $category['type'] ?>" <?= (($realAccount['ID_RTYPE'] ?? "") == $accType['ID_RTYPE'])? "checked" : ""; ?>>
+                                                                <label for="<?= $accType['RTYPE_SUFFIX'] ?>" class="w-100 h-100 select-type">
+                                                                    <div class="file-manager-card">
+                                                                        <div class="top">
+                                                                            <div class="part-icon">
+                                                                                <span><?= strtoupper($accType['RTYPE_TYPE']) ?></span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="bottom">
+                                                                            <div class="left">
+                                                                                <a class="folder-name"><?= $accType['RTYPE_NAME'] ?></a>
+                                                                                <span class="file-quantity mb-1"><?= ($accType['RTYPE_CURR'] == "IDR")? "Rate IDR " . App\Models\Helper::formatCurrency($accType['RTYPE_RATE'], 2) : "Floating"; ?></span>
+                                                                                <span class="file-quantity mb-1">Leverage: <?= $accType['RTYPE_LEVERAGE'] ?></span>
+                                                                                <span class="file-quantity">Commission: $<?= $accType['RTYPE_KOMISI'] ?></span>
+                                                                            </div>
+                                                                            <div class="right">
+                                                                                <span class="storage-used"><?= $accType['RTYPE_CURR'] ?></span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </label>
+                                                            </div>
+                                                        <?php endif; ?>
+                                                    <?php endforeach; ?>
+                                                </div>
+                                            </div>
                                         <?php endforeach; ?>
                                     </div>
-                                </nav>
-    
-                                <div class="tab-content profile-edit-tab">
-                                    <?php foreach($accountTypes[ $lowerType ] ?? [] as $key => $category) : ?>
-                                        <div class="tab-pane fade <?= $key == 0? "show active" : ""; ?>" id="tab-<?= $lowerType.$category['type'] ?>" role="tabpanel" aria-labelledby="tab-<?= $lowerType.$category['type'] ?>" tabindex="0">
-                                            <div class="row">
-                                                <?php foreach($category['products'] as $accType) : ?>
-                                                    <?php if(strtoupper($accType['RTYPE_TYPE_AS']) == strtoupper($type)) : ?>
-                                                        <div class="col-md-4">
-                                                            <input type="radio" name="account-type" id="<?= $accType['RTYPE_SUFFIX'] ?>" value="<?= $accType['RTYPE_SUFFIX'] ?>" data-category="<?= $category['type'] ?>" <?= (($realAccount['ID_RTYPE'] ?? "") == $accType['ID_RTYPE'])? "checked" : ""; ?>>
-                                                            <label for="<?= $accType['RTYPE_SUFFIX'] ?>" class="w-100 h-100 select-type">
-                                                                <div class="file-manager-card">
-                                                                    <div class="top">
-                                                                        <div class="part-icon">
-                                                                            <span><?= strtoupper($accType['RTYPE_TYPE']) ?></span>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="bottom">
-                                                                        <div class="left">
-                                                                            <a class="folder-name"><?= $accType['RTYPE_NAME'] ?></a>
-                                                                            <span class="file-quantity mb-1"><?= ($accType['RTYPE_CURR'] == "IDR")? "Rate IDR " . App\Models\Helper::formatCurrency($accType['RTYPE_RATE'], 2) : "Floating"; ?></span>
-                                                                            <span class="file-quantity mb-1">Leverage: <?= $accType['RTYPE_LEVERAGE'] ?></span>
-                                                                            <span class="file-quantity">Commission: $<?= $accType['RTYPE_KOMISI'] ?></span>
-                                                                        </div>
-                                                                        <div class="right">
-                                                                            <span class="storage-used"><?= $accType['RTYPE_CURR'] ?></span>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </label>
-                                                        </div>
-                                                    <?php endif; ?>
-                                                <?php endforeach; ?>
-                                            </div>
-                                        </div>
-                                    <?php endforeach; ?>
                                 </div>
-                            </div>
-                        <?php endforeach; ?>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
 
@@ -129,6 +141,11 @@ $accountTypes = [
             $('input[name="account-type"]').prop('checked', false)
             $('.tab-categories').hide();
             $(`#nav-${type}`).show();
+        }).change();
+
+        $("#cdd-type").on('change', function() {
+            if($("#cdd-type").val()) $(".div-account-type").show();
+            else $(".div-account-type").hide();
         }).change();
 
         $('#form-account-type').on('submit', function(event){
