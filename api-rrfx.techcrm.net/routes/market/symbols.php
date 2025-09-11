@@ -21,7 +21,7 @@ $token = MetatraderFactory::autoConnect($accountLogin);
 if(!$token) {
     ApiResponse([
         'status' => false,
-        'message' => "Invalid Connection (2)",
+        'message' => "Invalid Token Connection",
         'response' => []
     ], 400);
 }
