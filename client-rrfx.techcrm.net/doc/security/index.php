@@ -1,3 +1,6 @@
+<?php
+    use App\Models\User;
+?>
 <div class="dashboard-breadcrumb mb-25">
     <h2>Security</h2>
 </div>
@@ -54,7 +57,7 @@
         </div>
     </div>
     <div class="col-6">
-        <div class="panel">
+        <div class="panel mb-3">
             <div class="card">
                 <div class="card-header">
                     2FA Auth (Coming Soon)
@@ -74,6 +77,31 @@
                     <button type="reset" class="btn btn-danger" name="reset">Reset</button>
                 </div>
             </div>
+        </div>
+        <div class="panel">
+            <form id="delt_acc" method="post">
+                <div class="card">
+                    <div class="card-header">
+                        Delete Account
+                    </div>
+                    <div class="card-body">
+                        <label for="" class="form-control-label">Enter OTP code</label>
+                        <div class="form-group mb-3">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="otp-code" required readonly>
+                                <?php if(User::checkReqDeleteAccount()){ ?>
+                                    <a href="javascript:void(0)" id="sendOtp" class="input-group-text" data-bs-toggle="tooltip" data-bs-title="Request OTP For Delete Account" data-bs-original-title="" title="">Request OTP</a>
+                                <?php } ?>
+                            </div>
+                        </div>
+                    </div>
+                    <?php if(User::checkReqDeleteAccount()){ ?>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-danger btn-block" name="submit_dlt">Delete</button>
+                        </div>
+                    <?php } ?>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -110,6 +138,46 @@
                     }
                 })
             }, 'json')
-        })
+        });
+
+        $('#sendOtp').on('click', function(e){
+            Swal.fire({
+                title: 'Loading',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                    $.post("/ajax/post/profile/delete-otp-send", {}, (resp) => {
+                        Swal.fire(resp.alert).then(() => {
+                            // if(resp.success) {
+                            //     location.reload();
+                            // }
+                            $(`input[name="otp-code"]`).prop('readonly', false);
+                        })
+                    }, 'json');
+                }
+            });
+        });
+
+        
+        $('#delt_acc').on('submit', function(e){
+            e.preventDefault();
+            let data = $(this).serialize();
+            Swal.fire({
+                title: 'Loading',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                    $.post("/ajax/post/profile/delete-otp-verification", data, (resp) => {
+                        Swal.fire(resp.alert).then(() => {
+                            if(resp.success) {
+                                location.reload();
+                            }
+                        })
+                    }, 'json');
+                }
+            });
+        });
     })
 </script>
