@@ -102,6 +102,16 @@ if(!$update) {
     ], 400);
 }
 
+/** Email OTP */
+$emailData = [
+    'subject' => "Bank OTP Verification",
+    'otp'  => $otpCode,
+];
+
+$emailSender = EmailSender::init(['email' => $user['MBR_EMAIL'], 'name' => $user['MBR_NAME']]);
+$emailSender->useFile("otp", $emailData);
+$send = $emailSender->send();
+
 ApiResponse([
     'status' => true,
     'message' => "Bank berhasil diperbarui, silahkan verifikasi otp ulang",
