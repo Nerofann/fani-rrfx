@@ -7,7 +7,7 @@ use App\Models\Helper;
 $apiTerminal = MetatraderFactory::apiTerminal();
 $accountLogin = Helper::form_input($_GET['login'] ?? "");
 $account = Account::realAccountDetail_byLogin($accountLogin);
-if(!$account) {
+if(!$account || $account['ACC_MBR'] != $user['MBR_ID']) {
     ApiResponse([
         'status' => false,
         'message' => 'Invalid Account',
