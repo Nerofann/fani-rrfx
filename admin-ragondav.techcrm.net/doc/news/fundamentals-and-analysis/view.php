@@ -1,5 +1,5 @@
 <?php
-    use App\Models\FileUpload
+    use App\Models\FileUpload;
 ?>
 <div class="page-header">
     <div>
@@ -108,7 +108,7 @@
                 <div class="modal-content modal-content-demo">
                     <div class="modal-header">
                         <h6 class="modal-title">Edit News</h6><button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button">
-                        <span aria-hidden="true">×</span>
+                        <span aria-hidden="true">x</span>
                         </button>
                     </div>
                     <div class="modal-body">

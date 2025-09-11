@@ -113,6 +113,6 @@
     JsonResponse([
         'code'      => 200,
         'success'   => true,
-        'message'   => "Success Insert News",
+        'message'   => "Berhasil menambahkan berita baru",
         'data'      => []
     ]);
