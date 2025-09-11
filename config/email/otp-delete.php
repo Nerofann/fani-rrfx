@@ -28,7 +28,7 @@
                         <tr>
                             <td style="text-align:center;width:100%">
                             <h1 style="margin:0;color:#0b0b16;direction:ltr;font-family:Roboto,Tahoma,Verdana,Segoe,sans-serif;font-size:32px;font-weight:700;letter-spacing:normal;line-height:120%;text-align:center;margin-top:0;margin-bottom:0">
-                                <strong>OTP Verification</strong>
+                                <strong>OTP Delete</strong>
                             </h1>
                             </td>
                         </tr>
@@ -40,7 +40,7 @@
                         <tr>
                             <td>
                                 <div style="color:#0b0b16;direction:ltr;font-family:Roboto,Tahoma,Verdana,Segoe,sans-serif;font-size:16px;font-weight:400;letter-spacing:0;line-height:150%;text-align:center">
-                                    <p style="margin:0">To continue registration and create your trading account, please confirm your email address.</p>
+                                    <p style="margin:0">To continue deleting your whole account, please confirm your email address.</p>
                                 </div>
                             </td>
                         </tr>

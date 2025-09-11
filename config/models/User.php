@@ -311,4 +311,25 @@ class User extends UserAuth {
             return false;
         }
     }
+
+    public static function checkReqDeleteAccount(): bool|array {
+        try {
+            /** Return array on success and bool on error */
+            $userid = self::authentication();
+            if(!$userid) {
+                return false;
+            }
+    
+            $db = Database::connect();
+            $sqlGet = $db->query("SELECT 1 FROM tb_dlt_account WHERE DLTACC_MBR = {$userid} AND DLTACC_STS = 0 ORDER BY ID_DLTACC LIMIT 1");
+            return ($sqlGet->num_rows == 0) ? true : false;
+
+        } catch (Exception $e) {
+            if(ini_get("display_errors") == "1") {
+                throw $e;
+            }
+
+            return false;
+        }
+    }
 }
