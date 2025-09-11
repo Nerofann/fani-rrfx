@@ -96,7 +96,7 @@ function is_disable($inp) {
                             </div>
                             <div class="col-sm-3 mb-1">
                                 <label for="tanggal_lahir" class="form-label required">Date of birth</label>
-                                <input type="date" name="tanggal_lahir" id="tanggal_lahir" max="<?php echo date("Y-01-01", strtotime("-18 year")); ?>" class="form-control" value="<?= $user['MBR_TGLLAHIR'] ?>" required>
+                                <input type="text" name="tanggal_lahir" id="tanggal_lahir" class="form-control datepicker" data-max="<?= date("m/d/Y", strtotime("-18 year")); ?>" value="<?php echo date("m/d/Y", strtotime($user['MBR_TGLLAHIR'] ?? "")); ?>" required>
                             </div>
                             <div class="col-sm-4 mb-1">
                                 <label for="gender" class="form-label">Gender</label>

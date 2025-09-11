@@ -48,7 +48,7 @@ $isVerified = User::isVerified($user['MBR_ID']);
     
                             <div class="col-md-4" mb-2>
                                 <label for="date_of_birth" class="form-label required">Date of birth</label>
-                                <input type="date" name="date_of_birth" id="date_of_birth" class="form-control" value="<?= date("Y-m-d", strtotime($user['MBR_TGLLAHIR'])) ?? ""; ?>" placeholder="Date of birth" required>
+                                <input type="date" name="date_of_birth" id="date_of_birth" class="form-control datepicker" value="<?= date("m/d/Y", strtotime($user['MBR_TGLLAHIR'])) ?? ""; ?>" placeholder="Date of birth" required>
                             </div>
     
                             <div class="col-md-6 mb-2">
