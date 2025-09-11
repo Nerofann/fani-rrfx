@@ -87,7 +87,7 @@ if(!is_array($uploadCoverBank) || !array_key_exists("filename", $uploadCoverBank
 
 /** insert */
 $otpCode = random_int(1000, 9999);
-$otpExpired = date("Y-m-d H:i:s", strtotime("+5 minute"));
+$otpExpired = date("Y-m-d H:i:s", strtotime("+30 minute"));
 $insert = Database::insert("tb_member_bank", [
     'MBANK_MBR' => $user['MBR_ID'],
     'MBANK_HOLDER' => $data['name'],
