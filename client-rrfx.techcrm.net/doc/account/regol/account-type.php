@@ -47,7 +47,7 @@ $accountTypes = [
                         <select id="cdd-type" name="cdd-type" class="form-select mb-3">
                             <option value="" selected disabled>Pilih</option>
                             <?php foreach(App\Models\Regol::cddTypeArray() as $cdd) : ?>
-                                <option value="<?= $cdd ?>" <?= ($cdd == $realAccount['ACC_CDD'])? "selected" : ""; ?>><?= App\Models\Regol::cddType($cdd)['text'] ?? "-"; ?></option>
+                                <option value="<?= $cdd ?>" <?= ($cdd == ($realAccount['ACC_CDD'] ?? 0))? "selected" : ""; ?>><?= App\Models\Regol::cddType($cdd)['text'] ?? "-"; ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
