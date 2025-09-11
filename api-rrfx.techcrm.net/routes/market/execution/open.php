@@ -1,8 +1,11 @@
 <?php
 
-use App\Models\AccountTrade;
+use App\Factory\MetatraderFactory;
+use App\Models\Account;
+use App\Models\Helper;
 
-$data = $helperClass->getSafeInput($_POST);
+$apiTerminal = MetatraderFactory::apiTerminal();
+$data = Helper::getSafeInput($_POST);
 foreach(['login', 'symbol', 'operation', 'volume'] as $key) {
     if(empty($data[$key])) {
         ApiResponse([
@@ -21,9 +24,9 @@ if(is_numeric($data['login']) === FALSE) {
     ], 400);
 }
 
-/** Check Trade Account */
-$account = AccountTrade::get($data['login']);
-if(empty($account)) {
+/** Check Account */
+$account = Account::realAccountDetail_byLogin($data['login']);
+if(empty($account) || $account['ACC_MBR'] != $user['MBR_ID']) {
     ApiResponse([
         'status' => false,
         'message' => "Invalid Account",
@@ -31,20 +34,20 @@ if(empty($account)) {
     ], 400);
 }
 
-/** Check UserID */
-if($account['ACCTRADE_MBR'] != $userData['MBR_ID']) {
+$token = MetatraderFactory::autoConnect($account["ACC_LOGIN"]);
+if(!$token) {
     ApiResponse([
         'status' => false,
-        'message' => "Authorization Failed",
+        'message' => "Invalid Token Connection",
         'response' => []
     ], 400);
 }
 
 /** Check Operation */
-if(in_array($data['operation'], ['buy', 'sell']) === FALSE) {
+if(in_array($data['operation'], Allmedia\Shared\Metatrader\ApiVariable::operations()) === FALSE) {
     ApiResponse([
         'status' => false,
-        'message' => "Operation must be buy or sell",
+        'message' => "Invalid Operation",
         'response' => []
     ], 400);
 }
@@ -67,19 +70,6 @@ if($data['volume'] <= 0) {
 }
 
 /** Request Order Send */
-$login = $account['ACCTRADE_LOGIN'];
-$mbrid = $userData['MBR_ID'];
-$amount = $data['volume'];
-$token = $ApiMeta->connect(['login' => $login, 'mbrid' => md5(md5($mbrid)), 'mobile' => true]);
-if($token->success === FALSE) {
-    ApiResponse([
-        'status' => false,
-        'message' => $token->error,
-        'response' => []
-    ], 400);
-}
-
-$token = $token->message;
 $orderData = [
     'id' => $token,
     'symbol' => $data['symbol'],
@@ -87,17 +77,17 @@ $orderData = [
     'volume' => $data['volume'],
 ];
 
-$orderSend = $ApiMeta->orderSend($orderData);
+$orderSend = $apiTerminal->orderSend($orderData);
 if($orderSend->success === FALSE) {
     ApiResponse([
         'status' => false,
-        'message' => $orderSend->error,
+        'message' => $orderSend->message,
         'response' => []
     ], 400);
 }
 
 ApiResponse([
     'status' => true,
-    'message' => "Order successfully opened with ticket: {$orderSend->message->ticket}",
-    'response' => $orderSend->message
+    'message' => "Order successfully opened with ticket: #{$orderSend->data->ticket}",
+    'response' => $orderSend->data
 ], 200);
