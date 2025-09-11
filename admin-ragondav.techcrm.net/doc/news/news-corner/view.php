@@ -79,9 +79,11 @@
             <div class="card card-aside custom-card">
                 <a href="#" class="card-aside-column  cover-image rounded-start-11" data-image-src="<?= FileUpload::awsFile(($RSLT_NEWS["BLOG_IMG"] ?? '')) ?>" style="background: url(<?= FileUpload::awsFile(($RSLT_NEWS["BLOG_IMG"] ?? '')) ?>) center center;"></a>
                 <div class="card-body">
-                    <a href="#"><span class="main-content-label tx-16"><?= strip_tags(html_entity_decode($RSLT_NEWS["BLOG_TITLE"])) ?></span></a>
-                    <div class="mt-3" style="overflow-wrap: anywhere;">
-                        <?= substr(strip_tags(html_entity_decode($RSLT_NEWS["BLOG_MESSAGE"])), 0, 200).'...'; ?>
+                    <div style="overflow-y: auto;height: 150px;">
+                        <a href="#"><span class="main-content-label tx-16"><?= substr(strip_tags(html_entity_decode($RSLT_NEWS["BLOG_MESSAGE"])), 0, 40).'...'; ?></span></a>
+                        <div class="mt-3">
+                            <?= substr(strip_tags(html_entity_decode($RSLT_NEWS["BLOG_MESSAGE"])), 0, 200).'...'; ?>
+                        </div>
                     </div>
                     <div class="d-flex align-items-center pt-3 mt-auto">
                         <div>
@@ -108,7 +110,7 @@
                 <div class="modal-content modal-content-demo">
                     <div class="modal-header">
                         <h6 class="modal-title">Edit News</h6><button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button">
-                        <span aria-hidden="true">×</span>
+                        <span aria-hidden="true">x</span>
                         </button>
                     </div>
                     <div class="modal-body">
