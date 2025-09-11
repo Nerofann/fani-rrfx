@@ -1,6 +1,10 @@
 <?php
 namespace App\Models;
 
+use Config\Core\Database;
+use Config\Core\SystemInfo;
+use Exception;
+
 class MemberBank {
 
     public static $statusNotVerified = 0;    
@@ -33,6 +37,25 @@ class MemberBank {
                     'text' => "Ditolak",
                     'html' => '<span class="badge bg-danger">Ditolak</span>'
                 ];
+        }
+    }
+
+    public static function findByIdHash(string $idHash): array|bool {
+        try {
+            $db = Database::connect();
+            $sqlGet = $db->query("SELECT * FROM tb_member_bank WHERE MD5(MD5(ID_MBANK)) = '{$idHash}' LIMIT 1");
+            if($sqlGet->num_rows == 0) {
+                return false;
+            }
+
+            return $sqlGet->fetch_assoc() ?? false;
+
+        } catch (Exception $e) {
+            if(SystemInfo::isDevelopment()) {
+                throw $e;
+            }
+
+            return false;
         }
     }
 }
