@@ -102,7 +102,7 @@ $insert = Database::insert("tb_member_bank", [
 
 /** Email OTP */
 $emailData = [
-    'subject' => "OTP Verification",
+    'subject' => "Bank OTP Verification",
     'otp'  => $otpCode,
 ];
 
