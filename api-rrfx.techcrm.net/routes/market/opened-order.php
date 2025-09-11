@@ -38,7 +38,7 @@ if($tradeHistory->success === FALSE) {
 $result = [];
 foreach($tradeHistory->data as $trade) {
     $result[] = [
-        'ticket' => $trade->tickcet,
+        'ticket' => $trade->ticket,
         'lot' => $trade->volume,
         'openPrice' => $trade->openPrice,
         'currentPrice' => $trade->price_current,
