@@ -1,8 +1,11 @@
 <?php
 
-use App\Models\AccountTrade;
+use App\Factory\MetatraderFactory;
+use App\Models\Account;
+use App\Models\Helper;
 
-$data = $helperClass->getSafeInput($_POST);
+$apiTerminal = MetatraderFactory::apiTerminal();
+$data = Helper::getSafeInput($_POST);
 foreach(['login', 'ticket'] as $key) {
     if(empty($data[$key])) {
         ApiResponse([
@@ -13,60 +16,29 @@ foreach(['login', 'ticket'] as $key) {
     }
 }
 
-if(is_numeric($data['login']) === FALSE) {
+$account = Account::realAccountDetail_byLogin($data['login']);
+if(!$account || $account['ACC_MBR'] != $user['MBR_ID']) {
     ApiResponse([
         'status' => false,
-        'message' => "login must be numeric",
+        'message' => 'Invalid Account',
         'response' => []
-    ], 400);
+    ]);
 }
 
-/** Check Ticket */
-if(is_numeric($data['ticket']) === FALSE) {
+/** Get Token */
+$token = MetatraderFactory::autoConnect($account['ACC_LOGIN']);
+if(!$token) {
     ApiResponse([
         'status' => false,
-        'message' => "ticket must be numeric",
+        'message' => "Invalid Token",
         'response' => []
-    ], 400);
+    ]);
 }
 
-/** Check Trade Account */
-$account = AccountTrade::get($data['login']);
-if(empty($account)) {
-    ApiResponse([
-        'status' => false,
-        'message' => "Invalid Account",
-        'response' => []
-    ], 400);
-}
-
-/** Check UserID */
-if($account['ACCTRADE_MBR'] != $userData['MBR_ID']) {
-    ApiResponse([
-        'status' => false,
-        'message' => "Authorization Failed",
-        'response' => []
-    ], 400);
-}
-
-/** Request Order Send */
-$login = $account['ACCTRADE_LOGIN'];
-$mbrid = $userData['MBR_ID'];
-$ticket = $data['ticket'];
-
-$token = $ApiMeta->connect(['login' => $login, 'mbrid' => md5(md5($mbrid)), 'mobile' => true]);
-if($token->success === FALSE) {
-    ApiResponse([
-        'status' => false,
-        'message' => $token->error,
-        'response' => []
-    ], 400);
-}
-
-$token = $token->message;
-$orderClose = $ApiMeta->orderClose([
+/** Request order close */
+$orderClose = $apiTerminal->orderClose([
     'id' => $token,
-    'ticket' => $ticket,
+    'ticket' => $data['ticket'],
     'placed' => 'false'
 ]);
 
@@ -80,6 +52,6 @@ if($orderClose->success === FALSE) {
 
 ApiResponse([
     'status' => true,
-    'message' => "Order closed successfully from ticket: {$ticket}",
-    'response' => $orderClose->message
-], 200);
+    'message' => "Order closed successfully from ticket: {$orderClose->data->ticket}",
+    'response' => []
+]);
