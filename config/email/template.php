@@ -114,9 +114,8 @@
 
 
     <!--[if !mso]><!-->
-    <link href="https://fonts.googleapis.com/css?family=Lato:400,700&display=swap" rel="stylesheet" type="text/css">
-
-    <link href="https://fonts.googleapis.com/css?family=Lato:400,700&display=swap" rel="stylesheet" type="text/css"><!--<![endif]-->
+    <link href="https://fonts.googleapis.com/css?family"Lato"400,700&display=swap" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family"Lato"400,700&display=swap" rel="stylesheet" type="text/css"><!--<![endif]-->
 
 </head>
 
@@ -174,7 +173,7 @@
 
 
                     <div class="u-row-container" style="padding: 0px;background-color: transparent">
-                        <div class="u-row" style="margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #5A6060;">
+                        <div class="u-row" style="margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #91938a;">
                             <div style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">
                                 <div class="u-col u-col-100" style="max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;">
                                     <div style="height: 100%;width: 100% !important;">
@@ -212,17 +211,12 @@
                                         <!--[if (!mso)&(!IE)]><!-->
                                         <div style="box-sizing: border-box; height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;"><!--<![endif]-->
                                             <div style="margin: 5px 20px;">
-                                                
+                                                <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" width="600" style="background-color:#fff;border-radius:0;color:#000;width:600px;margin:0 auto">
                                                 
                                                 <?php require_once $content; ?>
 
                                                 <hr>
-                                                <p style="text-align: justify; margin-bottom: 30px; font-size: 13px; color:#555;">
-                                                    Anda menerima email ini karena telah melakukan pendaftaran di <strong><?= $profile['website'] ?></strong>. 
-                                                    Jika memiliki pertanyaan, silakan hubungi kami melalui email di 
-                                                    <a href="mailto:<?= $profile['support'] ?>" style="color:#0D775E;"><?= $profile['support'] ?></a> 
-                                                    atau melalui nomor <strong><?= $profile['phone'] ?></strong>.
-                                                </p>
+                                                <p style="text-align: justify; margin-bottom: 30px;">Anda menerima email ini karena Anda mendaftar di <?= $profile['website'] ?> jika Anda memiliki pertanyaan, silahkan hubungi kami melalui email di <?= $profile['support'] ?>. Anda juga dapat menghubungi nomor <?= $profile['phone'] ?></p>
                                                 <hr>
                                                 <table>
                                                     <tbody>
@@ -251,6 +245,9 @@
                             </div>
                         </div>
                     </div>
+
+
+
                     <div class="u-row-container" style="padding: 0px;background-color: #f9f9f9">
                         <div class="u-row" style="margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #ffffff;">
                             <div style="border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;">

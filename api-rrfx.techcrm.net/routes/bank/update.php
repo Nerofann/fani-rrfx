@@ -1,16 +1,14 @@
 <?php
 
 use App\Models\BankList;
-use App\Models\FileUpload;
 use App\Models\Helper;
-use App\Models\MemberBank;
 use App\Models\User;
 use Config\Core\Database;
-use Config\Core\EmailSender;
 
 $data = Helper::getSafeInput($_POST);
 $required = [
     'id' => "ID bank",
+    'name' => "Nama pemilik rekening",
     'bank-name' => "Nama Bank",
     'bank-number' => "Nomor Rekening"
 ];
@@ -64,33 +62,20 @@ if(!$bankName) {
     ]);
 }
 
-if(empty($_FILES['bank-image']) || $_FILES['bank-image']['error'] != 0) {
+/** validasi bank name */
+if(!preg_match('/^[a-zA-Z\s]+$/', $data['name'])) {
     ApiResponse([
         'status' => false,
-        'message' => "Mohon upload foto cover bank",
+        'message' => "Nama Pemilik Rekening tidak valid",
         'response' => []
-    ], 400);
-}
-
-$uploadCoverBank = FileUpload::upload_myfile($_FILES['bank-image'], "bank_cover");
-if(!is_array($uploadCoverBank) || !array_key_exists("filename", $uploadCoverBank)) {
-    ApiResponse([
-        'status' => false,
-        'message' => $uploadCoverBank ?? "Gagal mengunggah file cover bank",
-        'response' => []
-    ], 400);
+    ]);
 }
 
 /** Update */
-$otpCode = random_int(1000, 9999);
-$otpExpired = date("Y-m-d H:i:s", strtotime("+30 minute"));
 $updateData = [
+    'MBANK_HOLDER' => $data['name'],
     'MBANK_NAME' => $data['bank-name'],
     'MBANK_ACCOUNT' => $rekening,
-    'MBANK_IMG' => $uploadCoverBank['filename'],
-    'MBANK_OTP' => $otpCode,
-    'MBANK_OTP_EXPIRED' => $otpExpired,
-    'MBANK_STS' => MemberBank::$statusNotVerified
 ];
 
 $update = Database::update("tb_member_bank", $updateData, ['ID_MBANK' => $bank['ID_MBANK']]);
@@ -99,21 +84,11 @@ if(!$update) {
         'status' => false,
         'message' => "Gagal memperbarui bank",
         'response' => []
-    ], 400);
+    ]);
 }
-
-/** Email OTP */
-$emailData = [
-    'subject' => "Bank OTP Verification",
-    'otp'  => $otpCode,
-];
-
-$emailSender = EmailSender::init(['email' => $user['MBR_EMAIL'], 'name' => $user['MBR_NAME']]);
-$emailSender->useFile("otp", $emailData);
-$send = $emailSender->send();
 
 ApiResponse([
     'status' => true,
-    'message' => "Bank berhasil diperbarui, silahkan verifikasi otp ulang",
+    'message' => "Bank berhasil diperbarui",
     'response' => []
 ]);

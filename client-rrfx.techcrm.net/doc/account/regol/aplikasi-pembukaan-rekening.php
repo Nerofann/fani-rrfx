@@ -131,14 +131,14 @@ $_SESSION['modal'] = ['create-bank'];
                                             <td width="30%" class="top-align fw-bold">No. Telp Rumah</td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="text" data-kind="number" inputmode="tel" autocomplete="off" placeholder="No. Telp Rumah" name="app_telepon_rumah" value="<?= $realAccount['ACC_F_APP_PRIBADI_TLP'] ?? 0 ?>" class="form-control">
+                                                <input type="text" data-kind="phone" inputmode="tel" autocomplete="off" placeholder="No. Telp Rumah" name="app_telepon_rumah" value="<?= $realAccount['ACC_F_APP_PRIBADI_TLP'] ?? 0 ?>" class="form-control">
                                             </td>
                                         </tr>
                                         <tr>
                                             <td width="30%" class="top-align fw-bold">No. Faksimili Rumah</td>
                                             <td width="3%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="text" data-kind="number" inputmode="tel" autocomplete="off" placeholder="No. Faksimili Rumah" name="app_faksimili_rumah" value="<?= $realAccount['ACC_F_APP_PRIBADI_FAX'] ?? 0 ?>" class="form-control">
+                                                <input type="text" data-kind="phone" inputmode="tel" autocomplete="off" placeholder="No. Faksimili Rumah" name="app_faksimili_rumah" value="<?= $realAccount['ACC_F_APP_PRIBADI_FAX'] ?? 0 ?>" class="form-control">
                                             </td>
                                         </tr>
                                         <tr>
@@ -453,14 +453,14 @@ $_SESSION['modal'] = ['create-bank'];
                                             <td width="8%" class="top-align fw-bold">No. Telp Kantor</td>
                                             <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="text" data-kind="number" inputmode="tel" autocomplete="off" placeholder="No. Telp Kantor" name="app_nomor_kantor" value="<?= $realAccount['ACC_F_APP_KRJ_TLP'] ?>" class="form-control">
+                                                <input type="text" data-kind="phone" inputmode="tel" autocomplete="off" placeholder="No. Telp Kantor" name="app_nomor_kantor" value="<?= $realAccount['ACC_F_APP_KRJ_TLP'] ?>" class="form-control">
                                             </td>
                                         </tr>
                                         <tr>
                                             <td width="8%" class="top-align fw-bold">No. Faksimili</td>
                                             <td width="1%" class="top-align"> : </td>
                                             <td class="top-align text-start">
-                                                <input type="text" data-kind="number" inputmode="tel" autocomplete="off" placeholder="No. Faksimili" name="app_nomor_fax_kantor" value="<?= $realAccount['ACC_F_APP_KRJ_FAX'] ?>" class="form-control">
+                                                <input type="text" data-kind="phone" inputmode="tel" autocomplete="off" placeholder="No. Faksimili" name="app_nomor_fax_kantor" value="<?= $realAccount['ACC_F_APP_KRJ_FAX'] ?>" class="form-control">
                                             </td>
                                         </tr>
                                     </tbody>
@@ -634,12 +634,6 @@ $_SESSION['modal'] = ['create-bank'];
                 pattern: "^(?:0\\d{8,12}|\\+62\\d{8,12})$",
                 min: 9, 
                 max: 15 
-            },
-            "number": {
-                title: "Nomor telepon harus berupa numeric",
-                pattern: "\\d+",
-                min: 0, 
-                max: 30
             }
         };
 
@@ -656,7 +650,6 @@ $_SESSION['modal'] = ['create-bank'];
                 const digitsOnly = (val || "").replace(/\D/g, "");
                 return hasPlusFirst ? ("+" + digitsOnly) : digitsOnly;
             }
-            
             // kodepos & npwp: angka saja
             return (val || "").replace(/\D/g, "");
         }
