@@ -3,6 +3,7 @@
 use App\Models\BankList;
 use App\Models\FileUpload;
 use App\Models\Helper;
+use App\Models\MemberBank;
 use App\Models\User;
 use Config\Core\Database;
 use Config\Core\EmailSender;
@@ -97,7 +98,7 @@ $insert = Database::insert("tb_member_bank", [
     'MBANK_ACCOUNT' => $rekening,
     'MBANK_OTP' => $otpCode,
     'MBANK_OTP_EXPIRED' => $otpExpired,
-    'MBANK_STS' => 0,
+    'MBANK_STS' => MemberBank::$statusNotVerified,
     'MBANK_IMG' => $uploadCoverBank['filename'],
     'MBANK_DATETIME' => date("Y-m-d H:i:s")
 ]);
