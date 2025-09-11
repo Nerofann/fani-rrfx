@@ -10,7 +10,7 @@ use Exception;
 
 class MetatraderFactory {
 
-    public static $serverReal = "RRFX-Live";
+    public static $serverReal = "RRFX-Demo";
     public static $serverDemo = "RRFX-Demo";
     public static $tokenManagerDemo = "5c585515-6500-4fc2-b7fb-ca3a7c276d4c-rrfx-demo";
     public static $tokenManagerReal = "02c89495-67a8-4ca0-9a81-af0d25e74135-rrfx-live";
@@ -102,6 +102,67 @@ class MetatraderFactory {
                 'message' => "Internal Server Error",
                 'data' => []
             ];
+        }
+    }
+
+    public static function autoConnect(int $login): string|bool {
+        try {
+            /** Check Account */
+            $account = Account::realAccountDetail_byLogin($login);
+            if(empty($account)) { 
+                return false;
+            }
+
+            $apiTerminal = self::apiTerminal();
+            $isEmptyToken = empty($account['ACC_TOKEN']);
+            $token = "";
+            switch($isEmptyToken) {
+                case true:
+                    /** Connect meta */
+                    $connectData = [
+                        'login' => $account['ACC_LOGIN'], 
+                        'password' => $account['ACC_PASS']
+                    ];
+                    
+                    $token = $apiTerminal->connect($connectData);
+                    if(!$token) {
+                        return false;
+                    }
+
+                    Database::update("tb_racc", ['ACC_TOKEN' => $token], ['ID_ACC' => $account['ID_ACC']]);
+                    break;
+
+                case false:
+                    /** check connection with available token */
+                    $token = $account['ACC_TOKEN'];
+                    $summary = $apiTerminal->accountSummary(['id' => $account['ACC_TOKEN']]);
+                    if(!$summary->success) {
+                        /** get new token */
+                        $connectData = [
+                            'login' => $account['ACC_LOGIN'], 
+                            'password' => $account['ACC_PASS']
+                        ];
+                        
+                        $token = $apiTerminal->connect($connectData);
+                        if(!$token) {
+                            return false;
+                        }
+
+                        Database::update("tb_racc", ['ACC_TOKEN' => $token], ['ID_ACC' => $account['ID_ACC']]);
+                    }
+
+
+                default: break;
+            }
+
+            return $token;
+
+        } catch (Exception $e) {
+            if(SystemInfo::isDevelopment()) {
+                throw $e;
+            }
+
+            return false;
         }
     }
 
