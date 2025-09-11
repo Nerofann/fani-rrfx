@@ -161,6 +161,7 @@ function is_disable($inp) {
                 city.empty();
                 $.post("/ajax/post/wilayah/regency", {province: this.value}, (resp) => {
                     if(resp.success) {
+                        city.append(`<option value="">Pilih</option>`);
                         $.each(resp.data, (i, val) => {
                             city.append(`<option value="${val.name}" ${val.selected}>${val.name}</option>`);
                         })
@@ -177,6 +178,7 @@ function is_disable($inp) {
             district.empty();
             $.post("/ajax/post/wilayah/district", {regency: city.val()}, (resp) => {
                 if(resp.success) {
+                    district.append(`<option value="">Pilih</option>`);
                     $.each(resp.data, (i, val) => {
                         district.append(`<option value="${val.name}" ${val.selected}>${val.name}</option>`);
                     })
@@ -192,6 +194,7 @@ function is_disable($inp) {
             villages.empty();
             $.post("/ajax/post/wilayah/villages", {district: district.val()}, (resp) => {
                 if(resp.success) {
+                    villages.append(`<option value="">Pilih</option>`);
                     $.each(resp.data, (i, val) => {
                         villages.append(`<option value="${val.name}" ${val.selected} data-postalcode="${val.postalCode}">${val.name}</option>`);
                     })
