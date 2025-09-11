@@ -6,6 +6,7 @@ use App\Models\Helper;
 use App\Models\MemberBank;
 use App\Models\User;
 use Config\Core\Database;
+use Config\Core\EmailSender;
 
 $data = Helper::getSafeInput($_POST);
 $required = [
@@ -84,7 +85,6 @@ if(!is_array($uploadCoverBank) || !array_key_exists("filename", $uploadCoverBank
 $otpCode = random_int(1000, 9999);
 $otpExpired = date("Y-m-d H:i:s", strtotime("+30 minute"));
 $updateData = [
-    'MBANK_HOLDER' => $data['name'],
     'MBANK_NAME' => $data['bank-name'],
     'MBANK_ACCOUNT' => $rekening,
     'MBANK_IMG' => $uploadCoverBank['filename'],
