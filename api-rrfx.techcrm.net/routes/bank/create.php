@@ -5,6 +5,7 @@ use App\Models\FileUpload;
 use App\Models\Helper;
 use App\Models\User;
 use Config\Core\Database;
+use Config\Core\EmailSender;
 
 $data = Helper::getSafeInput($_POST);
 $required = [
@@ -100,6 +101,16 @@ $insert = Database::insert("tb_member_bank", [
     'MBANK_IMG' => $uploadCoverBank['filename'],
     'MBANK_DATETIME' => date("Y-m-d H:i:s")
 ]);
+
+/** Email OTP */
+$emailData = [
+    'subject' => "Bank OTP Verification",
+    'otp'  => $otpCode,
+];
+
+$emailSender = EmailSender::init(['email' => $user['MBR_EMAIL'], 'name' => $user['MBR_NAME']]);
+$emailSender->useFile("otp", $emailData);
+$send = $emailSender->send();
 
 if(!$insert) {
     ApiResponse([
