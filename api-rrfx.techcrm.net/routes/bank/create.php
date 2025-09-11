@@ -103,6 +103,14 @@ $insert = Database::insert("tb_member_bank", [
     'MBANK_DATETIME' => date("Y-m-d H:i:s")
 ]);
 
+if(!$insert) {
+    ApiResponse([
+        'status' => false,
+        'message' => "Gagal membuat bank",
+        'response' => []
+    ], 400);
+}
+
 /** Email OTP */
 $emailData = [
     'subject' => "Bank OTP Verification",
@@ -112,14 +120,6 @@ $emailData = [
 $emailSender = EmailSender::init(['email' => $user['MBR_EMAIL'], 'name' => $user['MBR_NAME']]);
 $emailSender->useFile("otp", $emailData);
 $send = $emailSender->send();
-
-if(!$insert) {
-    ApiResponse([
-        'status' => false,
-        'message' => "Gagal membuat bank",
-        'response' => []
-    ], 400);
-}
 
 ApiResponse([
     'status' => true,
