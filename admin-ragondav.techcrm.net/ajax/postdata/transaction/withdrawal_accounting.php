@@ -7,7 +7,8 @@
     use App\Models\FileUpload;
     use Config\Core\Database;
     use App\Factory\MetatraderFactory;
-    use App\Models\User;
+use App\Models\ProfilePerusahaan;
+use App\Models\User;
 use Config\Core\EmailSender;
 
     $apiManager = MetatraderFactory::apiManager();
@@ -177,6 +178,7 @@ use Config\Core\EmailSender;
 
             $emailSender = EmailSender::init(['email' => $userdata['MBR_EMAIL'], 'name' => $userdata['MBR_NAME']]);
             $emailSender->useFile("withdrawal-success", $emailData);
+            $emailSender->addBcc(ProfilePerusahaan::$emailDealing , ProfilePerusahaan::$namaDealing);
             $send = $emailSender->send();
         
         }else {

@@ -7,8 +7,10 @@
     use App\Models\FileUpload;
     use Config\Core\Database;
     use App\Factory\MetatraderFactory;
+use App\Models\ProfilePerusahaan;
 use App\Models\User;
 use Config\Core\EmailSender;
+use Config\Core\SystemInfo;
 
     $listGrup = $adminPermissionCore->availableGroup();
     $adminRoles = Admin::adminRoles();
@@ -178,6 +180,7 @@ use Config\Core\EmailSender;
 
             $emailSender = EmailSender::init(['email' => $userdata['MBR_EMAIL'], 'name' => $userdata['MBR_NAME']]);
             $emailSender->useFile("deposit-success", $emailData);
+            $emailSender->addBcc(ProfilePerusahaan::$emailDealing, ProfilePerusahaan::$namaDealing);
             $send = $emailSender->send();
         
             
@@ -192,6 +195,7 @@ use Config\Core\EmailSender;
 
             $emailSender = EmailSender::init(['email' => $userdata['MBR_EMAIL'], 'name' => $userdata['MBR_NAME']]);
             $emailSender->useFile("deposit-reject", $emailData);
+            $emailSender->addBcc(ProfilePerusahaan::$emailDealing , ProfilePerusahaan::$namaDealing);
             $send = $emailSender->send();
         }
 
@@ -202,7 +206,7 @@ use Config\Core\EmailSender;
         JsonResponse([
             'code'      => 200,
             'success'   => false,
-            'message'   => "Exception occured. Please try again!.",
+            'message'   => (SystemInfo::isDevelopment())? $e->getMessage() : "Exception occured. Please try again!.",
             'data'      => []
         ]);
     }

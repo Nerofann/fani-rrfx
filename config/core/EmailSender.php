@@ -90,6 +90,10 @@ class EmailSender {
         return $this->parseFileContent($this->file, $this->fileData);
     }
 
+    public function addBcc(string $email, string $name) {
+        $this->mail->addBCC($email, $name);
+    }
+
     public function send() {
         if(!$this->mail->validateAddress($this->receiverEmail)) {
             throw new PHPException("[SEND] Email {$this->receiverEmail} Tidak Valid");

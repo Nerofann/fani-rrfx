@@ -4,6 +4,7 @@
     use App\Models\Dpwd;
     use App\Models\Helper;
     use App\Models\FileUpload;
+    use App\Models\Regol;
     $data = Helper::getSafeInput($_GET);
     $id_acc = $data["d"];
     $COMPANY = App\Models\CompanyProfile::$name;
@@ -14,6 +15,7 @@
     $userBanks = (!empty($progressAccount["MBR_BKJSN"])) ? json_decode($progressAccount["MBR_BKJSN"], true) : [];
     $date_month = Helper::bulan(date("m"));
     $accountCondition = Account::accoundCondition($progressAccount['ID_ACC']);
+    $lastNote = Regol::getAccountHistoryLastNote($progressAccount['ID_ACC']);
 
     if(!$progressAccount){
         die("<script>alert('Invalid Account');location.href = '/account/progress_real_account/view'</script>");
@@ -80,7 +82,7 @@
                     <div class="row">
                         <div class="col-md-3 mb-2 mt-auto">Note</div>
                         <div class="col-md-9 mb-2">
-                            <input type="text" class="form-control" value="<?php echo $note['NOTE_NOTE'] ?? "-" ?>" readonly required>
+                            <input type="text" class="form-control" value="<?php echo $lastNote['NOTE_NOTE'] ?? "-" ?>" readonly required>
                         </div>
                     </div>
                 </div>

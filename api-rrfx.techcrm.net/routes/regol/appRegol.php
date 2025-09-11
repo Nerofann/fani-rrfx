@@ -837,6 +837,7 @@ class AppRegol {
             'app_date_of_birth' => "Tanggal Lahir",
             'app_place_of_birth' => "Tempat Lahir",
             'app_gender' => "Jenis Kelamin",
+            'app_nama_ibu' => "Nama Ibu Kandung"
         ];
 
         foreach($required as $key => $text) {
@@ -911,6 +912,7 @@ class AppRegol {
 
         $updateData = [
             'ACC_FULLNAME' => $data['app_fullname'],
+            'ACC_F_APP_PRIBADI_IBU' => $data['app_nama_ibu'],
             'ACC_F_APP_PRIBADI_NAMA' => $data['app_fullname'],
             'ACC_F_APP_PRIBADI_NPWP' => $data['app_npwp'],
             'ACC_F_APP_PRIBADI_KELAMIN' => $data['app_gender'],
@@ -1587,19 +1589,19 @@ class AppRegol {
             }
         
         }else {
-            $uploadDokumenPendukung = FileUpload::upload_myfile($_FILES['app_image_npwp'], "regol");
-            if(!is_array($uploadDokumenPendukung) || !array_key_exists("filename", $uploadDokumenPendukung)) {
+            $uploadDokumenNPWP = FileUpload::upload_myfile($_FILES['app_image_npwp'], "regol");
+            if(!is_array($uploadDokumenNPWP) || !array_key_exists("filename", $uploadDokumenNPWP)) {
                 exit(json_encode([
                     'success' => false,
                     'alert' => [
                         'title' => "Gagal",
-                        'text'  => $uploadDokumenPendukung ?? "Gagal mengunggah file dokumen NPWP",
+                        'text'  => $uploadDokumenNPWP ?? "Gagal mengunggah file dokumen NPWP",
                         'icon'  => "error"
                     ] 
                 ]));
             }
     
-            $updateImage = Database::update("tb_racc", ['ACC_F_APP_FILE_NPWP' => $uploadDokumenPendukung['filename']], ['ID_ACC' => $progressAccount['ID_ACC']]);
+            $updateImage = Database::update("tb_racc", ['ACC_F_APP_FILE_NPWP' => $uploadDokumenNPWP['filename']], ['ID_ACC' => $progressAccount['ID_ACC']]);
             if($updateImage !== TRUE) {
                 exit(json_encode([
                     'success' => false,
@@ -1716,6 +1718,11 @@ class AppRegol {
         }
 
         $dataUpdate = [
+            'ACC_F_PROFILE' => 1,
+            'ACC_F_PROFILE_PERYT' => "Ya",
+            'ACC_F_PROFILE_IP' => Helper::get_ip_address(),
+            'ACC_F_PROFILE_DATE' => date("Y-m-d H:i:s"),
+            'ACC_F_DISC' => 1,
             'ACC_F_CMPLT' => 1,
             'ACC_F_CMPLT_IP' => Helper::get_ip_address(), 
             'ACC_F_CMPLT_PERYT' => "Ya",

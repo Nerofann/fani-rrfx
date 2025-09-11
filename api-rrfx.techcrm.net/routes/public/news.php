@@ -27,7 +27,7 @@ foreach($result->fetch_all(MYSQLI_ASSOC) as $row){
         'id' => md5(md5($row['ID_BLOG'])),
         'title' => $row['BLOG_TITLE'],
         'type' => Blog::$type[ $row['BLOG_TYPE'] ],
-        'message' => html_entity_decode($row['BLOG_MESSAGE']),
+        'message' => strip_tags(html_entity_decode($row['BLOG_MESSAGE'])),
         'author' => $row['BLOG_AUTHOR'],
         'tanggal' => Helper::default_date($row['BLOG_DATETIME'], "Y-m-d H:i:s"),
         'picture' => FileUpload::awsFile($row['BLOG_IMG']),

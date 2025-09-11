@@ -31,26 +31,9 @@ class Regol {
         '> 500 juta'
     ];
 
-    public static function generatePassword(int $len = 8) {
-        $lower = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z');
-        $upper = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
-        $specials = array('!','#','$','%','&','(',')','*','+',',','-','.',':',';','=','?','@','[',']','^','_','{','|','}','~');
-        $digits = array('0','1','2','3','4','5','6','7','8','9');
-        $all = array($lower, $upper, $specials, $digits);
+    public static int $cddTypeStandard = 1;
 
-        $pwd = $lower[array_rand($lower, 1)];
-        $pwd = $pwd . $upper[array_rand($upper, 1)];
-        $pwd = $pwd . $specials[array_rand($specials, 1)];
-        $pwd = $pwd . $digits[array_rand($digits, 1)];
-
-        for($i = strlen($pwd); $i < max(8, $len); $i++)
-        {
-            $temp = $all[array_rand($all, 1)];
-            $pwd = $pwd . $temp[array_rand($temp, 1)];
-        }
-
-        return str_shuffle($pwd);
-    } 
+    public static int $cddTypeSederhana = 2;
 
     public static function getLastAccount(string $userid): array|bool {
         try {
@@ -135,5 +118,102 @@ class Regol {
 
     public static function urlTradingRule($filename) {
         return "/assets/trading-rules/" . $filename;
+    }
+
+    public static function getAccountHistoryNote(int $idAcc): array  {
+        try {
+            global $db;
+            $sqlGet = $db->query("
+                SELECT 
+                    tn.*
+                FROM tb_note tn
+                JOIN tb_racc tr ON (tr.ID_ACC = tn.NOTE_RACC)
+                WHERE tr.ID_ACC = {$idAcc}
+                ORDER BY tn.ID_NOTE DESC
+            ");
+
+            return $sqlGet->fetch_all(MYSQLI_ASSOC) ?? [];
+
+        } catch (Exception $e) {
+            if(SystemInfo::isDevelopment()) {
+                throw $e;
+            }
+
+            return [];
+        }
+    }
+
+    public static function getAccountHistoryNoteReject(int $idAcc): array  {
+        try {
+            global $db;
+            $sqlGet = $db->query("
+                SELECT 
+                    tn.*
+                FROM tb_note tn
+                JOIN tb_racc tr ON (tr.ID_ACC = tn.NOTE_RACC)
+                WHERE tr.ID_ACC = {$idAcc}
+                AND NOTE_TYPE LIKE 'WP VER REJECT%'
+                ORDER BY tn.ID_NOTE DESC
+            ");
+
+            return $sqlGet->fetch_all(MYSQLI_ASSOC) ?? [];
+
+        } catch (Exception $e) {
+            if(SystemInfo::isDevelopment()) {
+                throw $e;
+            }
+
+            return [];
+        }
+    }
+
+    public static function getAccountHistoryLastNote(int $idAcc): array|bool  {
+        try {
+            global $db;
+            $sqlGet = $db->query("
+                SELECT 
+                    tn.*
+                FROM tb_note tn
+                JOIN tb_racc tr ON (tr.ID_ACC = tn.NOTE_RACC)
+                WHERE tr.ID_ACC = {$idAcc}
+                ORDER BY tn.ID_NOTE DESC
+                LIMIT 1
+            ");
+
+            return $sqlGet->fetch_assoc() ?? false;
+
+        } catch (Exception $e) {
+            if(SystemInfo::isDevelopment()) {
+                throw $e;
+            }
+
+            return false;
+        }
+    }
+
+    public static function cddTypeArray() {
+        return [self::$cddTypeStandard, self::$cddTypeSederhana];
+    }
+
+    public static function cddType(int $type) {
+        switch($type) {
+            case self::$cddTypeStandard: 
+                return [
+                    'text' => "Standard",
+                    'html' => '<span class="badge bg-info">Standard</span>'
+                ];
+
+            case self::$cddTypeSederhana: 
+                return [
+                    'text' => "Sederhana",
+                    'html' => '<span class="badge bg-info">Sederhana</span>'
+                ];
+
+            default: 
+                return [
+                    'text' => "Unknown",
+                    'html' => '<span class="badge bg-dark">Unknown</span>'
+                ];
+        }
     }
 }
