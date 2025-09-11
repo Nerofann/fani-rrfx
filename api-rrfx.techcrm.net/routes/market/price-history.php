@@ -1,10 +1,14 @@
 <?php
-global $ApiMeta;
+use Allmedia\Shared\Metatrader\ApiVariable;
+use App\Factory\MetatraderFactory;
+use App\Models\Account;
+use App\Models\Helper;
+$apiTerminal = MetatraderFactory::apiTerminal();
 
-$listTimeframe = ['M1', 'M5', 'M15', 'M30', 'H1', 'H4'];
-$symbol = $_GET['symbol'] ?? "";
-$timeframe = $_GET['timeframe'] ?? "H1";
-foreach(['symbol'] as $req) {
+$accountLogin = Helper::form_input($_GET['account'] ?? 0);
+$symbol = Helper::form_input($_GET['symbol'] ?? "");
+$timeframe = Helper::form_input($_GET['timeframe'] ?? "H1");
+foreach(['symbol', 'account'] as $req) {
     if(empty($_GET[$req])) {
         ApiResponse([
             'status' => false,
@@ -15,7 +19,7 @@ foreach(['symbol'] as $req) {
 }
 
 $timeframe = strtoupper($timeframe);
-if(!in_array($timeframe, $listTimeframe)) {
+if(!in_array($timeframe, ApiVariable::$timeframes)) {
     ApiResponse([
         'status' => false,
         'message' => "Invalid timeframe",
@@ -23,38 +27,29 @@ if(!in_array($timeframe, $listTimeframe)) {
     ], 400);
 }
 
-// /** Check Login */
-// $sqlGetAccount = $db->query("SELECT ID_ACC, ACC_MBR, ACC_TYPE, ACC_LOGIN, ACC_PASS FROM tb_racc WHERE ACC_LOGIN = '{$login}' LIMIT 1");
-// $account = $sqlGetAccount->fetch_assoc();
-// if($sqlGetAccount->num_rows == 0) {
-//     ApiResponse([
-//         'status' => false,
-//         'message' => "Account not found",
-//         'response' => []
-//     ], 400);
-// }
+/** Check Account */
+$account = Account::realAccountDetail_byLogin($accountLogin);
+if(empty($account) || $account['ACC_MBR'] != $user['MBR_ID']) {
+    ApiResponse([
+        'status' => false,
+        'message' => "Invalid Account",
+        'response' => []
+    ], 400);
+}
 
-// /** Get account token */
-// $token = $ApiMeta->connect([
-//     'login' => $account['ACC_LOGIN'],
-//     'mbrid' => md5(md5($account['ACC_MBR'])),
-//     'mobile' => true
-// ]);
+$token = MetatraderFactory::autoConnect($account['ACC_LOGIN']);
+if(!$token) {
+    ApiResponse([
+        'status' => false,
+        'message' => "Invalid Connection",
+        'response' => []
+    ], 404);
+}
 
-// if(!$token->success) {
-//     ApiResponse([
-//         'status' => false,
-//         'message' => $token->error,
-//         'response' => []
-//     ], 400);
-// }
-
-// $token = $token->message;
-$token = "1ed7b196-d831-4687-a8cb-d5d98bf02507";
-$priceHistory = $ApiMeta->priceHistory([
+$priceHistory = $apiTerminal->priceHistory([
     'id' => $token,
     'symbol' => $symbol,
-    'date_from' => date("Y-m-d", strtotime("-2 days")),
+    'date_from' => date("Y-m-d", strtotime("-3 days")),
     'date_to' => date("Y-m-d", strtotime("+1 day")),
     'timeframe' => $timeframe
 ]);
@@ -68,19 +63,21 @@ if(!$priceHistory->success) {
 }
 
 $result = [];
-foreach($priceHistory->message as $price) {
+foreach($priceHistory->data as $price) {
     $result[] = [
-        'date' => $price->time,
+        'time' => $price->time,
         'open' => $price->openPrice,
         'high' => $price->highPrice,
         'low' => $price->lowPrice,
-        'close' => $price->closePrice
+        'close' => $price->closePrice,
+        'digits' => $price->digits,
+        'tickVolume' => $price->tickVolume
     ];
 }
 
 // Get only the last 30 entries
-if(count($result) > 100) {   
-    $result = array_slice($result, -100);
+if(count($result) > 200) {   
+    $result = array_slice($result, -200);
 }
 
 ApiResponse([

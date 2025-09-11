@@ -72,10 +72,12 @@
                     <td width="1%" style="vertical-align: top; text-align:center;">&nbsp;:&nbsp;</td>
                     <td><?= $COMPANY_MOF["OFC_ADDRESS"] ?></td>
                 </tr>
-            </table>
-            Dalam hal ini bertindak untuk dan atas nama <?= strtoupper($COMPANY_PRF['COMPANY_NAME']) ?><br><br>
-            <div style="margin-top:-10px;">Pada hari ini <?= Helper::hari(date('w', strtotime($realAccount["ACC_F_DISC_DATE"]))) ?>,  tanggal <?= date('d', strtotime($realAccount["ACC_F_DISC_DATE"])) ?> <?= Helper::bulan(date('m', strtotime($realAccount["ACC_F_DISC_DATE"]))) ?> <?= date('Y', strtotime($realAccount["ACC_F_DISC_DATE"])) ?> mengkonfirmasi kepada:</div>
-            <table style="border-spacing: 0px;">
+                <tr>
+                    <td colspan="3" style="text-align: justify; margin-top: 10px;">
+                        Dalam hal ini bertindak untuk dan atas nama <?= strtoupper($COMPANY_PRF['COMPANY_NAME']) ?><br><br>
+                        <div style="margin-top:-10px;">Pada hari ini <?= Helper::hari(date('w', strtotime($realAccount["ACC_F_DISC_DATE"]))) ?>,  tanggal <?= date('d', strtotime($realAccount["ACC_F_DISC_DATE"])) ?> <?= Helper::bulan(date('m', strtotime($realAccount["ACC_F_DISC_DATE"]))) ?> <?= date('Y', strtotime($realAccount["ACC_F_DISC_DATE"])) ?> mengkonfirmasi kepada:</div>
+                    </td>
+                </tr>
                 <tr>
                     <td style="vertical-align: top;">Nama Lengkap</td>
                     <td width="1%" style="vertical-align: top; text-align:center;">&nbsp;:&nbsp;</td>
