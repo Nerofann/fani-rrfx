@@ -1,14 +1,15 @@
 <?php
 
 use App\Models\BankList;
+use App\Models\FileUpload;
 use App\Models\Helper;
+use App\Models\MemberBank;
 use App\Models\User;
 use Config\Core\Database;
 
 $data = Helper::getSafeInput($_POST);
 $required = [
     'id' => "ID bank",
-    'name' => "Nama pemilik rekening",
     'bank-name' => "Nama Bank",
     'bank-number' => "Nomor Rekening"
 ];
@@ -62,20 +63,34 @@ if(!$bankName) {
     ]);
 }
 
-/** validasi bank name */
-if(!preg_match('/^[a-zA-Z\s]+$/', $data['name'])) {
+if(empty($_FILES['bank-image']) || $_FILES['bank-image']['error'] != 0) {
     ApiResponse([
         'status' => false,
-        'message' => "Nama Pemilik Rekening tidak valid",
+        'message' => "Mohon upload foto cover bank",
         'response' => []
-    ]);
+    ], 400);
+}
+
+$uploadCoverBank = FileUpload::upload_myfile($_FILES['bank-image'], "bank_cover");
+if(!is_array($uploadCoverBank) || !array_key_exists("filename", $uploadCoverBank)) {
+    ApiResponse([
+        'status' => false,
+        'message' => $uploadCoverBank ?? "Gagal mengunggah file cover bank",
+        'response' => []
+    ], 400);
 }
 
 /** Update */
+$otpCode = random_int(1000, 9999);
+$otpExpired = date("Y-m-d H:i:s", strtotime("+30 minute"));
 $updateData = [
     'MBANK_HOLDER' => $data['name'],
     'MBANK_NAME' => $data['bank-name'],
     'MBANK_ACCOUNT' => $rekening,
+    'MBANK_IMG' => $uploadCoverBank['filename'],
+    'MBANK_OTP' => $otpCode,
+    'MBANK_OTP_EXPIRED' => $otpExpired,
+    'MBANK_STS' => MemberBank::$statusNotVerified
 ];
 
 $update = Database::update("tb_member_bank", $updateData, ['ID_MBANK' => $bank['ID_MBANK']]);
@@ -84,11 +99,11 @@ if(!$update) {
         'status' => false,
         'message' => "Gagal memperbarui bank",
         'response' => []
-    ]);
+    ], 400);
 }
 
 ApiResponse([
     'status' => true,
-    'message' => "Bank berhasil diperbarui",
+    'message' => "Bank berhasil diperbarui, silahkan verifikasi otp ulang",
     'response' => []
 ]);
