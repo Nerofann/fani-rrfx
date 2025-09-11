@@ -76,8 +76,8 @@ foreach($priceHistory->data as $price) {
 }
 
 // Get only the last 30 entries
-if(count($result) > 100) {   
-    $result = array_slice($result, -1000);
+if(count($result) > 200) {   
+    $result = array_slice($result, -200);
 }
 
 ApiResponse([
