@@ -214,7 +214,7 @@ $_SESSION['modal'] = ['create-bank'];
                                             <td class="top-align text-start" colspan="3">
                                                 <div class="d-flex justify-content-between mb-25">
                                                     <div class="form-check">
-                                                        <input class="form-check-input" name="app_pailit" id="app_pailit" type="checkbox" required checked>
+                                                        <input class="form-check-input" name="app_pailit" id="app_pailit" type="checkbox" readonly required checked>
                                                         <label class="form-check-label" for="app_pailit">
                                                             Saya menyetujui bahwa tidak dinyatakan pailit oleh Pengadilan
                                                         </label>
