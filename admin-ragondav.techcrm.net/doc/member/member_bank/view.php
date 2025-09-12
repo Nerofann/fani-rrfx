@@ -10,3 +10,4 @@
 </div>
 
 <?php require_once __DIR__ . "/view_pending.php" ?>
+<?php require_once __DIR__ . "/view_history.php" ?>
