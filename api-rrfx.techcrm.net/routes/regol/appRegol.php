@@ -1599,7 +1599,7 @@ class AppRegol {
 
         /** Upload Dokumen NPWP */
         if(empty($_FILES['app_image_npwp']) || $_FILES['app_image_npwp']['error'] != 0) {
-            if(empty($progressAccount['ACC_F_APP_FILE_NPWP'])) {
+            if(empty($progressAccount['ACC_F_APP_FILE_NPWP']) && $progressAccount['ACC_CDD'] == Regol::$cddTypeStandard) {
                 exit(json_encode([
                     'success' => false,
                     'alert' => [
