@@ -3,7 +3,9 @@
 use App\Models\Helper;
 use App\Models\User;
 use App\Models\Account;
+use App\Models\ProfilePerusahaan;
 use Config\Core\Database;
+use Config\Core\EmailSender;
 
 $GETACC = Account::myAccount($user['MBR_ID']);
 $GETBNK = User::myBank($user['MBR_ID']);
@@ -65,6 +67,18 @@ if(!$insert) {
         'data' => []
     ]);
 }
+
+/** Email Notification for admin*/
+$emailData = [
+    'subject' => "Penghapusan User ".date("d/m/Y"),
+    'nama'    => $user['MBR_NAME'],
+    'email'   => $user['MBR_EMAIL']
+];
+
+
+$emailSender = EmailSender::init(['email' => ProfilePerusahaan::$emailDealing, 'name' => ProfilePerusahaan::$namaDealing]);
+$emailSender->useFile("otp-delete-admin-notif", $emailData);
+$send = $emailSender->send();
 
 JsonResponse([
     'success' => true,

@@ -3,7 +3,9 @@
     use App\Models\Helper;
     use App\Models\Admin;
     use App\Models\Logger;
+    use App\Models\ProfilePerusahaan;
     use Config\Core\Database;
+    use Config\Core\EmailSender;
 
     $listGrup = $adminPermissionCore->availableGroup();
     $adminRoles = Admin::adminRoles();
@@ -39,7 +41,17 @@
     }
 
     /** Check ID */ 
-    $SQL_CHECK = $db->query('SELECT tb_dlt_account.ID_DLTACC, tb_dlt_account.DLTACC_MBR  FROM tb_dlt_account WHERE MD5(MD5(tb_dlt_account.ID_DLTACC)) = "'.$data['xid'].'"');
+    $SQL_CHECK = $db->query('
+        SELECT 
+            tb_dlt_account.ID_DLTACC, 
+            tb_dlt_account.DLTACC_MBR, 
+            tb_member.MBR_EMAIL,
+            tb_member.MBR_NAME
+        FROM tb_dlt_account 
+        JOIN tb_member
+        ON(tb_dlt_account.DLTACC_MBR = tb_member.MBR_ID)
+        WHERE MD5(MD5(tb_dlt_account.ID_DLTACC)) = "'.$data['xid'].'"
+    ');
     if($SQL_CHECK->num_rows == 0){
         JsonResponse([
             'code'      => 200,
@@ -71,6 +83,35 @@
             "DLTACC_STS"    => ($data["val"] == 'accept') ? -1 : (($data["val"] == 'reject') ? 1 : 0)
         ];
         Database::update('tb_dlt_account', $UPDATE_DATA, ["ID_DLTACC" => $RSLT_CHECK["ID_DLTACC"], "DLTACC_STS" => 0]);
+
+        switch ($data["val"]) {
+            case 'accept':
+                $wrd = 'disetujui';
+                $fml = 'otp-delete-success';
+                break;
+            case 'accept':
+                $wrd = 'ditolak';
+                $fml = 'otp-delete-reject';
+                break;
+            
+            default:
+                $wrd = '';
+                $fml = '';
+            break;
+        }
+
+        /** Notifikasi email untuk admin dan client */
+        if(!empty($fml)){
+            $emailData = [
+                'subject' => "Penghapusan akun anda telah ".$wrd,
+                'email'   => $RSLT_CHECK['MBR_EMAIL']
+            ];
+    
+            $emailSender = EmailSender::init(['email' => $RSLT_CHECK['MBR_EMAIL'], 'name' => $RSLT_CHECK['MBR_NAME']]);
+            $emailSender->useFile($fml, $emailData);
+            $emailSender->addBcc(ProfilePerusahaan::$emailDealing, ProfilePerusahaan::$namaDealing);
+            $send = $emailSender->send();
+        }
 
         mysqli_commit($db);
     } catch (Exception | mysqli_sql_exception $e) {
