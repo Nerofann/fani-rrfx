@@ -4,7 +4,7 @@
             if(table_pending) {
                 table_pending.on('draw.dt', function() {
                     $.each($('#table-pending tbody tr'), (i, tr) => {
-                        let td = $(tr).find('td').eq(3);
+                        let td = $(tr).find('td').eq(4);
                         let actionArea = $(td).find('.action');
                         if(td && actionArea) {
                             let id = actionArea.data('id');

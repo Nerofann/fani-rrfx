@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\FileUpload;
 use App\Models\MemberBank;
 $dt->query("
     SELECT
@@ -9,6 +10,7 @@ $dt->query("
         tmb.MBANK_NAME,
         tmb.MBANK_HOLDER,
         tmb.MBANK_ACCOUNT,
+        tmb.MBANK_IMG,
         tmb.ID_MBANK
     FROM tb_member_bank tmb
     JOIN tb_member tm ON (tm.MBR_ID = tmb.MBANK_MBR)
@@ -31,6 +33,8 @@ $dt->edit("MBANK_ACCOUNT", function($col) {
         <p class="mb-0">'.$col['MBANK_HOLDER'].' / '.$col['MBANK_ACCOUNT'].'</p>
     ';
 });
+
+$dt->edit("MBANK_IMG", fn($col): string => '<a target="_blank" href="'.FileUpload::awsFile($col['MBANK_IMG']).'"><i>Lihat</i></a>');
 
 $dt->edit("ID_MBANK", function($col) {
     return '
