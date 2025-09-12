@@ -12,6 +12,7 @@
                             <th width="15%">Tanggal Diterima</th>
                             <th>User</th>
                             <th>Detail</th>
+                            <th>File</th>
                         </tr>
                     </thead>
                 </table>

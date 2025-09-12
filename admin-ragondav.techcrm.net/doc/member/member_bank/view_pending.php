@@ -11,6 +11,7 @@
                             <th width="15%">Tanggal Pengajuan</th>
                             <th>User</th>
                             <th>Detail</th>
+                            <th>File</th>
                             <th width="10%">#</th>
                         </tr>
                     </thead>
