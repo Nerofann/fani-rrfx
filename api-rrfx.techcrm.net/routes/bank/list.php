@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\FileUpload;
-use App\Models\MemberBank;
 use App\Models\User;
 
 $userBanks = User::myBank($user['MBR_ID']);
@@ -12,9 +10,6 @@ foreach($userBanks as $bank) {
         'holder' => $bank['MBANK_HOLDER'],
         'name' => $bank['MBANK_NAME'],
         'account' => $bank['MBANK_ACCOUNT'],
-        'status' => $bank['MBANK_STS'],
-        'status_string' => MemberBank::status($bank['MBANK_STS'])['text'] ?? "-",
-        'image' => FileUpload::awsFile($bank['MBANK_IMG']),
     ];
 }
 
