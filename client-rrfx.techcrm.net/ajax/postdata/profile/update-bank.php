@@ -1,14 +1,15 @@
 <?php
 
 use App\Models\BankList;
+use App\Models\FileUpload;
 use App\Models\Helper;
+use App\Models\MemberBank;
 use App\Models\User;
 use Config\Core\Database;
 
 $data = Helper::getSafeInput($_POST);
 $required = [
     'id' => "ID bank",
-    'name' => "Nama pemilik rekening",
     'bank-name' => "Nama Bank",
     'bank-number' => "Nomor Rekening"
 ];
@@ -62,21 +63,36 @@ if(!$bankName) {
     ]);
 }
 
-/** validasi bank name */
-if(!preg_match('/^[a-zA-Z\s]+$/', $data['name'])) {
-    JsonResponse([
-        'success' => false,
-        'message' => "Nama Pemilik Rekening tidak valid",
-        'data' => []
-    ]);
-}
-
-/** Update */
+/** Update Data */
 $updateData = [
-    'MBANK_HOLDER' => $data['name'],
+    'MBANK_HOLDER' => $user['MBR_NAME'],
     'MBANK_NAME' => $data['bank-name'],
     'MBANK_ACCOUNT' => $rekening,
+    'MBANK_STS' => MemberBank::$statusPending
 ];
+
+/** Upload cover bank */
+if(empty($_FILES['imagecover']) || $_FILES['imagecover']['error'] != 0) {
+    if(empty($bank['MBANK_IMG'])) {
+        JsonResponse([
+            'success' => false,
+            'message' => "Mohon upload cover bank",
+            'data' => []
+        ]);
+    }
+    
+}else {
+    $uploadCoverBank = FileUpload::upload_myfile($_FILES['imagecover'], "bank_cover");
+    if(!is_array($uploadCoverBank) || !array_key_exists("filename", $uploadCoverBank)) {
+        JsonResponse([
+            'success' => false,
+            'message' => $uploadCoverBank ?? "Gagal mengunggah cover buku tabungan",
+            'data' => []
+        ]);
+    }
+
+    $updateData['MBANK_IMG'] = $uploadCoverBank['filename'];
+}
 
 $update = Database::update("tb_member_bank", $updateData, ['ID_MBANK' => $bank['ID_MBANK']]);
 if(!$update) {

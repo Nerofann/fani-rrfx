@@ -7,23 +7,16 @@ use Exception;
 
 class MemberBank {
 
-    public static $statusNotVerified = 0;    
-    public static $statusVerified = -1;    
-    public static $statusAccepted = 1;    
-    public static $statusRejected = 2;  
+    public static $statusPending = 0;    
+    public static $statusAccepted = -1;    
+    public static $statusRejected = 1;  
     
     public static function status(int $status) {
         switch($status) {
-            case self::$statusNotVerified: 
+            case self::$statusPending: 
                 return [
-                    'text' => "Not Verified",
-                    'html' => '<span class="badge bg-warning">Not Verified</span>'
-                ];
-
-            case self::$statusVerified: 
-                return [
-                    'text' => "Verified",
-                    'html' => '<span class="badge bg-info">Verified</span>'
+                    'text' => "Pending",
+                    'html' => '<span class="badge bg-warning">Pending</span>'
                 ];
 
             case self::$statusAccepted: 
