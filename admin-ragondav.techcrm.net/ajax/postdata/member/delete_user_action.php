@@ -39,7 +39,7 @@
     }
 
     /** Check ID */ 
-    $SQL_CHECK = $db->query('SELECT tb_dlt_account.ID_DLTACC FROM tb_dlt_account WHERE MD5(MD5(tb_dlt_account.ID_DLTACC)) = "'.$data['xid'].'"');
+    $SQL_CHECK = $db->query('SELECT tb_dlt_account.ID_DLTACC, tb_dlt_account.DLTACC_MBR  FROM tb_dlt_account WHERE MD5(MD5(tb_dlt_account.ID_DLTACC)) = "'.$data['xid'].'"');
     if($SQL_CHECK->num_rows == 0){
         JsonResponse([
             'code'      => 200,
@@ -50,16 +50,35 @@
     }
     $RSLT_CHECK = $SQL_CHECK->fetch_assoc();
 
-    $UPDATE_DATA = [
-        "DLTACC_STS"    => ($data["val"] == 'accept') ? -1 : (($data["val"] == 'reject') ? 1 : 0)
-    ];
 
-    $update = Database::update('tb_dlt_account', $UPDATE_DATA, ["ID_DLTACC" => $RSLT_CHECK["ID_DLTACC"], "DLTACC_STS" => 0]);
-    if(!$update){
+    /**Execute database*/
+    try {
+        global $db;
+        mysqli_report(MYSQLI_REPORT_ERROR|MYSQLI_REPORT_STRICT);
+        mysqli_begin_transaction($db);
+
+        /**Update tabel member*/
+        $db->query('
+            UPDATE tb_member SET
+                tb_member.MBR_ID    = (tb_member.MBR_ID * 10),
+                tb_member.MBR_EMAIL = CONCAT(tb_member.MBR_EMAIL, "_deleted"),
+                tb_member.MBR_STS   = 1
+            WHERE tb_member.MBR_ID = '.$RSLT_CHECK["DLTACC_MBR"].'
+        ');
+
+        /**Update delete account tabel*/
+        $UPDATE_DATA = [
+            "DLTACC_STS"    => ($data["val"] == 'accept') ? -1 : (($data["val"] == 'reject') ? 1 : 0)
+        ];
+        Database::update('tb_dlt_account', $UPDATE_DATA, ["ID_DLTACC" => $RSLT_CHECK["ID_DLTACC"], "DLTACC_STS" => 0]);
+
+        mysqli_commit($db);
+    } catch (Exception | mysqli_sql_exception $e) {
+        mysqli_rollback($db);
         JsonResponse([
             'code'      => 200,
             'success'   => false,
-            'message'   => "Failed to update data!.",
+            'message'   => "Exception occured. Please try again!.",
             'data'      => []
         ]);
     }
