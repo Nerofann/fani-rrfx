@@ -5,6 +5,7 @@ use App\Factory\MetatraderFactory;
 use App\Factory\VerihubFactory;
 use App\Models\Account;
 use App\Models\Admin;
+use App\Models\BankList;
 use App\Models\FileUpload;
 use App\Models\Helper;
 use App\Models\Logger;
@@ -1375,28 +1376,28 @@ class AppPost {
         }
 
         /** Menyetujui tidak Memiliki Anggota keluarga bekerja di bappebti / bursa berjangka */
-        if(empty($data['app_anggota_berjangka'])) {
-            exit(json_encode([
-                'success' => false,
-                'alert' => [
-                    'title' => "Gagal",
-                    'text'  => "Anda tidak bisa mendaftar jika memiliki Anggota keluarga yang bekerja di BAPPEBTI / Bursa Berjangka",
-                    'icon'  => "error"
-                ] 
-            ]));
-        }
+        // if(empty($data['app_anggota_berjangka'])) {
+        //     exit(json_encode([
+        //         'success' => false,
+        //         'alert' => [
+        //             'title' => "Gagal",
+        //             'text'  => "Anda tidak bisa mendaftar jika memiliki Anggota keluarga yang bekerja di BAPPEBTI / Bursa Berjangka",
+        //             'icon'  => "error"
+        //         ] 
+        //     ]));
+        // }
 
-        /** Menyetujui tidak dinyatakan pailit oleh pengadilan */
-        if(empty($data['app_pailit'])) {
-            exit(json_encode([
-                'success' => false,
-                'alert' => [
-                    'title' => "Gagal",
-                    'text'  => "Anda tidak bisa mendaftar jika dinyatakan pailit oleh Pengadilan",
-                    'icon'  => "error"
-                ] 
-            ]));
-        }
+        // /** Menyetujui tidak dinyatakan pailit oleh pengadilan */
+        // if(empty($data['app_pailit'])) {
+        //     exit(json_encode([
+        //         'success' => false,
+        //         'alert' => [
+        //             'title' => "Gagal",
+        //             'text'  => "Anda tidak bisa mendaftar jika dinyatakan pailit oleh Pengadilan",
+        //             'icon'  => "error"
+        //         ] 
+        //     ]));
+        // }
 
         if(is_numeric($data['app_npwp']) === FALSE) {
             if($this->unrequireNPWP($progressAccount["ACC_TYPE"])){
@@ -1440,7 +1441,7 @@ class AppPost {
             'ACC_F_APP_TUJUANBUKA'      => $data['app_tujuan_pembukaan_rek'],
             'ACC_F_APP_PENGINVT'        => $data['app_pengalaman_investasi'],
             'ACC_F_APP_PENGINVT_BIDANG' => $bidang_investasi,
-            'ACC_F_APP_PAILIT'          => $data['app_pailit'],
+            'ACC_F_APP_PAILIT'          => "ya",
         ], [
             'ID_ACC' => $progressAccount['ID_ACC']
         ]);
@@ -1636,94 +1637,81 @@ class AppPost {
     }
 
     private function aplikasiPembukaanRekening_RekeningBank($data, $user, $progressAccount) {
+        for($i = 1; $i <= 2; $i++) {
+            /** check bank name */
+            $bank_name = $data["bank_name{$i}"];
+            $bank_number = Helper::stringTonumber($data["bank_number{$i}"] ?? 0) ;
+            $image = $_FILES["imagecover{$i}"] ?? [];
 
-        if(isset($data['bank_name1']) && isset($data['bank_number1'])){
-            if(strlen($data['bank_name1']) > 5 && strlen($data['bank_number1']) > 5){
-                $bank_name1 = $data['bank_name1'] ?? null;
-                $bank_number1 = $data['bank_number1'] ?? null;
-                
-                $insertBank1 = Database::insert("tb_member_bank", [
-                    'MBANK_MBR' => $progressAccount['ACC_MBR'],
-                    'MBANK_HOLDER' => $progressAccount['ACC_FULLNAME'],
-                    'MBANK_NAME' => $bank_name1,
-                    'MBANK_ACCOUNT' => $bank_number1
-                ]);
+            $checkBankName = BankList::findByName($bank_name);
+            if(!$checkBankName) {
+                exit(json_encode([
+                    'success'   => false,
+                    'alert'     => [
+                        'title' => "Gagal",
+                        'text'  => "Mohon upload Cover buku tabungan bank {$i}",
+                        'icon'  => "error"
+                    ]
+                ]));
+            }
 
-                if(!$insertBank1) {
-                    $this->db->rollback();
-                    exit(json_encode([
-                        'success'   => false,
-                        'alert'     => [
-                            'title' => "Gagal",
-                            'text'  => "Failed to create bank 1",
-                            'icon'  => "error"
-                        ]
-                    ])); 
-                }
+            /** check nomor rekening */
+            if(!$bank_number || $bank_number < 10) {
+                exit(json_encode([
+                    'success'   => false,
+                    'alert'     => [
+                        'title' => "Gagal",
+                        'text'  => "Nomor Rekening bank {$i} tidak valid",
+                        'icon'  => "error"
+                    ]
+                ]));
+            }
+
+            /** upload gambar */
+            if(empty($image) || $image['error'] !== 0) {
+                exit(json_encode([
+                    'success'   => false,
+                    'alert'     => [
+                        'title' => "Gagal",
+                        'text'  => "Mohon upload Cover buku tabungan bank {$i}",
+                        'icon'  => "error"
+                    ]
+                ]));
+            }
+
+            $uploadCoverBank = FileUpload::upload_myfile($image);
+            if(!is_array($uploadCoverBank) || !array_key_exists("filename", $uploadCoverBank)) {
+                exit(json_encode([
+                    'success'   => false,
+                    'alert'     => [
+                        'title' => "Gagal",
+                        'text'  => $uploadCoverBank ?? "Gagal upload Cover buku tabungan bank {$i}",
+                        'icon'  => "error"
+                    ]
+                ]));
+            }
+            
+            $insertBank = Database::insert("tb_member_bank", [
+                'MBANK_MBR' => $progressAccount['ACC_MBR'],
+                'MBANK_HOLDER' => $progressAccount['ACC_FULLNAME'],
+                'MBANK_NAME' => $bank_name,
+                'MBANK_STS' => MemberBank::$statusAccepted,
+                'MBANK_IMG' => $uploadCoverBank['filename'],
+                'MBANK_REGOL' => 1,
+                'MBANK_ACCOUNT' => $bank_number
+            ]);
+
+            if(!$insertBank) {
+                exit(json_encode([
+                    'success'   => false,
+                    'alert'     => [
+                        'title' => "Gagal",
+                        'text'  => "Failed to create bank {$i}",
+                        'icon'  => "error"
+                    ]
+                ])); 
             }
         }
-
-        if(isset($data['bank_name2']) && isset($data['bank_number2'])){
-            if(strlen($data['bank_name2']) > 5 && strlen($data['bank_number2']) > 5){
-                $bank_name2 = $data['bank_name2'] ?? null;
-                $bank_number2 = $data['bank_number2'] ?? null;
-                
-                $insertBank1 = Database::insert("tb_member_bank", [
-                    'MBANK_MBR' => $progressAccount['ACC_MBR'],
-                    'MBANK_HOLDER' => $progressAccount['ACC_FULLNAME'],
-                    'MBANK_NAME' => $bank_name2,
-                    'MBANK_ACCOUNT' => $bank_number2
-                ]);
-
-                if(!$insertBank1) {
-                    $this->db->rollback();
-                    exit(json_encode([
-                        'success'   => false,
-                        'alert'     => [
-                            'title' => "Gagal",
-                            'text'  => "Failed to create bank 2",
-                            'icon'  => "error"
-                        ]
-                    ])); 
-                }
-            }
-        }
-
-        // $bank_name2 = $data['bank_name2'] ?? null;
-        // $bank_number2 = $data['bank_number2'] ?? null;
-
-        // $sqlCheckAddress = $this->db->query("SELECT tb_member_bank.ID_MBANK FROM tb_member_bank WHERE tb_member_bank.MBANK_MBR = ".$progressAccount['ACC_MBR']."");
-        // if($sqlCheckAddress->num_rows >= 2) {
-        //     exit(json_encode([
-        //         'success'   => false,
-        //         'alert'     => [
-        //             'title' => "Gagal",
-        //             'text'  => "Kode pos tidak ditemukan / salah",
-        //             'icon'  => "error"
-        //         ]
-        //     ]));
-        // }
-        
-        // if($bank_name2 && $bank_number2){
-        //     $insertBank2 = Database::insert("tb_member_bank", [
-        //         'MBANK_MBR' => $progressAccount['ACC_MBR'],
-        //         'MBANK_HOLDER' => $progressAccount['ACC_FULLNAME'],
-        //         'MBANK_NAME' => $bank_name2,
-        //         'MBANK_ACCOUNT' => $bank_number2
-        //     ]);
-
-        //     if(!$insertBank2) {
-        //         $this->db->rollback();
-        //         exit(json_encode([
-        //             'success'   => false,
-        //             'alert'     => [
-        //                 'title' => "Gagal",
-        //                 'text'  => "Failed to create bank 2",
-        //                 'icon'  => "error"
-        //             ]
-        //         ])); 
-        //     }
-        // };
 
         return true;
     }
