@@ -69,14 +69,16 @@
         mysqli_report(MYSQLI_REPORT_ERROR|MYSQLI_REPORT_STRICT);
         mysqli_begin_transaction($db);
 
-        /**Update tabel member*/
-        $db->query('
-            UPDATE tb_member SET
-                tb_member.MBR_ID    = (tb_member.MBR_ID * 10),
-                tb_member.MBR_EMAIL = CONCAT(tb_member.MBR_EMAIL, "_deleted"),
-                tb_member.MBR_STS   = 1
-            WHERE tb_member.MBR_ID = '.$RSLT_CHECK["DLTACC_MBR"].'
-        ');
+        if($data["val"] == 'accept'){
+            /**Update tabel member*/
+            $db->query('
+                UPDATE tb_member SET
+                    tb_member.MBR_ID    = (tb_member.MBR_ID * 10),
+                    tb_member.MBR_EMAIL = CONCAT(tb_member.MBR_EMAIL, "_deleted"),
+                    tb_member.MBR_STS   = 1
+                WHERE tb_member.MBR_ID = '.$RSLT_CHECK["DLTACC_MBR"].'
+            ');
+        }
 
         /**Update delete account tabel*/
         $UPDATE_DATA = [
