@@ -43,7 +43,7 @@ if(empty($bankUser)) {
 }
 
 /** Check account */
-$account = Account::realAccountDetail($data['account']);
+$account = Account::realAccountDetail_byLogin($data['account']);
 if(empty($account)) {
     ApiResponse([
         'status'    => false,
