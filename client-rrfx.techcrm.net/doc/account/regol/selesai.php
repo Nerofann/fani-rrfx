@@ -14,6 +14,7 @@
                         <thead>
                             <tr>
                                 <th width="25%" class="text-start">Tanggal</th>
+                                <th class="text-start">Type</th>
                                 <th class="text-start">Catatan</th>
                             </tr>
                         </thead>
@@ -21,13 +22,14 @@
                             <?php $noteHistory = App\Models\Regol::getAccountHistoryNoteReject($realAccount['ID_ACC']); ?>
                             <?php if(empty($noteHistory)) : ?>
                                 <tr>
-                                    <td colspan="2" class="top-align text-start">Belum ada</td>
+                                    <td colspan="3" class="top-align text-start">Belum ada</td>
                                 </tr>
 
                             <?php else : ?>
                                 <?php foreach($noteHistory as $history) : ?>
                                     <tr>
                                         <td width="25%" class="top-align"><?= date("Y-m-d H:i:s", strtotime($history['NOTE_DATETIME'])); ?></td>
+                                        <td class="top-align text-start"><?= $history['NOTE_TYPE'] ?></td>
                                         <td class="top-align text-start"><?= $history['NOTE_NOTE'] ?></td>
                                     </tr>
                                 <?php endforeach; ?>
