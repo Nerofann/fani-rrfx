@@ -67,7 +67,7 @@ if(empty($bankAdmin)) {
 
 /** Check account */
 $account = Account::realAccountDetail_byLogin($data['account']);
-if(empty($account)) {
+if(empty($account) || $account['ACC_MBR'] != $user['MBR_ID']) {
     ApiResponse([
         'status'    => false,
         'message'   => "Real Account tidak valid / ditemukan",
