@@ -229,6 +229,7 @@ class AppRegol {
             'data' => [
                 'list_pekerjaan' => Regol::$listPekerjaan,
                 'list_pendapatan' => Regol::$listPendapatan,
+                'cdd_tipe' => array_map(fn($type): array => [$type => Regol::cddType($type)['text']], Regol::cddTypeArray())
             ]
         ]));
     }
@@ -301,6 +302,25 @@ class AppRegol {
                 'status'    => false,
                 'message'   => "Jenis akun diperlukan",
                 'response'  => []
+            ]));
+        }
+
+        if(empty($data['cdd-type'])) {
+            exit(json_encode([
+                'status'    => false,
+                'message'   => "CDD Tipe diperlukan",
+                'response'  => []
+            ]));
+        }
+
+        if(!in_array($data['cdd-type'], Regol::cddTypeArray())) {
+            exit(json_encode([
+                'success'   => false,
+                'alert'     => [
+                    'title' => "Gagal",
+                    'text'  => "CDD Tipe tidak valid",
+                    'icon'  => "error"
+                ]
             ]));
         }
 
@@ -416,16 +436,18 @@ class AppRegol {
         $this->isAllowToEdit(status: $progressAccount['ACC_STS']);
 
         /** Update Type */
-        if($progressAccount['ACC_TYPE'] != $raccType['ID_RTYPE']) {
-            $sqlUpdate = $this->db->prepare("UPDATE tb_racc SET ACC_TYPE = ? WHERE ID_ACC = ?");
-            $sqlUpdate->bind_param("ii", $raccType['ID_RTYPE'], $progressAccount['ID_ACC']);
-            if(!$sqlUpdate->execute()) {
-                exit(json_encode([
-                    'status'    => false,
-                    'message'   => "Perbarui Jenis Akun Gagal",
-                    'response'  => []
-                ]));
-            }
+        $updateData = [
+            'ACC_TYPE' => $raccType['ID_RTYPE'], 
+            'ACC_CDD' => $data['cdd-type']
+        ];
+
+        $update = Database::update("tb_racc", $updateData, ['ID_ACC' => $progressAccount['ID_ACC']]); 
+        if(!$update) {
+            exit(json_encode([
+                'status'    => false,
+                'message'   => "Perbarui Jenis Akun Gagal",
+                'response'  => []
+            ]));
         }
 
         exit(json_encode([
