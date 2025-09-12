@@ -1,6 +1,8 @@
 <?php
 
-$data = $helperClass->getSafeInput($_GET);
+use App\Models\Helper;
+
+$data = Helper::getSafeInput($_GET);
 if(empty($data['code'])) {
     ApiResponse([
         'status' => false,

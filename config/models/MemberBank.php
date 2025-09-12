@@ -58,4 +58,19 @@ class MemberBank {
             return false;
         }
     }
+
+    public static function activeBanks(int $mbrid): array {
+        try {
+            $userBanks = User::myBank($mbrid);
+            $activeBanks = array_filter($userBanks, fn($ar): bool => ($ar['MBANK_STS'] == MemberBank::$statusAccepted));
+            return $activeBanks;
+
+        } catch (Exception $e) {
+            if(SystemInfo::isDevelopment()) {
+                throw $e;
+            }
+
+            return [];
+        }
+    }
 }

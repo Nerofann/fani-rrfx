@@ -34,10 +34,8 @@
             "Rejected" AS ACC_STATUS,
             MD5(MD5(tb_racc.ID_ACC)) AS ID_ACC
         FROM tb_racc
-        JOIN tb_member
-        ON(tb_racc.ACC_MBR = tb_member.MBR_ID)
-        WHERE tb_racc.ACC_WPCHECK = 6
-        AND tb_racc.ACC_STS = -1
+        JOIN tb_member ON(tb_racc.ACC_MBR = tb_member.MBR_ID)
+        WHERE tb_racc.ACC_STS = 2
         '.$mth.'
     ';
     $dt->query($new_query);
