@@ -91,7 +91,7 @@
                 $wrd = 'disetujui';
                 $fml = 'otp-delete-success';
                 break;
-            case 'accept':
+            case 'reject':
                 $wrd = 'ditolak';
                 $fml = 'otp-delete-reject';
                 break;
