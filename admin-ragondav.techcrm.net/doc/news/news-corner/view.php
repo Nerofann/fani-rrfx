@@ -87,7 +87,7 @@
                     </div>
                     <div class="d-flex align-items-center pt-3 mt-auto">
                         <div>
-                            <a href="#" class="text-default"><?= $RSLT_NEWS["BLOG_DATETIME"] ?></a>
+                            <a href="javascript:void(0);" class="text-default"><?= $RSLT_NEWS["BLOG_DATETIME"] ?></a>
                             <small class="d-block text-muted">By: <?= $RSLT_NEWS["BLOG_AUTHOR"] ?></small>
                         </div>
                         <div class="ms-auto text-muted">

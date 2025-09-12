@@ -202,8 +202,7 @@ $_SESSION['modal'] = ['create-bank'];
                                             <td class="top-align text-start" colspan="3">
                                                 <div class="d-flex justify-content-between mb-25">
                                                     <div class="form-check">
-                                                        <input type="hidden" name="app_anggota_berjangka">
-                                                        <input class="form-check-input" name="app_anggota_berjangka" id="app_anggota_berjangka" type="checkbox" required disabled checked>
+                                                        <input class="form-check-input" name="app_anggota_berjangka" id="app_anggota_berjangka" type="checkbox" required checked>
                                                         <label class="form-check-label" for="app_anggota_berjangka">
                                                             Saya menyetujui bahwa tidak memiliki anggota keluarga yang<br>bekerja di BAPPEBTI / Bursa Berjangka / Kliring Berjangka
                                                         </label>
@@ -215,8 +214,7 @@ $_SESSION['modal'] = ['create-bank'];
                                             <td class="top-align text-start" colspan="3">
                                                 <div class="d-flex justify-content-between mb-25">
                                                     <div class="form-check">
-                                                        <input type="hidden" name="app_pailit">
-                                                        <input class="form-check-input" name="app_pailit" id="app_pailit" type="checkbox" required disabled checked>
+                                                        <input class="form-check-input" name="app_pailit" id="app_pailit" type="checkbox" required checked>
                                                         <label class="form-check-label" for="app_pailit">
                                                             Saya menyetujui bahwa tidak dinyatakan pailit oleh Pengadilan
                                                         </label>
