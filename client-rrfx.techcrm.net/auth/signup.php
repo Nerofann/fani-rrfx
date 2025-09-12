@@ -19,8 +19,8 @@ $referral = Helper::form_input($_GET['referral'] ?? "");
 				<input type="hidden" name="csrf_token" value="">
 				<div class="input-group mb-25">
 					<span class="input-group-text"><i class="fa-regular fa-user"></i></span>
-					<input type="text" name="fullname" required data-parsley-required class="form-control"
-						autocomplete="off" placeholder="Full Name">
+					<input type="text" name="fullname" pattern="^[A-Za-zÀ-ÖØ-öø-ÿ'’`ʼ\-\.\s]{2,100}$" required data-parsley-required class="form-control"
+						autocomplete="off" placeholder="Full Name" title="hanya boleh huruf, spasi, tanda hubung (-), titik (.), atau apostrof (').">
 				</div>
 				<div class="input-group mb-25">
 					<span class="input-group-text"><i class="fa-regular fa-envelope"></i></span>

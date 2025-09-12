@@ -8,6 +8,7 @@ use App\Models\Admin;
 use App\Models\FileUpload;
 use App\Models\Helper;
 use App\Models\Logger;
+use App\Models\MemberBank;
 use App\Models\ProfilePerusahaan;
 use App\Models\Regol;
 use App\Models\SendEmail;
@@ -1243,8 +1244,8 @@ class AppPost {
 
 
         /** Validasi Bank */
-        $userBanks = User::myBank($progressAccount['ACC_MBR']);
-        if(count($userBanks) <= 0) {
+        $activeBanks = MemberBank::activeBanks($progressAccount['ACC_MBR']);
+        if(count($activeBanks) <= 0) {
             exit(json_encode([
                 'success' => false,
                 'alert' => [
