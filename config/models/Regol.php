@@ -35,6 +35,11 @@ class Regol {
 
     public static int $cddTypeSederhana = 2;
 
+    public static int $statusWPCheckBankVerification = 0;
+    public static int $statusWPCheckRegister = 1;
+    public static int $statusWPCheckGoodFund = 5;
+    public static int $statusWPCheckActive = 6;
+
     public static function getLastAccount(string $userid): array|bool {
         try {
             $db = Database::connect();
@@ -207,6 +212,49 @@ class Regol {
                 return [
                     'text' => "Sederhana",
                     'html' => '<span class="badge bg-info">Sederhana</span>'
+                ];
+
+            default: 
+                return [
+                    'text' => "Unknown",
+                    'html' => '<span class="badge bg-dark">Unknown</span>'
+                ];
+        }
+    }
+
+    public static function wpCheckArray(): array {
+        return [
+            self::$statusWPCheckBankVerification,
+            self::$statusWPCheckRegister,
+            self::$statusWPCheckGoodFund,
+            self::$statusWPCheckActive,
+        ];
+    }
+    
+    public static function wpCheckStatus(int $type) {
+        switch($type) {
+            case self::$statusWPCheckBankVerification: 
+                return [
+                    'text' => "Bank Verification",
+                    'html' => '<span class="badge bg-secondary h-50 d-inline-block bg-opacity-15 text-white">Bank Verification</span>'
+                ];
+
+            case self::$statusWPCheckRegister: 
+                return [
+                    'text' => "Register",
+                    'html' => '<span class="badge bg-success h-50 d-inline-block bg-opacity-15 text-white">Register</span>'
+                ];
+
+            case self::$statusWPCheckGoodFund: 
+                return [
+                    'text' => "GoodFund",
+                    'html' => '<span class="badge bg-info h-50 d-inline-block bg-opacity-15 text-white">GoodFund</span>'
+                ];
+
+            case self::$statusWPCheckActive: 
+                return [
+                    'text' => "Active",
+                    'html' => '<span class="badge bg-success h-50 d-inline-block bg-opacity-15 text-white">Active</span>'
                 ];
 
             default: 
