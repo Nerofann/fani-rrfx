@@ -237,7 +237,7 @@ class User extends UserAuth {
     public static function myBank(int $mbrid, string $md5_id_bank = "-") {
         try {
             $db = Database::connect();
-            $sqlGet = $db->query("SELECT * FROM tb_member_bank WHERE MBANK_MBR = $mbrid AND MBANK_STS = " . MemberBank::$statusAccepted);
+            $sqlGet = $db->query("SELECT * FROM tb_member_bank WHERE MBANK_MBR = $mbrid");
 
             $result = [];
             switch(true) {
