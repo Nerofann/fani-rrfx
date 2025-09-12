@@ -3,6 +3,7 @@
     use App\Models\Account;
     use App\Models\Helper;
     use App\Models\FileUpload;
+    use App\Models\Regol;
     $data = Helper::getSafeInput($_GET);
     $id_acc = $data["d"] ?? "";
 
@@ -237,7 +238,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="d-flex flex-wrap justify-content-center align-items-center gap-3">
-                    <?php if($progressAccount['ACC_STS'] == 1 && $progressAccount['ACC_WPCHECK'] == 0) : ?>
+                    <?php if($progressAccount['ACC_STS'] == 1 && $progressAccount['ACC_WPCHECK'] == Regol::$statusWPCheckRegister) : ?>
                         <button type="button" id="verif_verihub" class="btn btn-primary">Verifikasi Verihub</button>
                         <?php if($permisUpdate = $adminPermissionCore->isHavePermission($moduleId, "update.document")) : ?>
                             <a href="javascript:void(0)" id="update-document" data-url="<?= $permisUpdate['link'] ?>" class="btn btn-primary">Update Document</a>
