@@ -35,7 +35,7 @@ $WD_IDR = array_fill(0, $days, 0.0);
 $WD_USD = array_fill(0, $days, 0.0);
 
 $from = date('Y-m-d 00:00:00', strtotime('-'.($days-1).' day', $todayMid));
-$to   = date('Y-m-d 00:00:00', strtotime('+1 day', $todayMid));
+$to   = date('Y-m-d 00:00:00', strtotime('+2 day', $todayMid));
 
 try {
     $sql_get_dpwd = mysqli_query($db, "

@@ -80,9 +80,9 @@
             <div class="panel-header">
                 <h5>Net In Out</h5>
                 <div class="btn-box" id="rangeFilters" class="mb-3">
-                    <button type="button" class="btn btn-sm btn-primary" data-range="7d">1 Minggu</button>
-                    <button type="button" class="btn btn-sm btn-outline-primary" data-range="1m">1 Bulan</button>
-                    <button type="button" class="btn btn-sm btn-outline-primary" data-range="1y">1 Tahun</button>
+                    <button type="button" class="btn btn-sm btn-primary" data-range="7d">Last 1 Minggu</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-range="1m">Last 1 Bulan</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-range="1y">Last 1 Tahun</button>
                 </div>
             </div>
             <div class="panel-body">
@@ -94,10 +94,8 @@
     <div class="col-md-4">
         <div class="panel h-100">
             <div class="card">
-                <div class="card-body">
-                    <div id="economicCalendarWidget"></div>
-                    <script async type="text/javascript" data-type="calendar-widget" src="https://www.tradays.com/c/js/widgets/calendar/widget.js?v=13">{"width":"100%","height":"400","mode":"2","theme":0}</script>
-                </div>
+                <div id="economicCalendarWidget"></div>
+                <script async type="text/javascript" data-type="calendar-widget" src="https://www.tradays.com/c/js/widgets/calendar/widget.js?v=13">{"width":"100%","height":"430","mode":"2","theme":0}</script>
             </div>
         </div>
     </div>
