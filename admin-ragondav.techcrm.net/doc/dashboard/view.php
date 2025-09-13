@@ -81,8 +81,11 @@
 <div class="row">
     <div class="col-md-6">
         <div class="card custom-card">
+            <div class="card-header">
+                <h6 class="main-content-label mb-1">Deposit / Withdrawal (IDR)</h6>
+                <p class="text-muted card-sub-title">Last 30 Days</p>
+            </div>
             <div class="card-body">
-                <label class="main-content-label mb-3 pt-1">Deposit/Withdrawal (IDR)</label>
                 <div class="chartjs-wrapper-demo">
                     <canvas id="chartIdrDpWdIt"></canvas>
                 </div>
@@ -91,8 +94,11 @@
     </div>
     <div class="col-md-6">
         <div class="card custom-card">
+            <div class="card-header">
+                <h6 class="main-content-label mb-1">Deposit / Withdrawal / Int. Trans (USD)</h6>
+                <p class="text-muted card-sub-title">Last 30 Days</p>
+            </div>
             <div class="card-body">
-                <label class="main-content-label mb-3 pt-1">Deposit/Withdrawal/Int. Trans (USD)</label>
                 <div class="chartjs-wrapper-demo">
                     <canvas id="chartUsdDpWdIt"></canvas>
                 </div>
