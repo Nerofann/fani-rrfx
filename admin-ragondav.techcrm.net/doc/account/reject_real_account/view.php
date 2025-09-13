@@ -3,9 +3,9 @@
     <div>
         <h2 class="main-content-title tx-24 mg-b-5">Reject Real Account</h2>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
-            <li class="breadcrumb-item"><a href="javascript:void(0);">Account</a></li>
-            <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Reject Real Account</a></li>
+            <li class="breadcrumb-item"><a href="<?= pathbreadcrumb(0) ?>/dashboard">Home</a></li>
+            <li class="breadcrumb-item">Account</li>
+            <li class="breadcrumb-item active" aria-current="page">Reject Real Account</li>
         </ol>
     </div>
 </div>

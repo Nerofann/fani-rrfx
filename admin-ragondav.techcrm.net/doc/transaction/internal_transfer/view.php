@@ -3,7 +3,7 @@
         <h2 class="main-content-title tx-24 mg-b-5">Internal Transfer</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="<?= pathbreadcrumb(0) ?>/dashboard">Home</a></li>
-            <li class="breadcrumb-item"><a href="javascript:void(0);">Transaction</a></li>
+            <li class="breadcrumb-item">Transaction</li>
             <li class="breadcrumb-item active" aria-current="page">Internal Transfer</li>
         </ol>
     </div>

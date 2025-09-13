@@ -3,8 +3,8 @@
 	<div>
 		<h2 class="main-content-title tx-24 mg-b-5">Progress Real Account</h2>
 		<ol class="breadcrumb">
-			<li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-			<li class="breadcrumb-item"><a href="javascript:void(0);">Account</a></li>
+			<li class="breadcrumb-item"><a href="<?= pathbreadcrumb(0) ?>/dashboard">Home</a></li>
+			<li class="breadcrumb-item">Account</li>
 			<li class="breadcrumb-item active" aria-current="page">Progress Real Account</li>
 		</ol>
 	</div>

@@ -25,7 +25,7 @@
     $dt->edit('ID_TIC', function($data){
         return '
             <div class="text-center">
-                <a href="/support/ticket/detail/'.$data["ID_TIC"].'" class="btn btn-info">Detail</a>
+                <a href="/support/ticket/detail/'.$data["ID_TIC"].'" class="btn btn-sm btn-info">Detail</a>
             </div>
         ';
     });

@@ -23,7 +23,7 @@ $permisAction = $adminPermissionCore->isHavePermission($moduleId, "action.bank_v
 		<h2 class="main-content-title tx-24 mg-b-5"><?php echo $page_title; ?></h2>
 		<ol class="breadcrumb">
 			<li class="breadcrumb-item"><a href="<?= pathbreadcrumb(0) ?>/dashboard">Home</a></li>
-			<li class="breadcrumb-item"><a href="javascript:void(0);">Account</a></li>
+			<li class="breadcrumb-item">Account</li>
 			<li class="breadcrumb-item"><a href="<?= pathbreadcrumb(2) ?>/view"><?php echo $page_title; ?></a></li>
 			<li class="breadcrumb-item active">Bank Verification</li>
 		</ol>

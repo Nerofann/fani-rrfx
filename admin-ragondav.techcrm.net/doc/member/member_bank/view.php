@@ -2,8 +2,8 @@
     <div>
         <h2 class="main-content-title tx-24 mg-b-5">Member Bank</h2>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-            <li class="breadcrumb-item"><a href="/member/user/view">Member</a></li>
+			<li class="breadcrumb-item"><a href="<?= pathbreadcrumb(0) ?>/dashboard">Home</a></li>
+            <li class="breadcrumb-item">Member</li>
             <li class="breadcrumb-item active" aria-current="page">Member Bank</li>
         </ol>
     </div>
