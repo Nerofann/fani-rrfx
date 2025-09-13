@@ -167,10 +167,6 @@
                                         $(`#${key}`).val(value); 
                                     }
                                 }
-                            }else{
-                                fln = (value !== null) ? `<?= $aws_folder ?>${value}` : dfltflnm;
-                                $(`.dropify-render`).children().attr('src', fln);
-                                $(`.dropify-filename-inner`).html(value);
                             }
                         }else if($(`#${key}`)[0]?.tagName == 'SELECT' || $(`#${key}`)[0]?.tagName == 'BUTTON'){
                             $(`#${key}`).val(value);
