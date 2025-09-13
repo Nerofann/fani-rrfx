@@ -53,7 +53,7 @@ $userid = md5(md5($user['MBR_ID'])) ?? "";
         <link rel="stylesheet" href="/assets/vendor/css/bootstrap.min.css">
         <link rel="stylesheet" href="/assets/css/style.css">
         <link rel="stylesheet" href="/assets/css/custom.css">
-        <link rel="stylesheet" href="/assets/css/<?= ($user['MBR_THEME'] == '1') ? 'blue' : 'gold'; ?>-color.css">
+        <link rel="stylesheet" href="/assets/css/<?= ($user['MBR_THEME'] == '1') ? 'gold' : 'blue'; ?>-color.css">
         <link rel="stylesheet" id="rtlStyle" href="#">
         <script src="/assets/vendor/js/jquery-3.6.0.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/css/dropify.css" integrity="sha512-In/+MILhf6UMDJU4ZhDL0R0fEpsp4D3Le23m6+ujDWXwl3whwpucJG1PEmI3B07nyJx+875ccs+yX2CqQJUxUw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -67,7 +67,7 @@ $userid = md5(md5($user['MBR_ID'])) ?? "";
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     </head>
 
-    <body class="body-padding body-p-top <?= ($user['MBR_THEME'] == '1') ? 'light-theme' : 'dark-theme'; ?>">
+    <body class="body-padding body-p-top <?= ($user['MBR_THEME'] == '1') ? 'dark-theme' : 'light-theme'; ?>">
         <?php require_once __DIR__ . "/template/header.php"; ?>
         <?php require_once __DIR__ . "/template/sidebar.php"; ?>
         <?php require_once __DIR__ . "/template/content.php"; ?>
