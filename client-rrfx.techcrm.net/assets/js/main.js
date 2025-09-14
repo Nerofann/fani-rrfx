@@ -238,17 +238,25 @@
         // ====== Enable Dark Theme From Settings ======
         let darkMode = localStorage.getItem('darkMode');
         const enableDarkMode = () => {
-            // $('body').removeClass('light-theme').addClass('dark-theme');
+            $('body').removeClass('light-theme').addClass('dark-theme');
             $('.header .main-logo .logo-big img, .mobile-logo img, .logo img').attr('src', '/assets/images/logo-white-new.png');
             localStorage.setItem("darkMode", "enabled");
             localStorage.removeItem("lightMode");
 
             // Save the selected style sheet in local storage
-            // $('#primaryColor').attr('href', '/assets/css/gold-color.css');
+            $('#primaryColor').attr('href', '/assets/css/gold-color.css');
             localStorage.setItem('selectedStyleSheet', 'gold-color');
         };
         $('#darkTheme').on('click', function () {
             // enableDarkMode();
+            
+            Swal.fire({
+                text: "Loading...",
+                allowOutsideClick: false,
+                didOpen: function() {
+                    Swal.showLoading();
+                }
+            })
             $.post("/ajax/post/dashboard/theme", {theme: 1}, function(resp) {
                 if (resp.success) {
 
@@ -265,18 +273,26 @@
         // // ====== Enable Light Theme From Settings ======
         let lightMode = localStorage.getItem('lightMode');
         const enableLightMode = () => {
-            // $('body').removeClass('dark-theme').addClass('light-theme');
+            $('body').removeClass('dark-theme').addClass('light-theme');
             $('.header .main-logo .logo-big img, .mobile-logo img, .logo img').attr('src', '/assets/images/logo-white-new.png');
             // localStorage.removeItem("blueMode");
             localStorage.setItem("lightMode", "enabled");
             localStorage.removeItem("darkMode");
 
             // Save the selected style sheet in local storage
-            // $('#primaryColor').attr('href', '/assets/css/blue-color.css');
+            $('#primaryColor').attr('href', '/assets/css/blue-color.css');
             localStorage.setItem('selectedStyleSheet', 'blue-color');
         };
         $('#lightTheme').on('click', function () {
             // enableLightMode();
+            
+            Swal.fire({
+                text: "Loading...",
+                allowOutsideClick: false,
+                didOpen: function() {
+                    Swal.showLoading();
+                }
+            })
             $.post("/ajax/post/dashboard/theme", {theme: 0}, function(resp) {
                 if (resp.success) {
         
