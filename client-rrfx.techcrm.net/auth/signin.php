@@ -9,7 +9,7 @@ if($isLoggedIn) {
 ?>
 
 <div class="main-content login-panel login-panel-2">
-	<h3 class="panel-title">Login</h3>
+	<h3 class="panel-title">Login - Test</h3>
 	<div class="login-body login-body-2">
 		<div class="top d-flex justify-content-between align-items-center">
 			<div class="logo">
