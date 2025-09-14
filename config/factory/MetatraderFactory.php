@@ -10,26 +10,40 @@ use Exception;
 
 class MetatraderFactory {
 
-    public static $serverReal = "RRFX-Demo";
-    public static $serverDemo = "RRFX-Demo";
+    public static $serverReal = "";
+    public static $serverDemo = "";
     public static $tokenManagerDemo = "5c585515-6500-4fc2-b7fb-ca3a7c276d4c-rrfx-demo";
     public static $tokenManagerReal = "02c89495-67a8-4ca0-9a81-af0d25e74135-rrfx-live";
     public static float $initMarginDemo = 10000;
 
+    public static function credential() {
+        return [
+            'tokenManagerDemo' => ($_ENV['MANAGER_TOKEN_DEMO'] ?? ""),
+            'tokenManagerLive' => ($_ENV['MANAGER_TOKEN_LIVE'] ?? ""),
+            'serverDemo' => ($_ENV['SERVER_NAME_DEMO'] ?? ""),
+            'serverLive' => ($_ENV['SERVER_NAME_LIVE'] ?? ""),
+            'managerEndpoint' => ($_ENV['MANAGER_ENDPOINT'] ?? ""),
+        ];
+    }
+
     public static function apiManager(): ApiManager {
-        return new ApiManager(self::$tokenManagerReal, "http://139.180.212.62:7005");
+        $credential = self::credential();
+        return new ApiManager($credential['tokenManagerLive'], $credential['managerEndpoint']);
     }
 
     public static function apiTerminal(): ApiTerminal {
-        return new ApiTerminal(self::$serverReal);
+        $credential = self::credential();
+        return new ApiTerminal($credential['serverLive']);
     }
 
     public static function apiTerminalDemo(): ApiTerminal {
-        return new ApiTerminal(self::$serverDemo);
+        $credential = self::credential();
+        return new ApiTerminal($credential['serverDemo']);
     }
 
     public static function apiManagerDemo(): ApiManager {
-        return new ApiManager(self::$tokenManagerDemo, "http://139.180.212.62:7005");
+        $credential = self::credential();
+        return new ApiManager($credential['tokenManagerDemo'], $credential['managerEndpoint']);
     }
 
     public static function createDemo(?string $fullname, ?string $email): array {

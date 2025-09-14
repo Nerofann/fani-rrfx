@@ -15,9 +15,10 @@
         <div>
             <h2 class="main-content-title tx-24 mg-b-5">Update <b class="text-primary"><?= ucwords($module['module']) ?></b></h2>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="javascript:void(0);">Developer</a></li>
-                <li class="breadcrumb-item"><a href="javascript:void(0);">Module</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Update</a></li>
+                <li class="breadcrumb-item"><a href="<?= pathbreadcrumb(0) ?>/dashboard">Home</a></li>
+                <li class="breadcrumb-item">Developer</li>
+                <li class="breadcrumb-item"><a href="<?= pathbreadcrumb(1) ?>/module/view">Module</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Update</li>
             </ol>
         </div>
     </div>

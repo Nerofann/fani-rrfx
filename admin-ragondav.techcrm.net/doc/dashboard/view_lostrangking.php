@@ -1,8 +1,11 @@
 
 <div class="col-md-4">
     <div class="card custom-card">
-        <div class="card-body">
-            <label class="main-content-label mb-3 pt-1">Lost Rangking</label>
+        <div class="card-header">
+            <h6 class="main-content-label mb-1"><?= $adminPermissionCore->isHavePermission($moduleId, $permission)['desc'] ?></h6>
+            <p class="text-muted card-sub-title">Top 10 <?= $adminPermissionCore->isHavePermission($moduleId, $permission)['desc'] ?></p>
+        </div>
+        <div class="card-body" style="overflow-y: hidden;height: 485px;">
             <div class="table-responsive">
                 <table class="table table-bordered mg-b-0 table-striped table-hover" id="tabel_LostRangking">
                     <thead>

@@ -4,8 +4,8 @@
 		<h2 class="main-content-title tx-24 mg-b-5">Stucture</h2>
 		<ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="<?= pathbreadcrumb(0) ?>/dashboard">Home</a></li>
-			<li class="breadcrumb-item active">Commision</li>
-			<li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Stucture</a></li>
+			<li class="breadcrumb-item">Commision</li>
+			<li class="breadcrumb-item active" aria-current="page">Stucture</li>
 		</ol>
 	</div>
 </div>

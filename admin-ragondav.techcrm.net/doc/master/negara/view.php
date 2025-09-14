@@ -2,9 +2,9 @@
     <div>
         <h2 class="main-content-title tx-24 mg-b-5">Negara</h2>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
-            <li class="breadcrumb-item"><a href="javascript:void(0);">Master</a></li>
-            <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Negara</a></li>
+            <li class="breadcrumb-item"><a href="<?= pathbreadcrumb(0) ?>/dashboard">Home</a></li>
+            <li class="breadcrumb-item">Master</li>
+            <li class="breadcrumb-item active" aria-current="page">Negara</li>
         </ol>
     </div>
 </div>
@@ -167,10 +167,6 @@
                                         $(`#${key}`).val(value); 
                                     }
                                 }
-                            }else{
-                                fln = (value !== null) ? `<?= $aws_folder ?>${value}` : dfltflnm;
-                                $(`.dropify-render`).children().attr('src', fln);
-                                $(`.dropify-filename-inner`).html(value);
                             }
                         }else if($(`#${key}`)[0]?.tagName == 'SELECT' || $(`#${key}`)[0]?.tagName == 'BUTTON'){
                             $(`#${key}`).val(value);

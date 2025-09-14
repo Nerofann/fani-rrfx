@@ -80,9 +80,9 @@
             <div class="panel-header">
                 <h5>Net In Out</h5>
                 <div class="btn-box" id="rangeFilters" class="mb-3">
-                    <button type="button" class="btn btn-sm btn-primary" data-range="7d">1 Minggu</button>
-                    <button type="button" class="btn btn-sm btn-outline-primary" data-range="1m">1 Bulan</button>
-                    <button type="button" class="btn btn-sm btn-outline-primary" data-range="1y">1 Tahun</button>
+                    <button type="button" class="btn btn-sm btn-primary" data-range="7d">Last 1 Minggu</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-range="1m">Last 1 Bulan</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-range="1y">Last 1 Tahun</button>
                 </div>
             </div>
             <div class="panel-body">
@@ -94,10 +94,25 @@
     <div class="col-md-4">
         <div class="panel h-100">
             <div class="card">
-                <div class="card-body">
-                    <div id="economicCalendarWidget"></div>
-                    <script async type="text/javascript" data-type="calendar-widget" src="https://www.tradays.com/c/js/widgets/calendar/widget.js?v=13">{"width":"100%","height":"400","mode":"2","theme":0}</script>
+                <!-- <div id="economicCalendarWidget"></div>
+                <script async type="text/javascript" data-type="calendar-widget" src="https://www.tradays.com/c/js/widgets/calendar/widget.js?v=13">{"width":"100%","height":"430","mode":"2","theme":0}</script> -->
+                <!-- TradingView Widget BEGIN -->
+                <div class="tradingview-widget-container">
+                <div class="tradingview-widget-container__widget"></div>
+                
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
+                {
+                    "colorTheme": "<?= ($user['MBR_THEME'] == '1') ? 'dark' : 'light'; ?>",
+                    "isTransparent": false,
+                    "locale": "en",
+                    "countryFilter": "ar,au,br,ca,cn,fr,de,in,id,it,jp,kr,mx,ru,sa,za,tr,gb,us,eu",
+                    "importanceFilter": "-1,0,1",
+                    "width": "100%",
+                    "height": "425"
+                }
+                </script>
                 </div>
+                <!-- TradingView Widget END -->
             </div>
         </div>
     </div>
@@ -154,7 +169,7 @@ $(document).ready(function(){
 
   // ====== CONFIG ======
   const RANGES = {
-    '7d': { days: 7,  label: '1 Minggu' },
+    '7d': { days: 8,  label: '1 Minggu' },
     '1m': { days: 30, label: '1 Bulan'  },
     '1y': { days: 365,label: '1 Tahun'  },
   };
@@ -163,6 +178,7 @@ $(document).ready(function(){
   const generateDates = (nDays) => {
     const now = new Date();
     const start = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // strip time
+    start.setDate(start.getDate() + 1);
     const arr = [];
     for (let i = nDays - 1; i >= 0; i--) {
       const d = new Date(start);

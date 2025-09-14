@@ -1,7 +1,4 @@
 <?php
-// Pastikan koneksi $db (mysqli) sudah ada
-
-// (Opsional) Samakan timezone ke WIB agar batas hari konsisten
 $db->query("SET time_zone = '+07:00'");
 
 $user_regester = 0;

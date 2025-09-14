@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Helper;
+use App\Models\User;
 
 $myBanks = App\Models\User::myBank($user['MBR_ID']);
 $_SESSION['modal'] = ['create-bank'];
@@ -202,7 +203,7 @@ $_SESSION['modal'] = ['create-bank'];
                                             <td class="top-align text-start" colspan="3">
                                                 <div class="d-flex justify-content-between mb-25">
                                                     <div class="form-check">
-                                                        <input class="form-check-input" name="app_anggota_berjangka" id="app_anggota_berjangka" type="checkbox" required checked>
+                                                        <input class="form-check-input" name="app_anggota_berjangka" id="app_anggota_berjangka" type="checkbox" required disabled checked>
                                                         <label class="form-check-label" for="app_anggota_berjangka">
                                                             Saya menyetujui bahwa tidak memiliki anggota keluarga yang<br>bekerja di BAPPEBTI / Bursa Berjangka / Kliring Berjangka
                                                         </label>
@@ -214,7 +215,7 @@ $_SESSION['modal'] = ['create-bank'];
                                             <td class="top-align text-start" colspan="3">
                                                 <div class="d-flex justify-content-between mb-25">
                                                     <div class="form-check">
-                                                        <input class="form-check-input" name="app_pailit" id="app_pailit" type="checkbox" required checked>
+                                                        <input class="form-check-input" name="app_pailit" id="app_pailit" type="checkbox" required disabled checked>
                                                         <label class="form-check-label" for="app_pailit">
                                                             Saya menyetujui bahwa tidak dinyatakan pailit oleh Pengadilan
                                                         </label>
@@ -224,104 +225,6 @@ $_SESSION['modal'] = ['create-bank'];
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card mb-3">
-                        <div class="card-header text-center">
-                            REKENING BANK NASABAH UNTUK PENYETORAN DAN PENARIKAN MARGIN
-                        </div>
-                        <div class="card-body mb-3">
-                            <p>
-                                Rekening Bank Nasabah Untuk Penyetoran dan Penarikan Margin 
-                                (hanya rekening dibawah ini yang dapat Saudara pergunakan untuk lalulintas margin)
-                            </p>
-                            <?php if(!isset($myBanks[0])){ ?>
-                                    <div class="table-responsive">
-                                        <table class="table table-hover table-fixed" style="text-align: left; table-layout: fixed;" width="100%">
-                                            <tbody>
-                                                <tr>
-                                                    <td width="30%" class="top-align fw-bold">Nama Bank<span class="text-danger">*</span></td>
-                                                    <td width="3%" class="top-align"> : </td>
-                                                    <td class="top-align text-start">
-                                                        <select name="bank_name1" class="form-control form-select input-sm" required>
-                                                            <?php foreach(App\Models\BankList::all() as $bank) : ?>
-                                                                <option value="<?= $bank['BANKLST_NAME'] ?>"><?= $bank['BANKLST_NAME'] ?></option>
-                                                            <?php endforeach; ?>
-                                                        </select>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td width="30%" class="top-align fw-bold">Nama Pemilik Rekening<span class="text-danger">*</span></td>
-                                                    <td width="3%" class="top-align"> : </td>
-                                                    <td class="top-align text-start"><?= $realAccount['ACC_FULLNAME']; ?></td>
-                                                </tr>
-                                                <tr>
-                                                    <td width="30%" class="top-align fw-bold">No. Rekening<span class="text-danger">*</span></td>
-                                                    <td width="3%" class="top-align"> : </td>
-                                                    <td class="top-align text-start">
-                                                        <input type="text" data-kind="bankaccount" inputmode="numeric" autocomplate="off" class="form-control input-sm" name="bank_number1" placeholder="Nomor Rekening" required>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                            <?php
-                                }
-                                if(!isset($myBanks[1])){
-                            ?>
-                                    <div class="table-responsive">
-                                        <table class="table table-hover" style="text-align: left; table-layout: fixed;" width="100%">
-                                            <tbody>
-                                                <tr>
-                                                    <td width="30%" class="top-align fw-bold">Nama Bank<span class="text-danger">*</span></td>
-                                                    <td width="3%" class="top-align"> : </td>
-                                                    <td class="top-align text-start">
-                                                        <select name="bank_name2" class="form-control form-select input-sm">
-                                                            <?php foreach(App\Models\BankList::all() as $bank) : ?>
-                                                                <option value="<?= $bank['BANKLST_NAME'] ?>"><?= $bank['BANKLST_NAME'] ?></option>
-                                                            <?php endforeach; ?>
-                                                        </select>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td width="30%" class="top-align fw-bold">Nama Pemilik Rekening<span class="text-danger">*</span></td>
-                                                    <td width="3%" class="top-align"> : </td>
-                                                    <td class="top-align text-start"><?= $realAccount['ACC_FULLNAME']; ?></td>
-                                                </tr>
-                                                <tr>
-                                                    <td width="30%" class="top-align fw-bold">No. Rekening<span class="text-danger">*</span></td>
-                                                    <td width="3%" class="top-align"> : </td>
-                                                    <td class="top-align text-start">
-                                                        <input type="text" data-kind="bankaccount" inputmode="numeric" autocomplate="off" class="form-control input-sm" name="bank_number2" placeholder="Nomor Rekening">
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                            <?php } ?>
-                            <hr>
-                            <div class="row">
-                                <?php foreach($myBanks as $mbank) : ?>
-                                    <div class="col-md-6">
-                                        <div class="card h-100 border-primary">
-                                            <div class="card-body">
-                                                <div class="d-flex flex-column justify-content-between gap-3">
-                                                    <div class="bank-info">
-                                                        <p class="mb-0 lh-1"><?php echo $mbank['MBANK_HOLDER'] ?></p>
-                                                        <small style="font-size: 11px;" class="d-flex flex-column mt-0 font-15 text-upper">
-                                                            <i><?php echo $mbank['MBANK_NAME'] ?></i>
-                                                        </small>
-                                                    </div>
-                                                    <div class="mt-auto">
-                                                        <div class="float-end font-weight-bold"><?php echo $mbank['MBANK_ACCOUNT'] ?></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
                             </div>
                         </div>
                     </div>
@@ -530,6 +433,69 @@ $_SESSION['modal'] = ['create-bank'];
                 </div>
             </div>
             <div class="row mt-3">
+                <div class="col-md-12 mb-3">
+                     <div class="card mb-3">
+                        <div class="card-header text-center">
+                            REKENING BANK NASABAH UNTUK PENYETORAN DAN PENARIKAN MARGIN
+                        </div>
+                        <div class="card-body mb-3">
+                            <p>
+                                Rekening Bank Nasabah Untuk Penyetoran dan Penarikan Margin 
+                                (hanya rekening dibawah ini yang dapat Saudara pergunakan untuk lalulintas margin)
+                            </p>
+                            <div class="row">
+                                <?php for($i = 0; $i < 2; $i++) : ?>
+                                    <?php $mbank = isset($myBanks[$i])? $myBanks[$i] : []; ?>
+                                    <div class="col-md-6 mb-3 px-4">
+                                        <h5 class="card-title">Bank <?= $i + 1; ?></h5>
+                                        <hr>
+                                        <?php if(!$mbank) : ?>
+                                            <?php $isRequired = ($i == 0); ?>
+                                            <div class="row mt-2">
+                                                <div class="col-md-12 mb-3">
+                                                    <label for="" class="form-label <?= ($isRequired)? "required" : ""; ?>">Nama Bank</label>
+                                                    <select name="bank_name<?= $i+1; ?>" class="form-control form-select input-sm">
+                                                        <?php foreach(App\Models\BankList::all() as $bank) : ?>
+                                                            <option value="<?= $bank['BANKLST_NAME'] ?>"><?= $bank['BANKLST_NAME'] ?></option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="" class="form-label <?= ($isRequired)? "required" : ""; ?>">Nama Pemilik Rekening</label>
+                                                    <input type="text" class="form-control" value="<?= $user['MBR_NAME']; ?>" disabled>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="" class="form-label <?= ($isRequired)? "required" : ""; ?>">No. Rekening</label>
+                                                    <input type="text" data-kind="bankaccount" inputmode="numeric" autocomplate="off" class="form-control input-sm" name="bank_number<?= $i+1; ?>" placeholder="Nomor Rekening" <?= ($isRequired)? "required" : ""; ?>>
+                                                </div>
+                                                <div class="col-md-12 mb-2">
+                                                    <label for="imagecover<?= $i+1; ?>" class="form-label <?= ($isRequired)? "required" : ""; ?>">Cover Buku Tabungan</label>
+                                                    <input type="file" class="dropify" name="imagecover<?= $i+1; ?>" id="imagecover<?= $i+1; ?>" accept="image/jpg, image/jpeg, iamge/png" data-allowed-file-extensions="png jpg jpeg" data-max-file-size="2M" <?= ($isRequired)? "required" : ""; ?>>
+                                                </div>
+                                            </div>
+                                        <?php else : ?>
+                                            <div class="card border-primary">
+                                                <div class="card-body">
+                                                    <div class="d-flex flex-column justify-content-between gap-3">
+                                                        <div class="bank-info">
+                                                            <p class="mb-0 lh-1"><?php echo $mbank['MBANK_HOLDER'] ?></p>
+                                                            <small style="font-size: 11px;" class="d-flex flex-column mt-0 font-15 text-upper">
+                                                                <i><?php echo $mbank['MBANK_NAME'] ?></i>
+                                                            </small>
+                                                        </div>
+                                                        <div class="mt-auto">
+                                                            <div class="float-end font-weight-bold"><?php echo $mbank['MBANK_ACCOUNT'] ?></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endfor; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-12">
                     <div class="card component-jquery-uploader">
                         <div class="card-header text-center">
@@ -630,8 +596,8 @@ $_SESSION['modal'] = ['create-bank'];
                 max: 16 
             },
             "phone": { 
-                title: "Nomor telepon Indonesia diawali +62",
-                pattern: "^(?:0\\d{8,12}|\\+62\\d{8,12})$",
+                title: "Nomor telepon tidak valid",
+                pattern: "^\\d{8,13}$",
                 min: 9, 
                 max: 15 
             }
@@ -646,9 +612,9 @@ $_SESSION['modal'] = ['create-bank'];
             }
             if (kind === "phone") {
                 // angka + opsional satu '+' di depan
-                const hasPlusFirst = (val || "").startsWith("+");
                 const digitsOnly = (val || "").replace(/\D/g, "");
-                return hasPlusFirst ? ("+" + digitsOnly) : digitsOnly;
+                // return hasPlusFirst ? ("+" + digitsOnly) : digitsOnly;
+                return digitsOnly;
             }
             // kodepos & npwp: angka saja
             return (val || "").replace(/\D/g, "");

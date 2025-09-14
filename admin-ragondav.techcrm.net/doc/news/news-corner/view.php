@@ -6,7 +6,7 @@
         <h2 class="main-content-title tx-24 mg-b-5">News Corner</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="<?= pathbreadcrumb(0) ?>/dashboard">Home</a></li>
-            <li class="breadcrumb-item"><a href="javascript:void(0);">News</a></li>
+            <li class="breadcrumb-item">News</li>
             <li class="breadcrumb-item active" aria-current="page">News Corner</li>
         </ol>
     </div>
@@ -77,10 +77,10 @@
     ?>
         <div class="col-md-6">
             <div class="card card-aside custom-card">
-                <a href="#" class="card-aside-column  cover-image rounded-start-11" data-image-src="<?= FileUpload::awsFile(($RSLT_NEWS["BLOG_IMG"] ?? '')) ?>" style="background: url(<?= FileUpload::awsFile(($RSLT_NEWS["BLOG_IMG"] ?? '')) ?>) center center;"></a>
+                <a href="javascript:void(0);" class="card-aside-column  cover-image rounded-start-11" data-image-src="<?= FileUpload::awsFile(($RSLT_NEWS["BLOG_IMG"] ?? '')) ?>" style="background: url(<?= FileUpload::awsFile(($RSLT_NEWS["BLOG_IMG"] ?? '')) ?>) center center;"></a>
                 <div class="card-body">
                     <div style="overflow-y: auto;height: 150px;">
-                        <a href="#"><span class="main-content-label tx-16"><?= substr(strip_tags(html_entity_decode($RSLT_NEWS["BLOG_MESSAGE"])), 0, 40).'...'; ?></span></a>
+                        <a href="javascript:void(0);"><span class="main-content-label tx-16"><?= substr(strip_tags(html_entity_decode($RSLT_NEWS["BLOG_MESSAGE"])), 0, 40).'...'; ?></span></a>
                         <div class="mt-3">
                             <?= substr(strip_tags(html_entity_decode($RSLT_NEWS["BLOG_MESSAGE"])), 0, 200).'...'; ?>
                         </div>

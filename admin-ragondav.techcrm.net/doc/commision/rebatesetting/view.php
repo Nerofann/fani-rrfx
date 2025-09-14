@@ -5,7 +5,7 @@
 		<ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="<?= pathbreadcrumb(0) ?>/dashboard">Home</a></li>
 			<li class="breadcrumb-item">Commision</li>
-			<li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Rebate Setting</a></li>
+			<li class="breadcrumb-item active" aria-current="page">Rebate Setting</li>
 		</ol>
 	</div>
     <div class="d-flex">

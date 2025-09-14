@@ -18,9 +18,9 @@ if(!$admin) {
     <div>
         <h2 class="main-content-title tx-24 mg-b-5">Update Admin</h2>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-            <li class="breadcrumb-item"><a href="/admin/view">Admin</a></li>
-            <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Update</a></li>
+            <li class="breadcrumb-item"><a href="<?= pathbreadcrumb(0) ?>/dashboard">Home</a></li>
+            <li class="breadcrumb-item"><a href="<?= pathbreadcrumb(1) ?>/view">Admin</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Update</li>
         </ol>
     </div>
 </div>

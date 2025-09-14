@@ -2,8 +2,8 @@
     <div>
         <h2 class="main-content-title tx-24 mg-b-5">List Admin</h2>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page"><a href="/admin/view">Admin</a></li>
+            <li class="breadcrumb-item"><a href="<?= pathbreadcrumb(0) ?>/dashboard">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Admin</li>
         </ol>
     </div>
 </div>

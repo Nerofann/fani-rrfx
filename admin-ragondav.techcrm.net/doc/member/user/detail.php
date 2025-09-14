@@ -53,7 +53,7 @@
 		<h2 class="main-content-title tx-24 mg-b-5">Member User Detail</h2>
 		<ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="<?= pathbreadcrumb(0) ?>/dashboard">Home</a></li>
-			<li class="breadcrumb-item"><a href="javascript:void(0);">Member</a></li>
+			<li class="breadcrumb-item">Member</li>
 			<li class="breadcrumb-item"><a href="<?= pathbreadcrumb(2) ?>/view">User</a></li>
 			<li class="breadcrumb-item active" aria-current="page">Detail</li>
 		</ol>

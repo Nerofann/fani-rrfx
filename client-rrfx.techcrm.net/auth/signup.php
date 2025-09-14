@@ -36,10 +36,7 @@ $referral = Helper::form_input($_GET['referral'] ?? "");
 				<div class="input-group mb-25">
 					<select name="phone_code" class="input-group-text" style="width: fit-content;">
 						<?php foreach (Country::countries() as $country): ?>
-							<?php if ($country['COUNTRY_PHONE_CODE'] == "+62"): ?>
-								<option value="<?= $country['COUNTRY_PHONE_CODE'] ?>">
-									<?= $country['COUNTRY_PHONE_CODE'] ?></option>
-							<?php endif; ?>
+							<option value="<?= $country['COUNTRY_PHONE_CODE'] ?>" <?= ($country['COUNTRY_PHONE_CODE'] == "+62") ? "selected" : ""; ?>><?= $country['COUNTRY_PHONE_CODE'] ?></option>
 						<?php endforeach; ?>
 					</select>
 					<input type="number" name="phone" required data-parsley-required class="form-control" min="0" autocomplete="off" placeholder="Phone Number">

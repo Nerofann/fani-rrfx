@@ -11,7 +11,7 @@
         <h2 class="main-content-title tx-24 mg-b-5">Profile Perusahaan</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="<?= pathbreadcrumb(0) ?>/dashboard">Home</a></li>
-            <li class="breadcrumb-item"><a href="javascript:void(0);">Tools</a></li>
+            <li class="breadcrumb-item">Tools</li>
             <li class="breadcrumb-item active" aria-current="page">Profile Perusahaan</li>
         </ol>
     </div>

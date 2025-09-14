@@ -219,21 +219,21 @@
         // Theme Color Change From Header & Settings
         //------------------------------------------------------------------------------------------------------------------
         // ====== Enable Blue Theme From Settings ======
-        let blueMode = localStorage.getItem('blueMode');
-        const enableBlueMode = () => {
-            $('body').removeClass('light-theme dark-theme');
-            $('.header .main-logo .logo-big img, .mobile-logo img, .logo img').attr('src', '/assets/images/logo-white-new.png');
-            localStorage.setItem("blueMode", "enabled");
-            localStorage.removeItem("darkMode");
-        };
-        if (blueMode === "enabled") {
-            enableBlueMode();
-            localStorage.removeItem("darkTheme");
-            $('#blueTheme').addClass('active').parent().siblings().find('.dashboard-icon').removeClass('active');
-        }
-        $('#blueTheme').on('click', function () {
-            enableBlueMode();
-        });
+        // let blueMode = localStorage.getItem('blueMode');
+        // const enableBlueMode = () => {
+        //     $('body').removeClass('light-theme dark-theme');
+        //     $('.header .main-logo .logo-big img, .mobile-logo img, .logo img').attr('src', '/assets/images/logo-white-new.png');
+        //     localStorage.setItem("blueMode", "enabled");
+        //     localStorage.removeItem("darkMode");
+        // };
+        // if (blueMode === "enabled") {
+        //     enableBlueMode();
+        //     localStorage.removeItem("darkTheme");
+        //     $('#blueTheme').addClass('active').parent().siblings().find('.dashboard-icon').removeClass('active');
+        // }
+        // $('#blueTheme').on('click', function () {
+        //     enableBlueMode();
+        // });
 
         // ====== Enable Dark Theme From Settings ======
         let darkMode = localStorage.getItem('darkMode');
@@ -241,40 +241,69 @@
             $('body').removeClass('light-theme').addClass('dark-theme');
             $('.header .main-logo .logo-big img, .mobile-logo img, .logo img').attr('src', '/assets/images/logo-white-new.png');
             localStorage.setItem("darkMode", "enabled");
-            localStorage.removeItem("blueMode");
+            localStorage.removeItem("lightMode");
 
             // Save the selected style sheet in local storage
             $('#primaryColor').attr('href', '/assets/css/gold-color.css');
             localStorage.setItem('selectedStyleSheet', 'gold-color');
         };
-
-        if (darkMode === "enabled") {
-            enableDarkMode();
-            $('#darkTheme').addClass('active');
-        }
         $('#darkTheme').on('click', function () {
-            enableDarkMode();
+            // enableDarkMode();
+            
+            Swal.fire({
+                text: "Loading...",
+                allowOutsideClick: false,
+                didOpen: function() {
+                    Swal.showLoading();
+                }
+            })
+            $.post("/ajax/post/dashboard/theme", {theme: 1}, function(resp) {
+                if (resp.success) {
+
+                    if (darkMode === "enabled") {
+                        enableDarkMode();
+                        $('#darkTheme').addClass('active');
+                    }
+
+                    location.reload();
+                }
+            }, 'json')
         });
 
-        // ====== Enable Light Theme From Settings ======
+        // // ====== Enable Light Theme From Settings ======
         let lightMode = localStorage.getItem('lightMode');
         const enableLightMode = () => {
             $('body').removeClass('dark-theme').addClass('light-theme');
             $('.header .main-logo .logo-big img, .mobile-logo img, .logo img').attr('src', '/assets/images/logo-white-new.png');
-            localStorage.removeItem("blueMode");
+            // localStorage.removeItem("blueMode");
+            localStorage.setItem("lightMode", "enabled");
             localStorage.removeItem("darkMode");
 
             // Save the selected style sheet in local storage
             $('#primaryColor').attr('href', '/assets/css/blue-color.css');
             localStorage.setItem('selectedStyleSheet', 'blue-color');
         };
-        
-        if (lightMode === "enabled") {
-            enableLightMode();
-            $('#lightTheme').addClass('active');
-        }
         $('#lightTheme').on('click', function () {
-            enableLightMode();
+            // enableLightMode();
+            
+            Swal.fire({
+                text: "Loading...",
+                allowOutsideClick: false,
+                didOpen: function() {
+                    Swal.showLoading();
+                }
+            })
+            $.post("/ajax/post/dashboard/theme", {theme: 0}, function(resp) {
+                if (resp.success) {
+        
+                    if (lightMode === "enabled") {
+                        enableLightMode();
+                        $('#lightTheme').addClass('active');
+                    }
+
+                    location.reload();
+                }
+            }, 'json')
         });
 
 
